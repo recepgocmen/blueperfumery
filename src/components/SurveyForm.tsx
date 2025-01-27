@@ -33,7 +33,7 @@ export default function SurveyForm({ onSubmit }: SurveyFormProps) {
         { value: "35", label: "35-44: Sofistike ve Dengeli", icon: "💫" },
         { value: "45", label: "45+: Zarif ve Karizmatik", icon: "⭐" },
       ],
-      field: "ageGroup" as const,
+      field: "age" as const,
       onSelect: (value: string) => {
         // Yaş grubu seçimine göre ortalama yaş değeri ata
         const ageMap: Record<string, number> = {
@@ -206,6 +206,15 @@ export default function SurveyForm({ onSubmit }: SurveyFormProps) {
   const hasSelectedCurrentOption = preferences[currentQuestion.field];
 
   const isOptionSelected = (value: string) => {
+    if (currentQuestion.field === "age") {
+      const ageMap: Record<string, number> = {
+        "18": 21,
+        "25": 29,
+        "35": 39,
+        "45": 50
+      };
+      return preferences.age === ageMap[value];
+    }
     return preferences[currentQuestion.field] === value;
   };
 
