@@ -16,7 +16,40 @@ export default function SurveyForm({ onSubmit }: SurveyFormProps) {
 
   const questions = [
     {
-      title: "✨ Önce seni tanıyalım!",
+      title: "👋 Öncelikle Tanışalım!",
+      question: "Hangi dünyadan parfüm önerileri istersin?",
+      options: [
+        { value: "male", label: "Erkek", icon: "👔" },
+        { value: "female", label: "Kadın", icon: "👗" },
+      ],
+      field: "gender" as const,
+    },
+    {
+      title: "🎭 Yaşam Evren",
+      question: "Hangi yaş enerjisine sahipsin?",
+      options: [
+        { value: "18", label: "18-24: Genç ve Dinamik", icon: "✨" },
+        { value: "25", label: "25-34: Tutkulu ve Kararlı", icon: "🌟" },
+        { value: "35", label: "35-44: Sofistike ve Dengeli", icon: "💫" },
+        { value: "45", label: "45+: Zarif ve Karizmatik", icon: "⭐" },
+      ],
+      field: "ageGroup" as const,
+      onSelect: (value: string) => {
+        // Yaş grubu seçimine göre ortalama yaş değeri ata
+        const ageMap: Record<string, number> = {
+          "18": 21,
+          "25": 29,
+          "35": 39,
+          "45": 50
+        };
+        setPreferences(prev => ({
+          ...prev,
+          age: ageMap[value] || 25
+        }));
+      }
+    },
+    {
+      title: "✨ Karakterini Keşfet",
       question: "Hangi kelime seni en iyi anlatır?",
       options: [
         { value: "adventurous", label: "Maceraperest", icon: "🌎" },
