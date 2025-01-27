@@ -37,9 +37,9 @@ export default function Home() {
     };
 
     const getBudget = (style: Style): "low" | "medium" | "high" | "luxury" => {
-      if (style === "luxury") return "luxury";
-      if (style === "premium") return "high";
-      if (style === "casual") return "medium";
+      if (style === "modern") return "luxury";
+      if (style === "classic") return "high";
+      if (style === "sporty") return "medium";
       return "low";
     };
 
