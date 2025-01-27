@@ -5,90 +5,106 @@ export function getLocalRecommendations(
   survey: SurveyResponse,
   maxRecommendations: number = 3
 ): RecommendationResult[] {
-  const results: RecommendationResult[] = [];
+  // Calculate scores for all perfumes
+  const results = perfumes
+    .map((perfume) => {
+      const matchScore = calculateMatchScore(perfume, survey);
+      const matchReasons = getMatchReasons(perfume, survey);
+      return { perfume, matchScore, matchReasons };
+    })
+    .filter((result) => result.matchScore > 0); // Filter out 0 scores
 
-  for (const perfume of perfumes) {
-    const matchScore = calculateMatchScore(perfume, survey);
-    const matchReasons = getMatchReasons(perfume, survey);
+  // Sort by score and apply diversity bonus
+  results.sort((a, b) => {
+    // Add a small random factor for diversity (±5%)
+    const randomFactorA = 1 + (Math.random() - 0.5) * 0.1;
+    const randomFactorB = 1 + (Math.random() - 0.5) * 0.1;
+    
+    // Apply the random factor to the scores
+    const finalScoreA = a.matchScore * randomFactorA;
+    const finalScoreB = b.matchScore * randomFactorB;
+    
+    return finalScoreB - finalScoreA;
+  });
 
-    if (matchScore > 0) {
-      results.push({
-        perfume,
-        matchScore,
-        matchReasons,
-      });
-    }
-  }
+  // Log all scores for debugging
+  console.log('All perfume scores:', results.map(r => ({
+    name: r.perfume.name,
+    score: r.matchScore,
+    characteristics: r.perfume.characteristics,
+    notes: r.perfume.notes
+  })));
 
-  // En yüksek puanlı parfümleri döndür
-  return results
-    .sort((a, b) => b.matchScore - a.matchScore)
-    .slice(0, maxRecommendations);
+  // Return top N recommendations
+  return results.slice(0, maxRecommendations);
 }
 
 function calculateMatchScore(perfume: Perfume, survey: SurveyResponse): number {
   let score = 0;
 
-  // Cinsiyet kontrolü
+  // Cinsiyet kontrolü - daha az ağırlıklı
   if (perfume.gender === survey.gender || perfume.gender === "unisex") {
-    score += 20;
+    score += 10;
   } else {
     return 0; // Cinsiyet uyuşmuyorsa direk 0 puan
   }
 
-  // Yaş aralığı kontrolü
+  // Yaş aralığı kontrolü - daha az ağırlıklı
   if (
     survey.age >= perfume.ageRange.min &&
     survey.age <= perfume.ageRange.max
   ) {
-    score += 15;
+    score += 10;
   }
 
-  // Bütçe kontrolü
+  // Bütçe kontrolü - daha az ağırlıklı
   const budgetRange = BUDGET_RANGES[survey.budget];
   if (perfume.price >= budgetRange.min && perfume.price <= budgetRange.max) {
-    score += 15;
+    score += 10;
   }
 
-  // Notalar kontrolü
+  // Notalar kontrolü - daha önemli
   if (survey.likedNotes) {
     const matchingLikedNotes = perfume.notes.filter(note =>
       survey.likedNotes?.includes(note)
     );
-    score += matchingLikedNotes.length * 5;
+    score += matchingLikedNotes.length * 8;
   }
 
   if (survey.dislikedNotes) {
     const matchingDislikedNotes = perfume.notes.filter(note =>
       survey.dislikedNotes?.includes(note)
     );
-    score -= matchingDislikedNotes.length * 10;
+    score -= matchingDislikedNotes.length * 15;
   }
 
-  // Kullanıcı tercihleri kontrolü
+  // Kullanıcı tercihleri kontrolü - daha önemli
   if (perfume.rating) {
     const preferencesScore = calculatePreferencesScore(
       perfume.rating,
       survey.preferences
     );
-    score += preferencesScore;
+    score += preferencesScore * 1.5; // Tercihlere daha fazla ağırlık ver
   }
 
-  // Occasion kontrolü
-  const occasionScores = {
-    daily: ["fresh", "light", "clean"],
-    special: ["unique", "luxurious", "elegant"],
-    night: ["seductive", "intense", "dark"],
-    work: ["clean", "professional", "subtle"],
+  // Occasion kontrolü - daha detaylı ve önemli
+  const occasionScores: Record<SurveyResponse["occasion"], string[]> = {
+    daily: ["fresh", "light", "clean", "casual", "subtle"],
+    special: ["unique", "luxurious", "elegant", "rich", "sophisticated"],
+    night: ["seductive", "intense", "dark", "mysterious", "warm"],
+    work: ["clean", "professional", "subtle", "fresh", "light"],
   };
 
   const relevantCharacteristics = occasionScores[survey.occasion];
   const matchingCharacteristics = perfume.characteristics.filter(char =>
     relevantCharacteristics.includes(char)
   );
-  score += matchingCharacteristics.length * 5;
+  score += matchingCharacteristics.length * 8;
 
-  return Math.max(0, score); // Negatif puan olmamasını sağla
+  // Rastgelelik faktörü ekle (±5 puan)
+  score += (Math.random() - 0.5) * 10;
+
+  return Math.max(0, score);
 }
 
 function calculatePreferencesScore(
@@ -96,25 +112,35 @@ function calculatePreferencesScore(
   userPreferences: SurveyResponse["preferences"]
 ): number {
   let score = 0;
+  let matchCount = 0;
 
   // Her bir özellik için kullanıcı tercihleri ile parfüm özelliklerini karşılaştır
   if (perfumeRating.sweetness && userPreferences.sweetness) {
-    score += (5 - Math.abs(perfumeRating.sweetness - userPreferences.sweetness)) * 3;
+    const diff = Math.abs(perfumeRating.sweetness - userPreferences.sweetness);
+    score += (5 - diff) * 3;
+    matchCount++;
   }
 
   if (perfumeRating.longevity && userPreferences.longevity) {
-    score += (5 - Math.abs(perfumeRating.longevity - userPreferences.longevity)) * 3;
+    const diff = Math.abs(perfumeRating.longevity - userPreferences.longevity);
+    score += (5 - diff) * 3;
+    matchCount++;
   }
 
   if (perfumeRating.sillage && userPreferences.sillage) {
-    score += (5 - Math.abs(perfumeRating.sillage - userPreferences.sillage)) * 3;
+    const diff = Math.abs(perfumeRating.sillage - userPreferences.sillage);
+    score += (5 - diff) * 3;
+    matchCount++;
   }
 
   if (perfumeRating.uniqueness && userPreferences.uniqueness) {
-    score += (5 - Math.abs(perfumeRating.uniqueness - userPreferences.uniqueness)) * 3;
+    const diff = Math.abs(perfumeRating.uniqueness - userPreferences.uniqueness);
+    score += (5 - diff) * 3;
+    matchCount++;
   }
 
-  return score;
+  // Eşleşen özellik sayısına göre skoru normalize et
+  return matchCount > 0 ? score / matchCount : 0;
 }
 
 function getMatchReasons(perfume: Perfume, survey: SurveyResponse): string[] {

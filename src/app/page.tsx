@@ -2,108 +2,202 @@
 
 import { useState } from "react";
 import SurveyForm from "../components/SurveyForm";
-import { UserPreferences } from "../types/survey";
-import { perfumes } from "../data/perfumes";
-import { getPerfumeRecommendation } from "../utils/openai";
+import {
+  UserPreferences,
+  SurveyResponse,
+  DailyRoutine,
+  Style,
+  FragrancePreference,
+  RecommendationResult,
+} from "../types/survey";
+
+import { getLocalRecommendations } from "../utils/recommendations";
+import { getEmojiForNote } from "../utils/noteEmojis";
 
 export default function Home() {
-  const [recommendation, setRecommendation] = useState<typeof perfumes[0] | null>(null);
-  const [aiExplanation, setAiExplanation] = useState<string>('');
+  const [recommendations, setRecommendations] = useState<
+    RecommendationResult[]
+  >([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [showSurvey, setShowSurvey] = useState(true);
+
+  const convertToSurveyResponse = (
+    preferences: UserPreferences
+  ): SurveyResponse => {
+    const getOccasion = (
+      routine: DailyRoutine
+    ): "daily" | "special" | "night" | "work" => {
+      if (routine === "morning_run") return "daily";
+      if (routine === "coffee") return "daily";
+      if (routine === "meditation") return "daily";
+      if (routine === "music") return "special";
+      if (routine === "reading") return "night";
+      return "daily";
+    };
+
+    const getBudget = (style: Style): "low" | "medium" | "high" | "luxury" => {
+      if (style === "luxury") return "luxury";
+      if (style === "premium") return "high";
+      if (style === "casual") return "medium";
+      return "low";
+    };
+
+    const getPreferenceRating = (prefs: FragrancePreference): number => {
+      const trueCount = Object.values(prefs).filter(Boolean).length;
+      return Math.min(Math.max(Math.round((trueCount / 8) * 5), 1), 5);
+    };
+
+    const preferenceRating = getPreferenceRating(
+      preferences.fragrancePreferences
+    );
+    const uniquenessRating = preferences.personality === "adventurous" ? 5 : 3;
+
+    return {
+      gender: preferences.gender,
+      age: preferences.age,
+      occasion: getOccasion(preferences.dailyRoutine),
+      budget: getBudget(preferences.style),
+      preferences: {
+        sweetness: preferenceRating,
+        longevity: 3,
+        sillage: 3,
+        uniqueness: uniquenessRating,
+      },
+    };
+  };
 
   const handleSurveySubmit = async (preferences: UserPreferences) => {
     setLoading(true);
     setError(null);
+
     try {
-      const aiResponse = await getPerfumeRecommendation(preferences, perfumes);
-      
-      if (aiResponse) {
-        const recommendedPerfume = perfumes.find(
-          (p) => p.name === aiResponse.selectedPerfume
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+
+      const surveyResponse = convertToSurveyResponse(preferences);
+      const results = getLocalRecommendations(surveyResponse, 5);
+
+      if (results && results.length > 0) {
+        console.log("Survey Response:", surveyResponse);
+        console.log(
+          "All Recommendations:",
+          results.map((r) => ({
+            name: r.perfume.name,
+            score: r.matchScore,
+            reasons: r.matchReasons,
+          }))
         );
-        
-        if (recommendedPerfume) {
-          setRecommendation(recommendedPerfume);
-          setAiExplanation(aiResponse.explanation);
-        } else {
-          setError('Önerilen parfüm bulunamadı');
-        }
+
+        setRecommendations(results);
+        setShowSurvey(false);
+      } else {
+        setError("Uygun parfüm önerisi bulunamadı");
       }
-    } catch (error) {
-      console.error('Error getting recommendation:', error);
-      setError('Öneri alınırken bir hata oluştu. Lütfen tekrar deneyin.');
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Bir hata oluştu");
     } finally {
       setLoading(false);
     }
   };
 
+  const handleStartOver = () => {
+    setShowSurvey(true);
+    setRecommendations([]);
+    setError(null);
+  };
+
   return (
-    <div className="min-h-screen bg-gray-50 py-12">
-      <div className="max-w-4xl mx-auto px-4">
-        <h1 className="text-4xl font-bold text-center text-gray-900 mb-8">
+    <main className="min-h-screen bg-gradient-to-b from-[#2e026d] to-[#15162c] text-white">
+      <div className="container mx-auto px-4 py-16">
+        <h1 className="text-5xl font-extrabold text-center mb-8">
           Hangi Parfüm?
         </h1>
-        <p className="text-center text-gray-600 mb-12">
-          Size en uygun parfümü bulmak için birkaç soru soracağız
-        </p>
 
-        {error && (
-          <div className="mb-8 p-4 bg-red-50 border border-red-200 rounded-lg text-red-700 text-center">
-            {error}
-          </div>
-        )}
-
-        {loading ? (
-          <div className="flex justify-center items-center">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500"></div>
-          </div>
-        ) : !recommendation ? (
-          <SurveyForm onSubmit={handleSurveySubmit} />
+        {showSurvey ? (
+          <>
+            <p className="text-center text-xl mb-12">
+              Size en uygun parfümü bulmak için birkaç soru soracağız.
+            </p>
+            <div className="max-w-4xl mx-auto">
+              <SurveyForm onSubmit={handleSurveySubmit} />
+            </div>
+          </>
         ) : (
-          <div className="max-w-md mx-auto p-6 bg-white rounded-xl shadow-lg">
-            <h2 className="text-2xl font-bold text-gray-800 mb-4">
-              İşte Size Özel Önerimiz!
-            </h2>
-            <div className="space-y-4">
-              <p className="text-xl font-semibold text-gray-900">
-                {recommendation.brand}
-              </p>
-              <p className="text-2xl text-blue-600">{recommendation.name}</p>
-              
-              {aiExplanation && (
-                <div className="bg-blue-50 p-4 rounded-lg">
-                  <p className="text-gray-700">{aiExplanation}</p>
-                </div>
-              )}
-              
-              <p className="text-gray-600">{recommendation.description}</p>
-              <div className="pt-4">
-                <p className="font-medium text-gray-700">Notalar:</p>
-                <div className="flex flex-wrap gap-2 mt-2">
-                  {recommendation.notes.map((note) => (
-                    <span
-                      key={note}
-                      className="px-3 py-1 bg-gray-100 rounded-full text-sm text-gray-600"
-                    >
-                      {note}
-                    </span>
-                  ))}
-                </div>
-              </div>
+          <div className="max-w-6xl mx-auto">
+            <div className="flex justify-between items-center mb-8">
+              <h2 className="text-2xl font-bold">Size Özel Parfüm Önerileri</h2>
               <button
-                onClick={() => {
-                  setRecommendation(null);
-                  setAiExplanation('');
-                }}
-                className="w-full mt-6 p-3 bg-blue-500 text-white rounded-lg"
+                onClick={handleStartOver}
+                className="px-4 py-2 bg-white bg-opacity-10 hover:bg-opacity-20 rounded-lg transition-all"
               >
-                Yeniden Dene
+                Yeni Test Başlat
               </button>
+            </div>
+
+            <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+              {recommendations.map((rec, index) => (
+                <div
+                  key={rec.perfume.id}
+                  className={`p-6 bg-white bg-opacity-10 rounded-lg ${
+                    index === 0
+                      ? "md:col-span-2 lg:col-span-3 bg-opacity-20"
+                      : ""
+                  }`}
+                >
+                  <div className="flex items-start justify-between mb-4">
+                    <div>
+                      <h2 className="text-2xl font-bold">{rec.perfume.name}</h2>
+                      <p className="text-gray-300">{rec.perfume.brand}</p>
+                    </div>
+                    {index === 0 && (
+                      <span className="px-3 py-1 bg-blue-500 text-white text-sm rounded-full">
+                        En İyi Eşleşme
+                      </span>
+                    )}
+                  </div>
+                  <p className="mt-4">{rec.perfume.description}</p>
+                  <div className="mt-6">
+                    <h3 className="font-semibold mb-3">Notalar:</h3>
+                    <div className="flex flex-wrap gap-2">
+                      {rec.perfume.notes.map((note, i) => (
+                        <span
+                          key={i}
+                          className="inline-flex items-center gap-1 px-3 py-1 bg-white bg-opacity-5 rounded-full text-sm"
+                        >
+                          {getEmojiForNote(note)} {note}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                  <div className="mt-6">
+                    <h3 className="font-semibold mb-3">Neden Bu Parfüm?</h3>
+                    <ul className="list-disc list-inside space-y-2">
+                      {rec.matchReasons.slice(0, 3).map((reason, i) => (
+                        <li key={i} className="text-sm text-gray-300">
+                          {reason}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                </div>
+              ))}
             </div>
           </div>
         )}
+
+        {loading && (
+          <div className="text-center mt-8">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-white mx-auto"></div>
+            <p className="mt-4">Öneriler hazırlanıyor...</p>
+          </div>
+        )}
+
+        {error && (
+          <div className="mt-8 p-4 bg-red-500 bg-opacity-20 rounded-lg text-center">
+            <p>{error}</p>
+          </div>
+        )}
       </div>
-    </div>
+    </main>
   );
 }

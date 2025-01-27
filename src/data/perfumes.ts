@@ -101,17 +101,6 @@ export const perfumes: Perfume[] = [
     characteristics: ["oriental", "woody", "rich"],
   },
   {
-    id: "ch-212",
-    name: "212",
-    brand: "Carolina Herrera",
-    price: 500,
-    gender: "unisex",
-    notes: ["bergamot", "gardenia", "sandalwood"],
-    description: "Modern ve şehirli bir koku",
-    ageRange: { min: 20, max: 40 },
-    characteristics: ["fresh", "floral", "woody"],
-  },
-  {
     id: "invictus",
     name: "Invictus",
     brand: "Paco Rabanne",
