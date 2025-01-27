@@ -37,10 +37,20 @@ export default function Home() {
     };
 
     const getBudget = (style: Style): "low" | "medium" | "high" | "luxury" => {
-      if (style === "modern") return "luxury";
-      if (style === "classic") return "high";
-      if (style === "sporty") return "medium";
-      return "low";
+      switch (style) {
+        case "modern":
+          return "luxury";
+        case "classic":
+          return "high";
+        case "sporty":
+          return "medium";
+        case "vintage":
+          return "medium";
+        case "bohemian":
+          return "low";
+        default:
+          return "low";
+      }
     };
 
     const getPreferenceRating = (prefs: FragrancePreference): number => {
