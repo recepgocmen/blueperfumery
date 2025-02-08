@@ -121,7 +121,7 @@ export const BUDGET_RANGES = {
   low: { min: 0, max: 500 },
   medium: { min: 501, max: 1000 },
   high: { min: 1001, max: 2000 },
-  luxury: { min: 2001, max: Infinity }
+  luxury: { min: 2001, max: Infinity },
 } as const;
 
 export const COMMON_NOTES = [
@@ -142,5 +142,5 @@ export const COMMON_NOTES = [
   "sweet",
   "powdery",
   "musky",
-  "oriental"
+  "oriental",
 ] as const;
