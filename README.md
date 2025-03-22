@@ -1,8 +1,8 @@
-# Hangi Parfüm (Which Perfume)
+# Blue Perfumery 
 
 A sophisticated perfume recommendation system built with Next.js that helps users discover their perfect fragrance based on their preferences and personality.
 
-🌐 **Live Demo**: [hangiparfum.vercel.app](https://hangiparfum.vercel.app)
+🌐 **Live Demo**: [https://www.blueperfumery.com/](https://www.blueperfumery.com/)
 
 ## Features
 
