@@ -103,17 +103,17 @@ export default function AboutPage() {
                     geçebilirsiniz.
                   </p>
                   <div className="space-y-3">
-                    <p className="text-gray-600">
+                    {/* <p className="text-gray-600">
                       <span className="font-semibold">Adres:</span> Bağdat
                       Caddesi No:123, Kadıköy, İstanbul
                     </p>
                     <p className="text-gray-600">
                       <span className="font-semibold">Telefon:</span> +90 (212)
                       555 1234
-                    </p>
+                    </p> */}
                     <p className="text-gray-600">
                       <span className="font-semibold">E-posta:</span>{" "}
-                      info@blueperfumery.com
+                      blueperfumerie@gmail.com
                     </p>
                   </div>
                 </div>
