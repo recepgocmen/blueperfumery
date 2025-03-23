@@ -78,6 +78,8 @@ export interface Perfume {
   name: string;
   brand: string;
   price: number;
+  ml: number;
+  originalPrice: number;
   gender: "male" | "female" | "unisex";
   notes: string[];
   description: string;

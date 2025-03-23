@@ -1,4 +1,5 @@
 import { RecommendationResult } from "../types/survey";
+import { useExchangeRate } from "../hooks/useExchangeRate";
 
 interface ResultScreenProps {
   result: RecommendationResult;
@@ -140,6 +141,7 @@ const getNoteEmoji = (note: string): string => {
 
 export default function ResultScreen({ result, onReset }: ResultScreenProps) {
   const emoji = getEmoji(result.perfume.name);
+  const { exchangeRate, loading } = useExchangeRate();
 
   const getShopierUrl = (perfumeName: string) => {
     const formattedName = perfumeName
@@ -150,22 +152,33 @@ export default function ResultScreen({ result, onReset }: ResultScreenProps) {
     return `https://shopier.com/blueperfumery/${formattedName}`;
   };
 
+  // TL değerini hesapla
+  const calculateTRYPrice = () => {
+    if (!exchangeRate) return null;
+    return (result.perfume.originalPrice * exchangeRate).toLocaleString(
+      "tr-TR",
+      {
+        maximumFractionDigits: 0,
+      }
+    );
+  };
+
   return (
     <div className="h-full flex items-center justify-center px-4">
       <div className="w-full max-w-xl mx-auto">
         <div className="bg-white rounded-2xl shadow-xl overflow-hidden">
           <div className="bg-gradient-to-br from-blue-500 to-blue-600 p-6 sm:p-8">
             <div className="text-center space-y-3">
-              <div
-                className="text-4xl sm:text-xl mx-auto"
-                role="img"
-                aria-hidden="true"
-              >
-                {emoji}
-              </div>
               <div className="text-white">
                 <h3 className="text-lg sm:text-xl md:text-2xl font-bold mb-1">
                   {result.perfume.name}
+                  <span
+                    className="text-2xl mx-auto ml-4"
+                    role="img"
+                    aria-hidden="true"
+                  >
+                    {emoji}
+                  </span>
                 </h3>
                 <p className="text-blue-100 text-sm">{result.perfume.brand}</p>
               </div>
@@ -213,37 +226,36 @@ export default function ResultScreen({ result, onReset }: ResultScreenProps) {
               <div className="mt-4 p-4 sm:p-5 bg-blue-50 rounded-xl">
                 <div className="text-center">
                   <div className="mb-3">
-                    <h4 className="font-medium text-gray-800 text-sm mb-1">
+                    <span className="font-medium text-gray-800 text-sm mb-1 mr-2">
                       Orijinal Fiyat
-                    </h4>
-                    <p className="text-gray-500 line-through text-base sm:text-lg">
-                      {result.perfume.price.toLocaleString("tr-TR")} ₺
-                    </p>
-                    <p className="text-gray-500 text-xs mt-0.5">
-                      (${(result.perfume.price / 32).toFixed(2)})
-                    </p>
+                    </span>
+
+                    <span className="text-gray-500 text-xs mt-0.5">
+                      {result.perfume.ml}ml - ${result.perfume.originalPrice}{" "}
+                      {!loading && exchangeRate
+                        ? `(≈ ${calculateTRYPrice()} ₺)`
+                        : ""}
+                    </span>
                   </div>
 
                   <div className="pt-3 border-t border-blue-100">
-                    <div className="flex items-center justify-center gap-2 mb-2">
-                      <div className="inline-block bg-blue-600 text-white text-xs px-2 py-0.5 rounded-full">
-                        Açılışa Özel
-                      </div>
-                      <div className="inline-block bg-green-600 text-white text-xs px-2 py-0.5 rounded-full">
-                        50ml
-                      </div>
-                    </div>
                     <div className="flex items-center justify-center gap-4">
-                      <p className="text-blue-600 font-bold text-xl sm:text-2xl">
-                        500 ₺
-                      </p>
+                      <div className="inline-block text-blue-600 border border-blue-600 text-xs px-2 py-0.5 flex items-center gap-1">
+                        Açılışa Özel 50ml
+                        <span role="img" aria-label="fire">
+                          🔥
+                        </span>
+                      </div>
+                      <span className="text-blue-600 font-bold text-xl sm:text-2xl">
+                        500₺
+                      </span>
                       <a
                         href={getShopierUrl(result.perfume.name)}
-                        className="py-2 px-4 bg-blue-600 hover:bg-blue-700 text-white rounded-xl transition-colors duration-200 font-medium text-sm flex items-center"
+                        className="py-2 px-2 !font-bold bg-blue-600 hover:bg-blue-700 text-white rounded-xl transition-colors duration-200 text-sm flex items-center"
                         target="_blank"
                         rel="noopener noreferrer"
                       >
-                        Satın Al <span className="ml-1">→</span>
+                        SATIN AL
                       </a>
                     </div>
                   </div>
