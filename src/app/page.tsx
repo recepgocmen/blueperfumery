@@ -1,213 +1,335 @@
 "use client";
 
-import { useState } from "react";
-import SurveyForm from "../components/SurveyForm";
-import {
-  UserPreferences,
-  SurveyResponse,
-  DailyRoutine,
-  Style,
-  FragrancePreference,
-  RecommendationResult,
-} from "../types/survey";
-
-import { getLocalRecommendations } from "../utils/recommendations";
-import { getEmojiForNote } from "../utils/noteEmojis";
+import Link from "next/link";
 
 export default function Home() {
-  const [recommendations, setRecommendations] = useState<
-    RecommendationResult[]
-  >([]);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const [showSurvey, setShowSurvey] = useState(true);
-
-  const convertToSurveyResponse = (
-    preferences: UserPreferences
-  ): SurveyResponse => {
-    const getOccasion = (
-      routine: DailyRoutine
-    ): "daily" | "special" | "night" | "work" => {
-      if (routine === "morning_run") return "daily";
-      if (routine === "coffee") return "daily";
-      if (routine === "meditation") return "daily";
-      if (routine === "music") return "special";
-      if (routine === "reading") return "night";
-      return "daily";
-    };
-
-    const getBudget = (style: Style): "low" | "medium" | "high" | "luxury" => {
-      switch (style) {
-        case "modern":
-          return "luxury";
-        case "classic":
-          return "high";
-        case "sporty":
-          return "medium";
-        case "vintage":
-          return "medium";
-        case "bohemian":
-          return "low";
-        default:
-          return "low";
-      }
-    };
-
-    const getPreferenceRating = (prefs: FragrancePreference): number => {
-      const trueCount = Object.values(prefs).filter(Boolean).length;
-      return Math.min(Math.max(Math.round((trueCount / 8) * 5), 1), 5);
-    };
-
-    const preferenceRating = getPreferenceRating(
-      preferences.fragrancePreferences
-    );
-    const uniquenessRating = preferences.personality === "adventurous" ? 5 : 3;
-
-    return {
-      gender: preferences.gender,
-      age: preferences.age,
-      occasion: getOccasion(preferences.dailyRoutine),
-      budget: getBudget(preferences.style),
-      preferences: {
-        sweetness: preferenceRating,
-        longevity: 3,
-        sillage: 3,
-        uniqueness: uniquenessRating,
-      },
-    };
-  };
-
-  const handleSurveySubmit = async (preferences: UserPreferences) => {
-    setLoading(true);
-    setError(null);
-
-    try {
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-
-      const surveyResponse = convertToSurveyResponse(preferences);
-      const results = getLocalRecommendations(surveyResponse, 5);
-
-      if (results && results.length > 0) {
-        console.log("Survey Response:", surveyResponse);
-        console.log(
-          "All Recommendations:",
-          results.map((r) => ({
-            name: r.perfume.name,
-            score: r.matchScore,
-            reasons: r.matchReasons,
-          }))
-        );
-
-        setRecommendations(results);
-        setShowSurvey(false);
-      } else {
-        setError("Uygun parfüm önerisi bulunamadı");
-      }
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "Bir hata oluştu");
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const handleStartOver = () => {
-    setShowSurvey(true);
-    setRecommendations([]);
-    setError(null);
-  };
-
   return (
-    <main className="min-h-screen bg-gradient-to-b from-[#2e026d] to-[#15162c] text-white">
-      <div className="container mx-auto px-4 py-16">
-        <h1 className="text-5xl font-extrabold text-center mb-8">
-          Hangi Parfüm?
-        </h1>
-
-        {showSurvey ? (
-          <>
-            <p className="text-center text-xl mb-12">
-              Size en uygun parfümü bulmak için birkaç soru soracağız.
-            </p>
-            <div className="max-w-4xl mx-auto">
-              <SurveyForm onSubmit={handleSurveySubmit} />
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
+      {/* Header */}
+      <header className="bg-white shadow">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+          <div className="flex justify-between items-center">
+            <div className="flex items-center">
+              <Link href="/" className="text-blue-600 font-bold text-xl">
+                Blue Perfumery
+              </Link>
             </div>
-          </>
-        ) : (
-          <div className="max-w-6xl mx-auto">
-            <div className="flex justify-between items-center mb-8">
-              <h2 className="text-2xl font-bold">Size Özel Parfüm Önerileri</h2>
-              <button
-                onClick={handleStartOver}
-                className="px-4 py-2 bg-white bg-opacity-10 hover:bg-opacity-20 rounded-lg transition-all"
+            <nav className="flex space-x-4">
+              <Link
+                href="/parfumunu-bul"
+                className="text-gray-600 hover:text-blue-500 px-3 py-2 rounded-md text-sm font-medium"
               >
-                Yeni Test Başlat
-              </button>
-            </div>
+                Parfümünü Bul
+              </Link>
+              <Link
+                href="https://www.shopier.com/blueperfumery"
+                className="text-white bg-blue-600 hover:bg-blue-700 shadow-md hover:shadow-lg px-4 py-2 rounded-md text-sm font-medium transition-all duration-200"
+              >
+                Satın Al
+              </Link>
+              <Link
+                href="/hakkimizda"
+                className="text-gray-600 hover:text-blue-500 px-3 py-2 rounded-md text-sm font-medium"
+              >
+                Hakkımızda
+              </Link>
+            </nav>
+          </div>
+        </div>
+      </header>
 
-            <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-              {recommendations.map((rec, index) => (
-                <div
-                  key={rec.perfume.id}
-                  className={`p-6 bg-white bg-opacity-10 rounded-lg ${
-                    index === 0
-                      ? "md:col-span-2 lg:col-span-3 bg-opacity-20"
-                      : ""
-                  }`}
-                >
-                  <div className="flex items-start justify-between mb-4">
-                    <div>
-                      <h2 className="text-2xl font-bold">{rec.perfume.name}</h2>
-                      <p className="text-gray-300">{rec.perfume.brand}</p>
-                    </div>
-                    {index === 0 && (
-                      <span className="px-3 py-1 bg-blue-500 text-white text-sm rounded-full">
-                        En İyi Eşleşme
-                      </span>
-                    )}
-                  </div>
-                  <p className="mt-4">{rec.perfume.description}</p>
-                  <div className="mt-6">
-                    <h3 className="font-semibold mb-3">Notalar:</h3>
-                    <div className="flex flex-wrap gap-2">
-                      {rec.perfume.notes.map((note, i) => (
-                        <span
-                          key={i}
-                          className="inline-flex items-center gap-1 px-3 py-1 bg-white bg-opacity-5 rounded-full text-sm"
-                        >
-                          {getEmojiForNote(note)} {note}
-                        </span>
-                      ))}
-                    </div>
-                  </div>
-                  <div className="mt-6">
-                    <h3 className="font-semibold mb-3">Neden Bu Parfüm?</h3>
-                    <ul className="list-disc list-inside space-y-2">
-                      {rec.matchReasons.slice(0, 3).map((reason, i) => (
-                        <li key={i} className="text-sm text-gray-300">
-                          {reason}
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
+      {/* Hero Section */}
+      <section className="relative bg-gradient-to-r from-blue-600 to-indigo-700 text-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24 md:py-32 flex flex-col items-center text-center">
+          <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold leading-tight mb-6">
+            Kendine Özel Parfüm Deneyimi
+          </h1>
+          <p className="text-xl md:text-2xl text-blue-100 max-w-3xl mb-10">
+            Blue Perfumery ile kişiliğinize ve tarzınıza uygun parfümleri
+            keşfedin.
+          </p>
+          <div className="flex flex-col sm:flex-row gap-4">
+            <Link
+              href="/parfumunu-bul"
+              className="inline-flex items-center justify-center px-8 py-3 border border-transparent text-base font-medium rounded-md text-blue-700 bg-white hover:bg-blue-50 md:text-lg"
+            >
+              Parfümünü Bul
+            </Link>
+            <Link
+              href="https://www.shopier.com/blueperfumery"
+              className="inline-flex items-center justify-center px-8 py-3 border border-white text-base font-medium rounded-md text-white hover:bg-blue-600 md:text-lg"
+            >
+              Koleksiyonu Keşfet
+            </Link>
+          </div>
+        </div>
+        <div className="absolute bottom-0 left-0 right-0 h-16 bg-gradient-to-t from-blue-50 to-transparent"></div>
+      </section>
+
+      {/* Features Section */}
+      <section className="py-16 md:py-24">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-16">
+            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+              Kişiselleştirilmiş Parfüm Deneyimi
+            </h2>
+            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+              Blue Perfumery farkıyla kendinizi özel hissedin.
+            </p>
+          </div>
+
+          <div className="grid md:grid-cols-3 gap-8 mb-16">
+            <div className="bg-white p-8 rounded-xl shadow-md">
+              <div className="w-16 h-16 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center text-2xl mb-6">
+                🔍
+              </div>
+              <h3 className="text-xl font-bold text-gray-900 mb-3">
+                Kişilik Analizi
+              </h3>
+              <p className="text-gray-600">
+                Kişiliğinize, yaşam tarzınıza ve tercihlerinize göre size özel
+                parfüm önerileri sunuyoruz.
+              </p>
+            </div>
+            <div className="bg-white p-8 rounded-xl shadow-md">
+              <div className="w-16 h-16 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center text-2xl mb-6">
+                💎
+              </div>
+              <h3 className="text-xl font-bold text-gray-900 mb-3">
+                Premium Koleksiyon
+              </h3>
+              <p className="text-gray-600">
+                En seçkin parfüm evlerinin en özel parçalarını bir araya getiren
+                benzersiz koleksiyonumuz.
+              </p>
+            </div>
+            <div className="bg-white p-8 rounded-xl shadow-md">
+              <div className="w-16 h-16 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center text-2xl mb-6">
+                🎁
+              </div>
+              <h3 className="text-xl font-bold text-gray-900 mb-3">
+                Özel Paketleme
+              </h3>
+              <p className="text-gray-600">
+                Her parfüm, şık ve özel tasarım kutularda sevdiklerinize hediye
+                etmeye hazır şekilde sunulur.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Featured Products */}
+      <section className="py-16 bg-gray-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-16">
+            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+              Öne Çıkan Parfümlerimiz
+            </h2>
+            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+              En çok tercih edilen ve beğenilen Blue Perfumery imzalı kokular.
+            </p>
+          </div>
+
+          <div className="grid md:grid-cols-3 gap-8 mb-12">
+            <div className="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300">
+              <div className="h-48 bg-blue-50 flex items-center justify-center">
+                <div className="w-20 h-20 bg-gradient-to-br from-blue-500 to-indigo-500 rounded-full flex items-center justify-center text-white text-3xl">
+                  ✨
                 </div>
-              ))}
+              </div>
+              <div className="p-6">
+                <h3 className="text-lg font-bold text-gray-900 mb-1">Kirke</h3>
+                <p className="text-blue-600 text-sm mb-2">
+                  Blue Perfumery Exclusive
+                </p>
+                <p className="text-gray-600 text-sm mb-4">
+                  Tatlı ve meyvemsi notalarla bezeli, sofistike ve çekici bir
+                  koku. Yaz akşamlarının vazgeçilmezi.
+                </p>
+                <div className="flex items-center justify-end">
+                  <a
+                    href="https://shopier.com/blueperfumery/kirke"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-blue-600 hover:text-blue-700 font-medium"
+                  >
+                    Satın Al
+                  </a>
+                </div>
+              </div>
+            </div>
+            <div className="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300">
+              <div className="h-48 bg-blue-50 flex items-center justify-center">
+                <div className="w-20 h-20 bg-gradient-to-br from-blue-500 to-indigo-500 rounded-full flex items-center justify-center text-white text-3xl">
+                  🌙
+                </div>
+              </div>
+              <div className="p-6">
+                <h3 className="text-lg font-bold text-gray-900 mb-1">Libre</h3>
+                <p className="text-blue-600 text-sm mb-2">
+                  Blue Perfumery Artisanal
+                </p>
+                <p className="text-gray-600 text-sm mb-4">
+                  Modern ve özgür ruhlu bir koku. Lavanta ve portakal çiçeği
+                  notalarıyla özgürlüğün sembolü.
+                </p>
+                <div className="flex items-center justify-end">
+                  <a
+                    href="https://shopier.com/blueperfumery/libre"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-blue-600 hover:text-blue-700 font-medium"
+                  >
+                    Satın Al
+                  </a>
+                </div>
+              </div>
+            </div>
+            <div className="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300">
+              <div className="h-48 bg-blue-50 flex items-center justify-center">
+                <div className="w-20 h-20 bg-gradient-to-br from-blue-500 to-indigo-500 rounded-full flex items-center justify-center text-white text-3xl">
+                  🌸
+                </div>
+              </div>
+              <div className="p-6">
+                <h3 className="text-lg font-bold text-gray-900 mb-1">
+                  La Vie Est Belle
+                </h3>
+                <p className="text-blue-600 text-sm mb-2">
+                  Blue Perfumery Classic
+                </p>
+                <p className="text-gray-600 text-sm mb-4">
+                  Hayatın güzelliğini yansıtan, iris ve vanilya notalarıyla
+                  bezeli, mutluluk veren bir koku.
+                </p>
+                <div className="flex items-center justify-end">
+                  <a
+                    href="https://shopier.com/blueperfumery/lavieestbelle"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-blue-600 hover:text-blue-700 font-medium"
+                  >
+                    Satın Al
+                  </a>
+                </div>
+              </div>
             </div>
           </div>
-        )}
 
-        {loading && (
-          <div className="text-center mt-8">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-white mx-auto"></div>
-            <p className="mt-4">Öneriler hazırlanıyor...</p>
+          <div className="text-center">
+            <Link
+              href="https://www.shopier.com/blueperfumery"
+              className="inline-flex items-center justify-center px-6 py-3 border border-transparent text-base font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700"
+            >
+              Tüm Parfümleri Keşfet
+            </Link>
           </div>
-        )}
+        </div>
+      </section>
 
-        {error && (
-          <div className="mt-8 p-4 bg-red-500 bg-opacity-20 rounded-lg text-center">
-            <p>{error}</p>
+      {/* Find Your Perfume CTA */}
+      <section className="py-16 md:py-24 bg-gradient-to-r from-blue-600 to-indigo-700 text-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center md:text-left md:flex md:items-center md:justify-between">
+            <div className="md:max-w-2xl mb-8 md:mb-0">
+              <h2 className="text-3xl md:text-4xl font-bold mb-4">
+                Kişiliğine Uygun Parfümü Keşfet
+              </h2>
+              <p className="text-xl text-blue-100">
+                Birkaç soruyla sana özel parfüm önerilerimizi gör. Blue
+                Perfumery&apos;nin eşsiz algoritması ile kendini tanı, kokunu
+                bul.
+              </p>
+            </div>
+            <div className="md:ml-8">
+              <Link
+                href="/parfumunu-bul"
+                className="inline-flex items-center justify-center px-8 py-4 border border-transparent text-lg font-medium rounded-md text-blue-700 bg-white hover:bg-blue-50"
+              >
+                Teste Başla
+              </Link>
+            </div>
           </div>
-        )}
-      </div>
-    </main>
+        </div>
+      </section>
+
+      {/* Footer */}
+      <footer className="bg-gray-900 text-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
+            <div>
+              <h3 className="text-xl font-bold mb-4">Blue Perfumery</h3>
+              <p className="text-gray-400">
+                Lüks ve kişiselleştirilmiş parfüm deneyiminiz için yanınızdayız.
+              </p>
+            </div>
+            <div>
+              <h3 className="text-lg font-bold mb-4">Hızlı Linkler</h3>
+              <ul className="space-y-2">
+                <li>
+                  <Link
+                    href="/"
+                    className="text-gray-400 hover:text-white transition-colors"
+                  >
+                    Ana Sayfa
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    href="/parfumunu-bul"
+                    className="text-gray-400 hover:text-white transition-colors"
+                  >
+                    Parfümünü Bul
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    href="/hakkimizda"
+                    className="text-gray-400 hover:text-white transition-colors"
+                  >
+                    Hakkımızda
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    href="https://www.shopier.com/blueperfumery"
+                    className="text-gray-400 hover:text-white transition-colors"
+                  >
+                    Satın Al
+                  </Link>
+                </li>
+              </ul>
+            </div>
+            <div>
+              <h3 className="text-lg font-bold mb-4">Bizi Takip Edin</h3>
+              <div className="flex space-x-4">
+                <a
+                  href="#"
+                  className="text-gray-400 hover:text-white transition-colors"
+                >
+                  Instagram
+                </a>
+                <a
+                  href="#"
+                  className="text-gray-400 hover:text-white transition-colors"
+                >
+                  Facebook
+                </a>
+                <a
+                  href="#"
+                  className="text-gray-400 hover:text-white transition-colors"
+                >
+                  Twitter
+                </a>
+              </div>
+            </div>
+          </div>
+          <div className="mt-12 pt-8 border-t border-gray-800 text-center text-gray-400">
+            <p>© 2025 Blue Perfumery. Tüm hakları saklıdır.</p>
+          </div>
+        </div>
+      </footer>
+    </div>
   );
 }

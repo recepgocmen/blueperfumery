@@ -215,21 +215,21 @@ export default function SurveyForm({ onSubmit }: SurveyFormProps) {
 
   return (
     <div
-      className="max-w-md mx-auto p-4 sm:p-6 bg-white rounded-xl shadow-lg space-y-6"
+      className="max-w-md mx-auto bg-white rounded-xl shadow-lg"
       role="form"
       aria-label="Parfüm tercihi anketi"
     >
-      <div className="text-center mb-6 sm:mb-8">
-        <h2 className="text-2xl sm:text-3xl font-bold text-gray-800 mb-2 sm:mb-3">
+      <div className="text-center p-4 sm:p-6">
+        <h2 className="text-xl sm:text-2xl md:text-3xl font-bold text-gray-800 mb-2">
           {currentQuestion.title}
         </h2>
-        <p className="text-base sm:text-lg text-gray-600">
+        <p className="text-sm sm:text-base text-gray-600">
           {currentQuestion.question}
         </p>
       </div>
 
       <div
-        className="space-y-3 sm:space-y-4"
+        className="px-4 sm:px-6 space-y-2 sm:space-y-3"
         role="listbox"
         aria-label={currentQuestion.question}
       >
@@ -244,7 +244,7 @@ export default function SurveyForm({ onSubmit }: SurveyFormProps) {
                 handleOptionSelect(currentQuestion.field, option.value)
               )
             }
-            className={`w-full p-4 sm:p-5 text-left rounded-xl border-2 transition-all duration-300 ${
+            className={`w-full p-3 sm:p-4 text-left rounded-xl border-2 transition-all duration-300 ${
               isOptionSelected(option.value)
                 ? "bg-blue-50 border-blue-500 shadow-md transform scale-[1.02]"
                 : "border-gray-200 hover:border-blue-300 hover:bg-blue-50/50 hover:shadow-md hover:scale-[1.01]"
@@ -255,15 +255,15 @@ export default function SurveyForm({ onSubmit }: SurveyFormProps) {
             disabled={isSubmitting}
             tabIndex={0}
           >
-            <div className="flex items-center gap-4 sm:gap-6">
+            <div className="flex items-center gap-3 sm:gap-4">
               <span
-                className="text-2xl sm:text-3xl"
+                className="text-xl sm:text-2xl"
                 role="img"
                 aria-label={option.label}
               >
                 {option.icon}
               </span>
-              <span className="text-base sm:text-xl font-medium text-gray-800">
+              <span className="text-sm sm:text-base font-medium text-gray-800">
                 {option.label}
               </span>
             </div>
@@ -271,7 +271,7 @@ export default function SurveyForm({ onSubmit }: SurveyFormProps) {
         ))}
       </div>
 
-      <div className="mt-8 sm:mt-12 flex justify-between items-center">
+      <div className="p-4 sm:p-6 flex justify-between items-center">
         <button
           onClick={() => !isSubmitting && step > 1 && setStep(step - 1)}
           onKeyDown={(e) =>
@@ -280,7 +280,7 @@ export default function SurveyForm({ onSubmit }: SurveyFormProps) {
               () => !isSubmitting && step > 1 && setStep(step - 1)
             )
           }
-          className={`w-10 h-10 sm:w-12 sm:h-12 flex items-center justify-center rounded-full transition-all duration-300 ${
+          className={`w-8 h-8 sm:w-10 sm:h-10 flex items-center justify-center rounded-full transition-all duration-300 ${
             step > 1
               ? "text-gray-600 hover:bg-gray-100 hover:scale-110"
               : "opacity-0 pointer-events-none"
@@ -290,11 +290,11 @@ export default function SurveyForm({ onSubmit }: SurveyFormProps) {
           aria-label="Önceki soru"
           tabIndex={step > 1 ? 0 : -1}
         >
-          <span className="text-xl sm:text-2xl">←</span>
+          <span className="text-lg sm:text-xl">←</span>
         </button>
 
         <div
-          className="space-x-1.5 sm:space-x-2"
+          className="space-x-1 sm:space-x-1.5"
           role="progressbar"
           aria-valuemin={1}
           aria-valuemax={questions.length}
@@ -304,12 +304,12 @@ export default function SurveyForm({ onSubmit }: SurveyFormProps) {
           {Array.from({ length: questions.length }).map((_, i) => (
             <span
               key={i}
-              className={`inline-block h-2 sm:h-2.5 rounded-full transition-all duration-300 ${
+              className={`inline-block h-1.5 sm:h-2 rounded-full transition-all duration-300 ${
                 i + 1 === step
-                  ? "w-5 sm:w-6 bg-blue-500"
+                  ? "w-4 sm:w-5 bg-blue-500"
                   : i + 1 < step
-                  ? "w-2 sm:w-2.5 bg-blue-200"
-                  : "w-2 sm:w-2.5 bg-gray-200"
+                  ? "w-1.5 sm:w-2 bg-blue-200"
+                  : "w-1.5 sm:w-2 bg-gray-200"
               }`}
             />
           ))}
@@ -319,7 +319,7 @@ export default function SurveyForm({ onSubmit }: SurveyFormProps) {
           <button
             onClick={handleSubmit}
             onKeyDown={(e) => handleKeyDown(e, handleSubmit)}
-            className={`px-6 sm:px-8 py-3 text-base sm:text-lg font-medium rounded-xl transition-all duration-300 ${
+            className={`px-4 sm:px-6 py-2 sm:py-2.5 text-sm sm:text-base font-medium rounded-xl transition-all duration-300 ${
               isSubmitting || !hasSelectedCurrentOption
                 ? "bg-gray-400 opacity-50 cursor-not-allowed"
                 : "bg-blue-500 text-white hover:bg-blue-600 hover:shadow-lg hover:scale-105"
@@ -345,7 +345,7 @@ export default function SurveyForm({ onSubmit }: SurveyFormProps) {
                 () => hasSelectedCurrentOption && setStep(step + 1)
               )
             }
-            className={`w-10 h-10 sm:w-12 sm:h-12 flex items-center justify-center rounded-full transition-all duration-300 ${
+            className={`w-8 h-8 sm:w-10 sm:h-10 flex items-center justify-center rounded-full transition-all duration-300 ${
               hasSelectedCurrentOption
                 ? "text-gray-600 hover:bg-gray-100 hover:scale-110"
                 : "opacity-0 pointer-events-none"
@@ -355,13 +355,13 @@ export default function SurveyForm({ onSubmit }: SurveyFormProps) {
             aria-label="Sonraki soru"
             tabIndex={hasSelectedCurrentOption ? 0 : -1}
           >
-            <span className="text-xl sm:text-2xl">→</span>
+            <span className="text-lg sm:text-xl">→</span>
           </button>
         )}
       </div>
 
       <div
-        className="text-sm text-gray-500 text-center font-medium mt-2"
+        className="text-xs sm:text-sm text-gray-500 text-center font-medium pb-4"
         aria-label={`${step} / ${questions.length} soru`}
       >
         {step} / {questions.length}
