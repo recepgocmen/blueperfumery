@@ -3,39 +3,6 @@ import Link from "next/link";
 export default function AboutPage() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
-      {/* Header */}
-      <header className="bg-white shadow">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-          <div className="flex justify-between items-center">
-            <div className="flex items-center">
-              <Link href="/" className="text-blue-600 font-bold text-xl">
-                Blue Perfumery
-              </Link>
-            </div>
-            <nav className="flex space-x-4">
-              <Link
-                href="/parfumunu-bul"
-                className="text-gray-600 hover:text-blue-500 px-3 py-2 rounded-md text-sm font-medium"
-              >
-                Parfümünü Bul
-              </Link>
-              <Link
-                href="https://www.shopier.com/blueperfumery"
-                className="text-white bg-blue-600 hover:bg-blue-700 shadow-md hover:shadow-lg px-4 py-2 rounded-md text-sm font-medium transition-all duration-200"
-              >
-                Satın Al
-              </Link>
-              <Link
-                href="/hakkimizda"
-                className="text-blue-600 font-medium px-3 py-2 rounded-md text-sm"
-              >
-                Hakkımızda
-              </Link>
-            </nav>
-          </div>
-        </div>
-      </header>
-
       <main className="py-10">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
@@ -117,50 +84,6 @@ export default function AboutPage() {
                     </div>
                   </li>
                 </ul>
-              </div>
-            </div>
-          </div>
-
-          <div className="mb-16">
-            <h2 className="text-3xl font-bold text-gray-900 text-center mb-10">
-              Ekibimiz
-            </h2>
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-              <div className="bg-white rounded-xl shadow-md overflow-hidden">
-                <div className="p-6">
-                  <h3 className="font-bold text-xl text-gray-900 mb-1">
-                    Elif Yılmaz
-                  </h3>
-                  <p className="text-blue-600 mb-4">Kurucu & Parfüm Uzmanı</p>
-                  <p className="text-gray-600">
-                    20 yıllık deneyimiyle parfüm dünyasının inceliklerini
-                    müşterilerimizle buluşturuyor.
-                  </p>
-                </div>
-              </div>
-              <div className="bg-white rounded-xl shadow-md overflow-hidden">
-                <div className="p-6">
-                  <h3 className="font-bold text-xl text-gray-900 mb-1">
-                    Ahmet Kaya
-                  </h3>
-                  <p className="text-blue-600 mb-4">Kreatif Direktör</p>
-                  <p className="text-gray-600">
-                    Markanın vizyonunu şekillendiren yaratıcı beyin, lüks
-                    deneyiminin mimarı.
-                  </p>
-                </div>
-              </div>
-              <div className="bg-white rounded-xl shadow-md overflow-hidden">
-                <div className="p-6">
-                  <h3 className="font-bold text-xl text-gray-900 mb-1">
-                    Zeynep Demir
-                  </h3>
-                  <p className="text-blue-600 mb-4">Müşteri Deneyimi Uzmanı</p>
-                  <p className="text-gray-600">
-                    Her müşterimizin eşsiz bir deneyim yaşaması için çalışan
-                    ekibimizin yıldızı.
-                  </p>
-                </div>
               </div>
             </div>
           </div>

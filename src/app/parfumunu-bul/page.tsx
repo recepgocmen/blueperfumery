@@ -1,9 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import Link from "next/link";
-import SurveyForm from "../../components/SurveyForm";
-import ResultScreen from "../../components/ResultScreen";
+import SurveyForm from "@/components/SurveyForm";
+import ResultScreen from "@/components/ResultScreen";
 import { UserPreferences } from "../../types/survey";
 import { getLocalRecommendations } from "../../utils/recommendations";
 import { SurveyResponse, RecommendationResult } from "../../types/survey";
@@ -162,39 +161,6 @@ export default function PerfumeFinder() {
 
   return (
     <div className="h-screen overflow-hidden bg-gradient-to-br from-blue-50 to-indigo-100 flex flex-col">
-      {/* Header */}
-      <header className="bg-white shadow-sm">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3">
-          <div className="flex justify-between items-center">
-            <div className="flex items-center">
-              <Link href="/" className="text-blue-600 font-bold text-xl">
-                Blue Perfumery
-              </Link>
-            </div>
-            <nav className="flex space-x-2 sm:space-x-4">
-              <Link
-                href="/parfumunu-bul"
-                className="text-blue-600 font-medium px-2 sm:px-3 py-2 rounded-md text-sm"
-              >
-                Parfümünü Bul
-              </Link>
-              <Link
-                href="https://www.shopier.com/blueperfumery"
-                className="text-white bg-blue-600 hover:bg-blue-700 shadow-md hover:shadow-lg px-3 sm:px-4 py-2 rounded-md text-sm font-medium transition-all duration-200"
-              >
-                Satın Al
-              </Link>
-              <Link
-                href="/hakkimizda"
-                className="text-gray-600 hover:text-blue-500 px-2 sm:px-3 py-2 rounded-md text-sm font-medium"
-              >
-                Hakkımızda
-              </Link>
-            </nav>
-          </div>
-        </div>
-      </header>
-
       <div className="flex-1 overflow-y-auto">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
           <div className="text-center max-w-2xl mx-auto mb-6 sm:mb-8">

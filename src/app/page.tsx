@@ -5,39 +5,6 @@ import Link from "next/link";
 export default function Home() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
-      {/* Header */}
-      <header className="bg-white shadow">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-          <div className="flex justify-between items-center">
-            <div className="flex items-center">
-              <Link href="/" className="text-blue-600 font-bold text-xl">
-                Blue Perfumery
-              </Link>
-            </div>
-            <nav className="flex space-x-4">
-              <Link
-                href="/parfumunu-bul"
-                className="text-gray-600 hover:text-blue-500 px-3 py-2 rounded-md text-sm font-medium"
-              >
-                Parfümünü Bul
-              </Link>
-              <Link
-                href="https://www.shopier.com/blueperfumery"
-                className="text-white bg-blue-600 hover:bg-blue-700 shadow-md hover:shadow-lg px-4 py-2 rounded-md text-sm font-medium transition-all duration-200"
-              >
-                Satın Al
-              </Link>
-              <Link
-                href="/hakkimizda"
-                className="text-gray-600 hover:text-blue-500 px-3 py-2 rounded-md text-sm font-medium"
-              >
-                Hakkımızda
-              </Link>
-            </nav>
-          </div>
-        </div>
-      </header>
-
       {/* Hero Section */}
       <section className="relative bg-gradient-to-r from-blue-600 to-indigo-700 text-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24 md:py-32 flex flex-col items-center text-center">
@@ -51,15 +18,15 @@ export default function Home() {
           <div className="flex flex-col sm:flex-row gap-4">
             <Link
               href="/parfumunu-bul"
-              className="inline-flex items-center justify-center px-8 py-3 border border-transparent text-base font-medium rounded-md text-blue-700 bg-white hover:bg-blue-50 md:text-lg"
+              className="inline-flex items-center justify-center px-8 py-3 border border-transparent text-base font-medium rounded-md text-blue-700 bg-white hover:bg-blue-50 hover:scale-105 transform transition-all duration-300 shadow-md hover:shadow-xl md:text-lg"
             >
               Parfümünü Bul
             </Link>
             <Link
               href="https://www.shopier.com/blueperfumery"
-              className="inline-flex items-center justify-center px-8 py-3 border border-white text-base font-medium rounded-md text-white hover:bg-blue-600 md:text-lg"
+              className="inline-flex items-center justify-center px-8 py-3 border border-white text-base font-medium rounded-md text-white hover:bg-blue-600 hover:scale-105 transform transition-all duration-300 shadow-md hover:shadow-xl md:text-lg"
             >
-              Koleksiyonu Keşfet
+              Satın Al
             </Link>
           </div>
         </div>
@@ -79,42 +46,51 @@ export default function Home() {
           </div>
 
           <div className="grid md:grid-cols-3 gap-8 mb-16">
-            <div className="bg-white p-8 rounded-xl shadow-md">
-              <div className="w-16 h-16 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center text-2xl mb-6">
+            <Link
+              href="/parfumunu-bul"
+              className="bg-white p-8 rounded-xl shadow-md hover:shadow-xl hover:scale-105 transform transition-all duration-300 group"
+            >
+              <div className="w-16 h-16 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center text-2xl mb-6 group-hover:bg-blue-200 transition-colors duration-300">
                 🔍
               </div>
-              <h3 className="text-xl font-bold text-gray-900 mb-3">
+              <h3 className="text-xl font-bold text-gray-900 mb-3 group-hover:text-blue-600 transition-colors duration-300">
                 Kişilik Analizi
               </h3>
               <p className="text-gray-600">
                 Kişiliğinize, yaşam tarzınıza ve tercihlerinize göre size özel
                 parfüm önerileri sunuyoruz.
               </p>
-            </div>
-            <div className="bg-white p-8 rounded-xl shadow-md">
-              <div className="w-16 h-16 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center text-2xl mb-6">
+            </Link>
+            <Link
+              href="https://www.shopier.com/blueperfumery"
+              className="bg-white p-8 rounded-xl shadow-md hover:shadow-xl hover:scale-105 transform transition-all duration-300 group"
+            >
+              <div className="w-16 h-16 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center text-2xl mb-6 group-hover:bg-blue-200 transition-colors duration-300">
                 💎
               </div>
-              <h3 className="text-xl font-bold text-gray-900 mb-3">
+              <h3 className="text-xl font-bold text-gray-900 mb-3 group-hover:text-blue-600 transition-colors duration-300">
                 Premium Koleksiyon
               </h3>
               <p className="text-gray-600">
                 En seçkin parfüm evlerinin en özel parçalarını bir araya getiren
                 benzersiz koleksiyonumuz.
               </p>
-            </div>
-            <div className="bg-white p-8 rounded-xl shadow-md">
-              <div className="w-16 h-16 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center text-2xl mb-6">
+            </Link>
+            <Link
+              href="https://www.shopier.com/blueperfumery"
+              className="bg-white p-8 rounded-xl shadow-md hover:shadow-xl hover:scale-105 transform transition-all duration-300 group"
+            >
+              <div className="w-16 h-16 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center text-2xl mb-6 group-hover:bg-blue-200 transition-colors duration-300">
                 🎁
               </div>
-              <h3 className="text-xl font-bold text-gray-900 mb-3">
+              <h3 className="text-xl font-bold text-gray-900 mb-3 group-hover:text-blue-600 transition-colors duration-300">
                 Özel Paketleme
               </h3>
               <p className="text-gray-600">
                 Her parfüm, şık ve özel tasarım kutularda sevdiklerinize hediye
                 etmeye hazır şekilde sunulur.
               </p>
-            </div>
+            </Link>
           </div>
         </div>
       </section>
@@ -132,14 +108,16 @@ export default function Home() {
           </div>
 
           <div className="grid md:grid-cols-3 gap-8 mb-12">
-            <div className="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300">
-              <div className="h-48 bg-blue-50 flex items-center justify-center">
-                <div className="w-20 h-20 bg-gradient-to-br from-blue-500 to-indigo-500 rounded-full flex items-center justify-center text-white text-3xl">
+            <div className="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-xl hover:scale-105 transform transition-all duration-300 group">
+              <div className="h-48 bg-blue-50 flex items-center justify-center group-hover:bg-blue-100 transition-colors duration-300">
+                <div className="w-20 h-20 bg-gradient-to-br from-blue-500 to-indigo-500 rounded-full flex items-center justify-center text-white text-3xl group-hover:scale-110 transform transition-transform duration-300">
                   ✨
                 </div>
               </div>
               <div className="p-6">
-                <h3 className="text-lg font-bold text-gray-900 mb-1">Kirke</h3>
+                <h3 className="text-lg font-bold text-gray-900 mb-1 group-hover:text-blue-600 transition-colors duration-300">
+                  Kirke
+                </h3>
                 <p className="text-blue-600 text-sm mb-2">
                   Blue Perfumery Exclusive
                 </p>
@@ -152,21 +130,23 @@ export default function Home() {
                     href="https://shopier.com/blueperfumery/kirke"
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="text-blue-600 hover:text-blue-700 font-medium"
+                    className="text-blue-600 hover:text-blue-700 font-medium hover:scale-105 transform transition-all duration-300"
                   >
                     Satın Al
                   </a>
                 </div>
               </div>
             </div>
-            <div className="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300">
-              <div className="h-48 bg-blue-50 flex items-center justify-center">
-                <div className="w-20 h-20 bg-gradient-to-br from-blue-500 to-indigo-500 rounded-full flex items-center justify-center text-white text-3xl">
+            <div className="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-xl hover:scale-105 transform transition-all duration-300 group">
+              <div className="h-48 bg-blue-50 flex items-center justify-center group-hover:bg-blue-100 transition-colors duration-300">
+                <div className="w-20 h-20 bg-gradient-to-br from-blue-500 to-indigo-500 rounded-full flex items-center justify-center text-white text-3xl group-hover:scale-110 transform transition-transform duration-300">
                   🌙
                 </div>
               </div>
               <div className="p-6">
-                <h3 className="text-lg font-bold text-gray-900 mb-1">Libre</h3>
+                <h3 className="text-lg font-bold text-gray-900 mb-1 group-hover:text-blue-600 transition-colors duration-300">
+                  Libre
+                </h3>
                 <p className="text-blue-600 text-sm mb-2">
                   Blue Perfumery Artisanal
                 </p>
@@ -179,21 +159,21 @@ export default function Home() {
                     href="https://shopier.com/blueperfumery/libre"
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="text-blue-600 hover:text-blue-700 font-medium"
+                    className="text-blue-600 hover:text-blue-700 font-medium hover:scale-105 transform transition-all duration-300"
                   >
                     Satın Al
                   </a>
                 </div>
               </div>
             </div>
-            <div className="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300">
-              <div className="h-48 bg-blue-50 flex items-center justify-center">
-                <div className="w-20 h-20 bg-gradient-to-br from-blue-500 to-indigo-500 rounded-full flex items-center justify-center text-white text-3xl">
+            <div className="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-xl hover:scale-105 transform transition-all duration-300 group">
+              <div className="h-48 bg-blue-50 flex items-center justify-center group-hover:bg-blue-100 transition-colors duration-300">
+                <div className="w-20 h-20 bg-gradient-to-br from-blue-500 to-indigo-500 rounded-full flex items-center justify-center text-white text-3xl group-hover:scale-110 transform transition-transform duration-300">
                   🌸
                 </div>
               </div>
               <div className="p-6">
-                <h3 className="text-lg font-bold text-gray-900 mb-1">
+                <h3 className="text-lg font-bold text-gray-900 mb-1 group-hover:text-blue-600 transition-colors duration-300">
                   La Vie Est Belle
                 </h3>
                 <p className="text-blue-600 text-sm mb-2">
@@ -208,7 +188,7 @@ export default function Home() {
                     href="https://shopier.com/blueperfumery/lavieestbelle"
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="text-blue-600 hover:text-blue-700 font-medium"
+                    className="text-blue-600 hover:text-blue-700 font-medium hover:scale-105 transform transition-all duration-300"
                   >
                     Satın Al
                   </a>
