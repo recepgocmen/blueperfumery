@@ -1,36 +1,88 @@
 "use client";
 
 import Link from "next/link";
+import { useState, useEffect } from "react";
+import Image from "next/image";
+
+const images = ["/image-1.jpg", "/image-2.jpg", "/image-3.jpg", "/image-4.jpg"];
 
 export default function Home() {
+  const [currentImage, setCurrentImage] = useState(0);
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setCurrentImage((prev) => (prev + 1) % images.length);
+    }, 5000); // Her 5 saniyede bir değişecek
+
+    return () => clearInterval(timer);
+  }, []);
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
       {/* Hero Section */}
-      <section className="relative bg-gradient-to-r from-blue-600 to-indigo-700 text-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24 md:py-32 flex flex-col items-center text-center">
-          <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold leading-tight mb-6">
+      <section className="relative h-screen">
+        {/* Background Slider */}
+        <div className="absolute inset-0 w-full h-full">
+          {images.map((image, index) => (
+            <div
+              key={image}
+              className={`absolute inset-0 w-full h-full transition-opacity duration-1000 ${
+                index === currentImage ? "opacity-100" : "opacity-0"
+              }`}
+            >
+              <Image
+                src={image}
+                alt={`Slider image ${index + 1}`}
+                fill
+                className="object-cover"
+                priority={index === 0}
+              />
+            </div>
+          ))}
+          {/* Overlay */}
+          <div className="absolute inset-0 bg-gradient-to-b from-blue-900/50 to-indigo-900/70 backdrop-blur-[2px]" />
+        </div>
+
+        {/* Content */}
+        <div className="relative h-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col items-center justify-center text-center">
+          <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold leading-tight mb-6 text-white drop-shadow-lg">
             Kendine Özel Parfüm Deneyimi
           </h1>
-          <p className="text-xl md:text-2xl text-blue-100 max-w-3xl mb-10">
+          <p className="text-xl md:text-2xl text-white/90 max-w-3xl mb-10 drop-shadow">
             Blue Perfumery ile kişiliğinize ve tarzınıza uygun parfümleri
             keşfedin.
           </p>
           <div className="flex flex-col sm:flex-row gap-4">
             <Link
               href="/parfumunu-bul"
-              className="inline-flex items-center justify-center px-8 py-3 border border-transparent text-base font-medium rounded-md text-blue-700 bg-white hover:bg-blue-50 hover:scale-105 transform transition-all duration-300 shadow-md hover:shadow-xl md:text-lg"
+              className="inline-flex items-center justify-center px-8 py-4 text-lg font-medium rounded-lg text-white bg-blue-600/90 hover:bg-blue-600 backdrop-blur-sm hover:scale-105 transform transition-all duration-300 shadow-lg hover:shadow-xl border border-white/20"
             >
               Parfümünü Bul
             </Link>
             <Link
               href="https://www.shopier.com/blueperfumery"
-              className="inline-flex items-center justify-center px-8 py-3 border border-white text-base font-medium rounded-md text-white hover:bg-blue-600 hover:scale-105 transform transition-all duration-300 shadow-md hover:shadow-xl md:text-lg"
+              className="inline-flex items-center justify-center px-8 py-4 text-lg font-medium rounded-lg text-white bg-transparent hover:bg-white/10 backdrop-blur-sm hover:scale-105 transform transition-all duration-300 shadow-lg hover:shadow-xl border-2 border-white"
             >
               Satın Al
             </Link>
           </div>
+
+          {/* Slider Dots */}
+          <div className="absolute bottom-8 left-0 right-0 flex justify-center gap-2">
+            {images.map((_, index) => (
+              <button
+                key={index}
+                onClick={() => setCurrentImage(index)}
+                className={`w-3 h-3 rounded-full transition-all duration-300 ${
+                  index === currentImage
+                    ? "bg-white scale-110"
+                    : "bg-white/50 hover:bg-white/70"
+                }`}
+                aria-label={`Go to slide ${index + 1}`}
+              />
+            ))}
+          </div>
         </div>
-        <div className="absolute bottom-0 left-0 right-0 h-16 bg-gradient-to-t from-blue-50 to-transparent"></div>
       </section>
 
       {/* Features Section */}
