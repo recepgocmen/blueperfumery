@@ -106,9 +106,18 @@ export interface SurveyResponse {
     longevity: number; // 1-5
     sillage: number; // 1-5 (koku izi)
     uniqueness: number; // 1-5
+    brandConsciousness?: number; // 1-5 (marka bilinci)
   };
   likedNotes?: string[];
   dislikedNotes?: string[];
+  personality?: Personality;
+  scentMemory?: ScentPreference;
+  season?: Season;
+  element?: Element;
+  color?: Color;
+  style?: Style;
+  dailyRoutine?: DailyRoutine;
+  desiredImpression?: Impression;
 }
 
 export interface RecommendationResult {
