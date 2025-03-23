@@ -160,18 +160,20 @@ export default function PerfumeFinder() {
   };
 
   return (
-    <div className="h-screen overflow-hidden bg-gradient-to-br from-blue-50 to-indigo-100 flex flex-col">
+    <div className="min-h-screen overflow-hidden bg-gradient-to-br from-blue-50 to-indigo-100 flex flex-col">
       <div className="flex-1 overflow-y-auto">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
-          <div className="text-center max-w-2xl mx-auto mb-6 sm:mb-8">
-            <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-900 mb-3">
-              Kendine Özel Parfümünü Keşfet
-            </h1>
-            <p className="text-gray-600 text-sm sm:text-base">
-              Kişiliğine ve yaşam tarzına uygun en iyi parfümü bulmak için
-              birkaç basit soruyu yanıtla.
-            </p>
-          </div>
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          {showSurvey && (
+            <div className="text-center max-w-2xl mx-auto md:my-6 my-8">
+              <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-900 mb-3">
+                Kendine Özel Parfümünü Keşfet
+              </h1>
+              <p className="text-gray-600 text-sm sm:text-base">
+                Kişiliğine ve yaşam tarzına uygun en iyi parfümü bulmak için
+                birkaç basit soruyu yanıtla.
+              </p>
+            </div>
+          )}
 
           {error && (
             <div className="max-w-md mx-auto bg-red-50 p-3 sm:p-4 rounded-xl border border-red-200 text-red-700 text-sm mb-6">
@@ -179,20 +181,25 @@ export default function PerfumeFinder() {
             </div>
           )}
 
-          {loading ? (
-            <div className="flex flex-col items-center justify-center py-12 sm:py-16">
-              <div className="w-12 h-12 sm:w-16 sm:h-16 border-4 border-blue-500 border-t-transparent rounded-full animate-spin mb-4"></div>
-              <p className="text-gray-600 text-sm sm:text-base">
-                Önerileriniz hazırlanıyor...
-              </p>
-            </div>
-          ) : showSurvey ? (
-            <SurveyForm onSubmit={handleSurveySubmit} />
-          ) : recommendations.length > 0 ? (
-            <div className="max-w-4xl mx-auto">
-              <ResultScreen result={recommendations[0]} onReset={handleReset} />
-            </div>
-          ) : null}
+          <div className="mt-16 md:mt-24 lg:mt-28">
+            {loading ? (
+              <div className="flex flex-col items-center justify-center py-12 sm:py-16">
+                <div className="w-12 h-12 sm:w-16 sm:h-16 border-4 border-blue-500 border-t-transparent rounded-full animate-spin mb-4"></div>
+                <p className="text-gray-600 text-sm sm:text-base">
+                  Önerileriniz hazırlanıyor...
+                </p>
+              </div>
+            ) : showSurvey ? (
+              <SurveyForm onSubmit={handleSurveySubmit} />
+            ) : recommendations.length > 0 ? (
+              <div className="max-w-4xl mx-auto pt-4 md:pt-0">
+                <ResultScreen
+                  result={recommendations[0]}
+                  onReset={handleReset}
+                />
+              </div>
+            ) : null}
+          </div>
         </div>
       </div>
     </div>

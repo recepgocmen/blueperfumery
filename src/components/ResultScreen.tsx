@@ -141,59 +141,61 @@ const getNoteEmoji = (note: string): string => {
 export default function ResultScreen({ result, onReset }: ResultScreenProps) {
   const emoji = getEmoji(result.perfume.name);
 
+  const getShopierUrl = (perfumeName: string) => {
+    const formattedName = perfumeName
+      .toLowerCase()
+      .replace(/\s+/g, "-")
+      .replace(/[^\w-]/g, "");
+
+    return `https://shopier.com/blueperfumery/${formattedName}`;
+  };
+
   return (
     <div className="h-full flex items-center justify-center px-4">
       <div className="w-full max-w-xl mx-auto">
         <div className="bg-white rounded-2xl shadow-xl overflow-hidden">
-          <div className="bg-gradient-to-br from-blue-500 to-blue-600 p-6 sm:p-8 text-center">
-            <div
-              className="text-5xl sm:text-6xl mb-3 sm:mb-4"
-              role="img"
-              aria-hidden="true"
-            >
-              {emoji}
+          <div className="bg-gradient-to-br from-blue-500 to-blue-600 p-6 sm:p-8">
+            <div className="text-center space-y-3">
+              <div
+                className="text-4xl sm:text-xl mx-auto"
+                role="img"
+                aria-hidden="true"
+              >
+                {emoji}
+              </div>
+              <div className="text-white">
+                <h3 className="text-lg sm:text-xl md:text-2xl font-bold mb-1">
+                  {result.perfume.name}
+                </h3>
+                <p className="text-blue-100 text-sm">{result.perfume.brand}</p>
+              </div>
             </div>
-            <h2 className="text-xl sm:text-2xl md:text-3xl font-bold text-white mb-2">
-              İşte Senin İçin Seçtiğimiz Parfüm!
-            </h2>
-            <p className="text-blue-100 text-xs sm:text-sm md:text-base">
-              Kişiliğine ve tercihlerine göre özel olarak seçildi
-            </p>
           </div>
 
           <div className="p-5 sm:p-6 md:p-8 space-y-4 sm:space-y-6">
+            <div className="bg-gray-50 rounded-xl p-3 sm:p-4">
+              <h4 className="font-medium text-gray-800 text-sm sm:text-base mb-2">
+                Neden Bu Parfüm?
+              </h4>
+              <ul className="space-y-1.5">
+                {result.matchReasons.map((reason, index) => (
+                  <li
+                    key={index}
+                    className="flex items-start gap-2 text-gray-600 text-xs sm:text-sm"
+                  >
+                    <span className="text-blue-500 mt-1">•</span>
+                    <span>{reason}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+
             <div className="space-y-4">
               <div className="text-center">
-                <h3 className="text-lg sm:text-xl md:text-2xl font-bold text-gray-800 mb-1 sm:mb-2">
-                  {result.perfume.name}
-                </h3>
-                <p className="text-gray-600 text-xs sm:text-sm md:text-base">
-                  {result.perfume.brand}
-                </p>
-              </div>
-
-              <div className="bg-gray-50 rounded-xl p-3 sm:p-4 space-y-2 sm:space-y-3">
-                <h4 className="font-medium text-gray-800 text-sm sm:text-base">
-                  Neden Bu Parfüm?
-                </h4>
-                <ul className="space-y-1.5 sm:space-y-2">
-                  {result.matchReasons.map((reason, index) => (
-                    <li
-                      key={index}
-                      className="flex items-start gap-2 text-gray-600 text-xs sm:text-sm"
-                    >
-                      <span className="text-blue-500 mt-1">•</span>
-                      <span>{reason}</span>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-
-              <div className="space-y-2">
-                <h4 className="font-medium text-gray-800 text-sm sm:text-base">
+                <h4 className="font-medium text-gray-800 text-sm sm:text-base pb-2">
                   Notalar
                 </h4>
-                <div className="flex flex-wrap gap-1.5 sm:gap-2">
+                <div className="flex justify-center flex-wrap gap-1.5 sm:gap-2">
                   {result.perfume.notes.map((note, index) => (
                     <span
                       key={index}
@@ -205,6 +207,46 @@ export default function ResultScreen({ result, onReset }: ResultScreenProps) {
                       {note}
                     </span>
                   ))}
+                </div>
+              </div>
+
+              <div className="mt-4 p-4 sm:p-5 bg-blue-50 rounded-xl">
+                <div className="text-center">
+                  <div className="mb-3">
+                    <h4 className="font-medium text-gray-800 text-sm mb-1">
+                      Orijinal Fiyat
+                    </h4>
+                    <p className="text-gray-500 line-through text-base sm:text-lg">
+                      {result.perfume.price.toLocaleString("tr-TR")} ₺
+                    </p>
+                    <p className="text-gray-500 text-xs mt-0.5">
+                      (${(result.perfume.price / 32).toFixed(2)})
+                    </p>
+                  </div>
+
+                  <div className="pt-3 border-t border-blue-100">
+                    <div className="flex items-center justify-center gap-2 mb-2">
+                      <div className="inline-block bg-blue-600 text-white text-xs px-2 py-0.5 rounded-full">
+                        Açılışa Özel
+                      </div>
+                      <div className="inline-block bg-green-600 text-white text-xs px-2 py-0.5 rounded-full">
+                        50ml
+                      </div>
+                    </div>
+                    <div className="flex items-center justify-center gap-4">
+                      <p className="text-blue-600 font-bold text-xl sm:text-2xl">
+                        500 ₺
+                      </p>
+                      <a
+                        href={getShopierUrl(result.perfume.name)}
+                        className="py-2 px-4 bg-blue-600 hover:bg-blue-700 text-white rounded-xl transition-colors duration-200 font-medium text-sm flex items-center"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        Satın Al <span className="ml-1">→</span>
+                      </a>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
