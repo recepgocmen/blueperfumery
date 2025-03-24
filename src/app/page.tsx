@@ -46,37 +46,6 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
-      {/* Inject custom animations */}
-      <style jsx global>{`
-        @keyframes glow {
-          0%,
-          100% {
-            box-shadow: 0 0 15px 5px rgba(59, 130, 246, 0.4);
-          }
-          50% {
-            box-shadow: 0 0 25px 10px rgba(59, 130, 246, 0.6);
-          }
-        }
-
-        @keyframes pulse-slow {
-          0%,
-          100% {
-            opacity: 0.2;
-          }
-          50% {
-            opacity: 0.4;
-          }
-        }
-
-        .animate-glow {
-          animation: glow 3s ease-in-out infinite;
-        }
-
-        .animate-pulse-slow {
-          animation: pulse-slow 3s ease-in-out infinite;
-        }
-      `}</style>
-
       {/* Hero Section */}
       <section className="relative h-screen">
         {/* Background Slider */}
@@ -109,24 +78,86 @@ export default function Home() {
           <p className="text-xl md:text-2xl text-white/90 max-w-3xl mb-10 drop-shadow transition-opacity duration-700">
             {currentContent.description}
           </p>
-          <div className="flex flex-col sm:flex-row gap-4 relative">
+          <div className="flex flex-col sm:flex-row gap-6 relative">
             <Link
               href="/parfumunu-bul"
-              className="inline-flex items-center justify-center px-8 py-4 text-lg font-medium rounded-lg text-white bg-blue-600/90 hover:bg-blue-600 backdrop-blur-sm hover:scale-105 transform transition-all duration-300 shadow-lg hover:shadow-xl border border-white/20 relative animate-glow"
+              className="relative group inline-flex items-center justify-center px-8 py-5 text-lg font-semibold rounded-xl text-blue-700 bg-white border-2 border-blue-300 hover:border-blue-400 backdrop-blur-sm transform transition-all duration-300 overflow-hidden shadow-md hover:shadow-xl"
             >
-              <span className="relative z-10 flex items-center gap-2">
-                <span>Parfümünü Bul</span>
-                <span className="text-yellow-300">✨</span>
+              <div className="absolute inset-0 bg-gradient-to-r from-blue-50 to-indigo-50 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+              <div className="absolute -right-10 -top-10 w-24 h-24 bg-blue-100 rounded-full opacity-0 group-hover:opacity-20 transition-all duration-500"></div>
+              <span className="relative flex items-center gap-3">
+                <div className="relative w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    className="h-6 w-6 text-blue-600"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"
+                    />
+                  </svg>
+                  <span className="absolute -right-1 -top-1 w-4 h-4 bg-blue-500 rounded-full border-2 border-white animate-pulse"></span>
+                </div>
+                <div className="flex flex-col items-start">
+                  <span className="text-blue-700 text-lg">Parfümünü Bul</span>
+                  <span className="text-blue-500 text-xs font-normal">
+                    Kişilik testini yap, sana özel öneriler al
+                  </span>
+                </div>
               </span>
-              {/* Subtle glow effect */}
-              <div className="absolute inset-0 rounded-lg bg-blue-400 blur-xl opacity-30 animate-pulse-slow"></div>
             </Link>
+
             <Link
               href="https://www.shopier.com/blueperfumery"
-              className="inline-flex items-center justify-center px-8 py-4 text-lg font-medium rounded-lg text-white bg-transparent hover:bg-white/10 backdrop-blur-sm hover:scale-105 transform transition-all duration-300 shadow-lg hover:shadow-xl border-2 border-white"
+              className="inline-flex items-center justify-center px-8 py-5 text-lg font-semibold rounded-xl text-white bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 transform hover:scale-105 transition-all duration-300 shadow-lg hover:shadow-xl relative group overflow-hidden"
             >
-              Hemen Al
+              <div className="absolute inset-0 w-full h-full bg-gradient-to-r from-yellow-400/10 to-yellow-500/10 transform scale-x-0 group-hover:scale-x-100 transition-transform origin-left duration-500"></div>
+              <span className="flex items-center gap-3 relative">
+                <div className="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    className="h-6 w-6"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"
+                    />
+                  </svg>
+                </div>
+                <div className="flex flex-col items-start">
+                  <span className="text-white text-lg">Hemen Satın Al</span>
+                  <span className="text-white/80 text-xs font-normal">
+                    Özel indirimlerle sınırlı süre
+                  </span>
+                </div>
+              </span>
             </Link>
+          </div>
+
+          {/* Slider Dots */}
+          <div className="absolute bottom-8 left-0 right-0 flex justify-center gap-2">
+            {images.map((_, index) => (
+              <button
+                key={index}
+                onClick={() => setCurrentImage(index)}
+                className={`w-3 h-3 rounded-full transition-all duration-300 ${
+                  index === currentImage
+                    ? "bg-white scale-110"
+                    : "bg-white/50 hover:bg-white/70"
+                }`}
+                aria-label={`Go to slide ${index + 1}`}
+              />
+            ))}
           </div>
         </div>
       </section>
@@ -171,9 +202,23 @@ export default function Home() {
                 <div className="ml-3">
                   <Link
                     href="https://www.shopier.com/blueperfumery"
-                    className="bg-white text-orange-600 px-4 py-1.5 rounded-full text-sm font-bold hover:bg-white/90 transition-colors duration-300 shadow-sm"
+                    className="bg-gradient-to-r from-green-500 to-green-600 text-white px-4 py-1.5 rounded-full text-sm font-bold hover:from-green-600 hover:to-green-700 transition-all duration-300 shadow-sm border border-green-300/30 flex items-center gap-1"
                   >
                     Hemen Al
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      className="h-4 w-4"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"
+                      />
+                    </svg>
                   </Link>
                 </div>
               </div>
@@ -197,19 +242,55 @@ export default function Home() {
           <div className="grid md:grid-cols-3 gap-8 mb-16">
             <Link
               href="/parfumunu-bul"
-              className="bg-white p-8 rounded-xl shadow-md hover:shadow-xl hover:scale-105 transform transition-all duration-300 group"
+              className="bg-gradient-to-br from-white to-blue-50 p-8 rounded-xl shadow-lg hover:shadow-2xl hover:scale-105 transform transition-all duration-500 group relative overflow-hidden border border-blue-100"
             >
-              <div className="w-16 h-16 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center text-2xl mb-6 group-hover:bg-blue-200 transition-colors duration-300">
-                🔍
+              <div className="absolute top-0 left-0 w-40 h-40 bg-blue-100 rounded-full mix-blend-multiply blur-2xl opacity-30 group-hover:opacity-40 transition-all duration-500 -translate-x-20 -translate-y-20"></div>
+              <div className="absolute bottom-0 right-0 w-40 h-40 bg-indigo-100 rounded-full mix-blend-multiply blur-2xl opacity-30 group-hover:opacity-40 transition-all duration-500 translate-x-20 translate-y-20"></div>
+
+              <div className="w-20 h-20 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-2xl shadow-lg flex items-center justify-center text-3xl mb-6 group-hover:scale-110 group-hover:rotate-3 transform transition-all duration-500 relative">
+                <span className="absolute w-20 h-20 bg-white opacity-20 rounded-full animate-ping"></span>
+                <span
+                  className="text-white animate-pulse"
+                  role="img"
+                  aria-label="magnifying glass"
+                >
+                  🔍
+                </span>
               </div>
-              <h3 className="text-xl font-bold text-gray-900 mb-3 group-hover:text-blue-600 transition-colors duration-300">
+
+              <h3 className="text-2xl font-bold text-gray-900 mb-3 group-hover:text-blue-700 transition-colors duration-300">
                 Kişilik Analizi
               </h3>
-              <p className="text-gray-600">
+              <p className="text-gray-600 group-hover:text-gray-800 transition-colors duration-300 mb-6">
                 Kişiliğinize, yaşam tarzınıza ve tercihlerinize göre size özel
                 parfüm önerileri sunuyoruz.
               </p>
+
+              <div className="flex items-center text-blue-600 font-medium group-hover:translate-x-2 transition-transform duration-300">
+                <span>Teste Başla</span>
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="h-5 w-5 ml-2 group-hover:ml-3 transition-all duration-300"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M17 8l4 4m0 0l-4 4m4-4H3"
+                  />
+                </svg>
+              </div>
+
+              <div className="absolute top-4 right-4">
+                <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                  Yeni
+                </span>
+              </div>
             </Link>
+
             <Link
               href="https://www.shopier.com/blueperfumery"
               className="bg-white p-8 rounded-xl shadow-md hover:shadow-xl hover:scale-105 transform transition-all duration-300 group"
@@ -275,14 +356,14 @@ export default function Home() {
                   koku. Yaz akşamlarının vazgeçilmezi.
                 </p>
                 <div className="flex items-center justify-end">
-                  <a
+                  <Link
                     href="https://shopier.com/blueperfumery/kirke"
                     target="_blank"
                     rel="noopener noreferrer"
                     className="text-blue-600 hover:text-blue-700 font-medium hover:scale-105 transform transition-all duration-300"
                   >
                     Satın Al
-                  </a>
+                  </Link>
                 </div>
               </div>
             </div>
@@ -304,14 +385,14 @@ export default function Home() {
                   notalarıyla özgürlüğün sembolü.
                 </p>
                 <div className="flex items-center justify-end">
-                  <a
+                  <Link
                     href="https://shopier.com/blueperfumery/libre"
                     target="_blank"
                     rel="noopener noreferrer"
                     className="text-blue-600 hover:text-blue-700 font-medium hover:scale-105 transform transition-all duration-300"
                   >
                     Satın Al
-                  </a>
+                  </Link>
                 </div>
               </div>
             </div>
@@ -333,14 +414,14 @@ export default function Home() {
                   bezeli, mutluluk veren bir koku.
                 </p>
                 <div className="flex items-center justify-end">
-                  <a
+                  <Link
                     href="https://shopier.com/blueperfumery/lavieestbelle"
                     target="_blank"
                     rel="noopener noreferrer"
                     className="text-blue-600 hover:text-blue-700 font-medium hover:scale-105 transform transition-all duration-300"
                   >
                     Satın Al
-                  </a>
+                  </Link>
                 </div>
               </div>
             </div>
@@ -349,9 +430,25 @@ export default function Home() {
           <div className="text-center">
             <Link
               href="https://www.shopier.com/blueperfumery"
-              className="inline-flex items-center justify-center px-6 py-3 border border-transparent text-base font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700"
+              className="inline-flex items-center justify-center px-6 py-3 border border-transparent text-base font-medium rounded-md text-white bg-gradient-to-r from-green-500/80 to-blue-600/80 hover:from-green-600/90 hover:to-blue-700/90 shadow-md hover:shadow-lg transform hover:scale-105 transition-all duration-300"
             >
-              Tüm Parfümleri Keşfet
+              <span className="flex items-center gap-2">
+                Tüm Parfümleri Keşfet
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="h-5 w-5"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M14 5l7 7m0 0l-7 7m7-7H3"
+                  />
+                </svg>
+              </span>
             </Link>
           </div>
         </div>
@@ -374,9 +471,27 @@ export default function Home() {
             <div className="md:ml-8">
               <Link
                 href="/parfumunu-bul"
-                className="inline-flex items-center justify-center px-8 py-4 border border-transparent text-lg font-medium rounded-md text-blue-700 bg-white hover:bg-blue-50"
+                className="inline-flex items-center justify-center px-8 py-4 text-lg font-bold rounded-lg text-blue-700 bg-white hover:bg-blue-50 shadow-xl hover:shadow-2xl transform hover:scale-110 transition-all duration-300 group relative overflow-hidden"
               >
-                Teste Başla
+                <span className="absolute inset-0 bg-gradient-to-r from-blue-50 to-indigo-50 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></span>
+                <span className="absolute -inset-4 blur-md bg-white/30 opacity-0 group-hover:opacity-100 transition-opacity duration-300 animate-pulse"></span>
+                <div className="relative flex items-center gap-2">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    strokeWidth={2}
+                    stroke="currentColor"
+                    className="w-6 h-6 text-blue-700 group-hover:animate-bounce"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09zM18.259 8.715L18 9.75l-.259-1.035a3.375 3.375 0 00-2.455-2.456L14.25 6l1.036-.259a3.375 3.375 0 002.455-2.456L18 2.25l.259 1.035a3.375 3.375 0 002.456 2.456L21.75 6l-1.035.259a3.375 3.375 0 00-2.456 2.456zM16.894 20.567L16.5 21.75l-.394-1.183a2.25 2.25 0 00-1.423-1.423L13.5 18.75l1.183-.394a2.25 2.25 0 001.423-1.423l.394-1.183.394 1.183a2.25 2.25 0 001.423 1.423l1.183.394-1.183.394a2.25 2.25 0 00-1.423 1.423z"
+                    />
+                  </svg>
+                  <span>Teste Başla</span>
+                </div>
               </Link>
             </div>
           </div>
