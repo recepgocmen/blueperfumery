@@ -6,6 +6,30 @@ import Image from "next/image";
 
 const images = ["/image-1.jpg", "/image-2.jpg", "/image-3.jpg", "/image-4.jpg"];
 
+// Content for each slider image
+const sliderContent = [
+  {
+    title: "Kendine Özel Parfüm Deneyimi",
+    description:
+      "Blue Perfumery ile kişiliğinize ve tarzınıza uygun parfümleri keşfedin.",
+  },
+  {
+    title: "Sizin Karakteriniz, Sizin Kokunuz",
+    description:
+      "Karakterinizi ve yaşam tarzınızı yansıtan özel parfümler dünyasına adım atın.",
+  },
+  {
+    title: "Lüks ve Zarafet Bir Arada",
+    description:
+      "Premium parfüm koleksiyonumuzla benzersiz ve kalıcı kokulara sahip olun.",
+  },
+  {
+    title: "Siz Olmanın En Güzel Hali",
+    description:
+      "Kokular dünyasında kendinizi ifade etmenin en özel yolu Blue Perfumery'de.",
+  },
+];
+
 export default function Home() {
   const [currentImage, setCurrentImage] = useState(0);
 
@@ -17,8 +41,42 @@ export default function Home() {
     return () => clearInterval(timer);
   }, []);
 
+  // Get current slider content
+  const currentContent = sliderContent[currentImage];
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
+      {/* Inject custom animations */}
+      <style jsx global>{`
+        @keyframes glow {
+          0%,
+          100% {
+            box-shadow: 0 0 15px 5px rgba(59, 130, 246, 0.4);
+          }
+          50% {
+            box-shadow: 0 0 25px 10px rgba(59, 130, 246, 0.6);
+          }
+        }
+
+        @keyframes pulse-slow {
+          0%,
+          100% {
+            opacity: 0.2;
+          }
+          50% {
+            opacity: 0.4;
+          }
+        }
+
+        .animate-glow {
+          animation: glow 3s ease-in-out infinite;
+        }
+
+        .animate-pulse-slow {
+          animation: pulse-slow 3s ease-in-out infinite;
+        }
+      `}</style>
+
       {/* Hero Section */}
       <section className="relative h-screen">
         {/* Background Slider */}
@@ -45,45 +103,84 @@ export default function Home() {
 
         {/* Content */}
         <div className="relative h-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col items-center justify-center text-center">
-          <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold leading-tight mb-6 text-white drop-shadow-lg">
-            Kendine Özel Parfüm Deneyimi
+          <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold leading-tight mb-6 text-white drop-shadow-lg transition-opacity duration-700">
+            {currentContent.title}
           </h1>
-          <p className="text-xl md:text-2xl text-white/90 max-w-3xl mb-10 drop-shadow">
-            Blue Perfumery ile kişiliğinize ve tarzınıza uygun parfümleri
-            keşfedin.
+          <p className="text-xl md:text-2xl text-white/90 max-w-3xl mb-10 drop-shadow transition-opacity duration-700">
+            {currentContent.description}
           </p>
-          <div className="flex flex-col sm:flex-row gap-4">
+          <div className="flex flex-col sm:flex-row gap-4 relative">
             <Link
               href="/parfumunu-bul"
-              className="inline-flex items-center justify-center px-8 py-4 text-lg font-medium rounded-lg text-white bg-blue-600/90 hover:bg-blue-600 backdrop-blur-sm hover:scale-105 transform transition-all duration-300 shadow-lg hover:shadow-xl border border-white/20"
+              className="inline-flex items-center justify-center px-8 py-4 text-lg font-medium rounded-lg text-white bg-blue-600/90 hover:bg-blue-600 backdrop-blur-sm hover:scale-105 transform transition-all duration-300 shadow-lg hover:shadow-xl border border-white/20 relative animate-glow"
             >
-              Parfümünü Bul
+              <span className="relative z-10 flex items-center gap-2">
+                <span>Parfümünü Bul</span>
+                <span className="text-yellow-300">✨</span>
+              </span>
+              {/* Subtle glow effect */}
+              <div className="absolute inset-0 rounded-lg bg-blue-400 blur-xl opacity-30 animate-pulse-slow"></div>
             </Link>
             <Link
               href="https://www.shopier.com/blueperfumery"
               className="inline-flex items-center justify-center px-8 py-4 text-lg font-medium rounded-lg text-white bg-transparent hover:bg-white/10 backdrop-blur-sm hover:scale-105 transform transition-all duration-300 shadow-lg hover:shadow-xl border-2 border-white"
             >
-              Satın Al
+              Hemen Al
             </Link>
-          </div>
-
-          {/* Slider Dots */}
-          <div className="absolute bottom-8 left-0 right-0 flex justify-center gap-2">
-            {images.map((_, index) => (
-              <button
-                key={index}
-                onClick={() => setCurrentImage(index)}
-                className={`w-3 h-3 rounded-full transition-all duration-300 ${
-                  index === currentImage
-                    ? "bg-white scale-110"
-                    : "bg-white/50 hover:bg-white/70"
-                }`}
-                aria-label={`Go to slide ${index + 1}`}
-              />
-            ))}
           </div>
         </div>
       </section>
+
+      {/* Special Opening Offer Banner */}
+      <div className="relative -mt-16 z-10 mb-4">
+        <div className="max-w-5xl mx-auto px-4">
+          <div className="bg-gradient-to-r from-amber-500 to-orange-600 rounded-lg shadow-xl overflow-hidden">
+            <div className="relative px-6 py-4 flex flex-col md:flex-row items-center justify-between">
+              {/* Decorative elements */}
+              <div className="absolute -left-6 -top-6 w-16 h-16 bg-yellow-300 rounded-full opacity-20"></div>
+              <div className="absolute right-10 bottom-2 w-8 h-8 bg-orange-300 rounded-full opacity-20"></div>
+
+              {/* Badge content */}
+              <div className="flex items-center space-x-3 mb-3 md:mb-0">
+                <div className="flex-shrink-0 bg-white/20 p-2 rounded-full">
+                  <span
+                    className="text-2xl"
+                    role="img"
+                    aria-label="celebration"
+                  >
+                    🎉
+                  </span>
+                </div>
+                <div>
+                  <h3 className="text-white font-bold text-lg">
+                    Açılışa Özel Fırsat!
+                  </h3>
+                  <p className="text-white/90 text-sm">
+                    50ml parfümler sınırlı süreyle indirimli
+                  </p>
+                </div>
+              </div>
+
+              {/* Price */}
+              <div className="flex items-center">
+                <div className="text-white/90 mr-3">
+                  <span className="line-through text-white/70">699₺</span>{" "}
+                  yerine
+                </div>
+                <div className="text-white font-bold text-2xl">599₺</div>
+                <div className="ml-3">
+                  <Link
+                    href="https://www.shopier.com/blueperfumery"
+                    className="bg-white text-orange-600 px-4 py-1.5 rounded-full text-sm font-bold hover:bg-white/90 transition-colors duration-300 shadow-sm"
+                  >
+                    Hemen Al
+                  </Link>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
 
       {/* Features Section */}
       <section className="py-16 md:py-24">
