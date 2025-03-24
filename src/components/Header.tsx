@@ -10,7 +10,7 @@ export default function Header() {
   return (
     <header className="fixed w-full z-50 bg-gradient-to-r from-stone-100/90 to-emerald-50/90 backdrop-blur-md border-b border-white/20">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between items-center py-4">
+        <div className="flex justify-between items-center py-1">
           <div className="flex items-center">
             <Link href="/" className="relative group">
               <div className="flex flex-col items-center">
@@ -66,7 +66,7 @@ export default function Header() {
 
               {/* Submenu */}
               <div
-                className={`absolute left-0 mt-1 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 transition-all duration-200 ${
+                className={`absolute left-0 mt-0 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 transition-all duration-200 ${
                   isSubmenuOpen ? "opacity-100 visible" : "opacity-0 invisible"
                 }`}
               >
