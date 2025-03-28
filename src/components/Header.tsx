@@ -5,7 +5,6 @@ import Link from "next/link";
 
 export default function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [isSubmenuOpen, setIsSubmenuOpen] = useState(false);
 
   return (
     <header className="fixed w-full z-50 bg-gradient-to-r from-stone-100/90 to-emerald-50/90 backdrop-blur-md border-b border-white/20">
@@ -30,82 +29,62 @@ export default function Header() {
           </div>
 
           {/* Desktop Navigation */}
-          <nav className="hidden md:flex items-center space-x-3">
-            <Link
-              href="/parfumunu-bul"
-              className="text-gray-700 hover:text-indigo-700 px-4 py-2 rounded-lg text-sm font-medium tracking-wide transition-colors duration-300"
-            >
-              Parfümünü Bul
-            </Link>
-
-            {/* Categories Dropdown */}
-            <div
-              className="relative"
-              onMouseLeave={() => setIsSubmenuOpen(false)}
-            >
-              <button
-                onMouseEnter={() => setIsSubmenuOpen(true)}
-                className="text-gray-700 hover:text-indigo-700 px-4 py-2 rounded-lg text-sm font-medium tracking-wide transition-colors duration-300 flex items-center"
+          <nav className="hidden md:flex items-center space-x-4">
+            {/* Normal Links */}
+            <div className="flex items-center space-x-3 mr-6">
+              <Link
+                href="/erkek-parfum"
+                className="text-gray-600 hover:text-gray-800 px-3 py-2 text-sm font-medium tracking-wide transition-colors duration-300"
               >
-                Kategoriler
-                <svg
-                  className="w-4 h-4 ml-1"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="2"
-                    d="M19 9l-7 7-7-7"
-                  ></path>
-                </svg>
-              </button>
-
-              {/* Submenu */}
-              <div
-                className={`absolute left-0 mt-0 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 transition-all duration-200 ${
-                  isSubmenuOpen ? "opacity-100 visible" : "opacity-0 invisible"
-                }`}
+                Erkek Parfüm
+              </Link>
+              <Link
+                href="/kadin-parfum"
+                className="text-gray-600 hover:text-gray-800 px-3 py-2 text-sm font-medium tracking-wide transition-colors duration-300"
               >
-                <div className="py-1" role="menu" aria-orientation="vertical">
-                  <Link
-                    href="/erkek-parfum"
-                    className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-blue-600"
-                  >
-                    Erkek Parfüm
-                  </Link>
-                  <Link
-                    href="/kadin-parfum"
-                    className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-blue-600"
-                  >
-                    Kadın Parfüm
-                  </Link>
-                  <Link
-                    href="/nis-parfum"
-                    className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-blue-600"
-                  >
-                    Niş Parfüm
-                  </Link>
-                  <Link
-                    href="https://www.shopier.com/blueperfumery"
-                    className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-blue-600"
-                  >
-                    Yeni Eklenenler
-                  </Link>
-                </div>
-              </div>
+                Kadın Parfüm
+              </Link>
+              <Link
+                href="/nis-parfum"
+                className="text-gray-600 hover:text-gray-800 px-3 py-2 text-sm font-medium tracking-wide transition-colors duration-300"
+              >
+                Niş Parfüm
+              </Link>
             </div>
 
-            <Link
-              href="https://www.shopier.com/blueperfumery"
-              className="relative overflow-hidden group bg-gradient-to-r from-indigo-700 to-purple-700 hover:from-indigo-800 hover:to-purple-800 text-white px-6 py-2.5 rounded-lg text-sm font-medium tracking-wide transition-all duration-300"
-            >
-              <span className="relative z-10">Satın Al</span>
-              <span className="absolute inset-0 h-[200%] w-[200%] -translate-x-full bg-white/10 skew-x-[-20deg] transition-transform duration-500 ease-out group-hover:translate-x-0"></span>
-            </Link>
+            {/* Highlighted Buttons */}
+            <div className="flex items-center space-x-3">
+              <Link
+                href="/parfumunu-bul"
+                className="relative overflow-hidden group bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white px-5 py-2 rounded-lg text-sm font-medium tracking-wide transition-all duration-300 transform hover:scale-105 hover:shadow-lg"
+              >
+                <span className="relative z-10">Parfümünü Bul</span>
+                <span className="absolute inset-0 h-[200%] w-[200%] -translate-x-full bg-white/10 skew-x-[-20deg] transition-transform duration-500 ease-out group-hover:translate-x-0"></span>
+              </Link>
+
+              <Link
+                href="https://www.shopier.com/blueperfumery"
+                className="relative overflow-hidden group bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white px-5 py-2 rounded-lg text-sm font-medium tracking-wide transition-all duration-300 transform hover:scale-105 hover:shadow-lg"
+              >
+                <span className="relative z-10 flex items-center">
+                  Satın Al
+                  <svg
+                    className="w-4 h-4 ml-1 group-hover:translate-x-1 transition-transform duration-300"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth="2"
+                      d="M14 5l7 7m0 0l-7 7m7-7H3"
+                    />
+                  </svg>
+                </span>
+                <span className="absolute inset-0 h-[200%] w-[200%] -translate-x-full bg-white/10 skew-x-[-20deg] transition-transform duration-500 ease-out group-hover:translate-x-0"></span>
+              </Link>
+            </div>
           </nav>
 
           {/* Mobile Menu Button */}
@@ -140,62 +119,53 @@ export default function Header() {
               : "-translate-y-2 opacity-0 pointer-events-none"
           }`}
         >
-          <div className="px-4 py-3 space-y-1">
+          <div className="px-4 py-3 space-y-2">
+            {/* Highlighted Mobile Buttons */}
             <Link
               href="/parfumunu-bul"
-              className="block text-gray-700 hover:text-blue-600 hover:bg-blue-50 px-4 py-2 rounded-lg text-sm font-medium transition-colors duration-300"
+              className="block bg-gradient-to-r from-blue-600 to-indigo-600 text-white px-4 py-3 rounded-lg text-sm font-medium tracking-wide transition-all duration-300 text-center shadow-md"
               onClick={() => setIsMenuOpen(false)}
             >
               Parfümünü Bul
             </Link>
 
-            {/* Mobile Categories */}
-            <div className="block text-gray-700 px-4 py-2 text-sm font-medium tracking-wide uppercase">
-              Kategoriler
-            </div>
-            <div className="pl-4">
+            <Link
+              href="https://www.shopier.com/blueperfumery"
+              className="block bg-gradient-to-r from-purple-600 to-pink-600 text-white px-4 py-3 rounded-lg text-sm font-medium tracking-wide transition-all duration-300 text-center shadow-md"
+              onClick={() => setIsMenuOpen(false)}
+            >
+              Satın Al
+            </Link>
+
+            {/* Regular Mobile Links */}
+            <div className="pt-2 space-y-1">
               <Link
                 href="/erkek-parfum"
-                className="block text-gray-700 hover:text-blue-600 hover:bg-blue-50 px-4 py-2 rounded-lg text-sm transition-colors duration-300"
+                className="block text-gray-600 hover:text-gray-800 hover:bg-gray-100 px-4 py-2 rounded-lg text-sm transition-colors duration-300"
                 onClick={() => setIsMenuOpen(false)}
               >
                 Erkek Parfüm
               </Link>
               <Link
                 href="/kadin-parfum"
-                className="block text-gray-700 hover:text-blue-600 hover:bg-blue-50 px-4 py-2 rounded-lg text-sm transition-colors duration-300"
+                className="block text-gray-600 hover:text-gray-800 hover:bg-gray-100 px-4 py-2 rounded-lg text-sm transition-colors duration-300"
                 onClick={() => setIsMenuOpen(false)}
               >
                 Kadın Parfüm
               </Link>
               <Link
                 href="/nis-parfum"
-                className="block text-gray-700 hover:text-blue-600 hover:bg-blue-50 px-4 py-2 rounded-lg text-sm transition-colors duration-300"
+                className="block text-gray-600 hover:text-gray-800 hover:bg-gray-100 px-4 py-2 rounded-lg text-sm transition-colors duration-300"
                 onClick={() => setIsMenuOpen(false)}
               >
                 Niş Parfüm
               </Link>
-              <Link
-                href="https://www.shopier.com/blueperfumery"
-                className="block text-gray-700 hover:text-blue-600 hover:bg-blue-50 px-4 py-2 rounded-lg text-sm transition-colors duration-300"
-                onClick={() => setIsMenuOpen(false)}
-              >
-                Yeni Eklenenler
-              </Link>
             </div>
-
-            <Link
-              href="https://www.shopier.com/blueperfumery"
-              className="block bg-gradient-to-r from-indigo-700 to-purple-700 hover:from-indigo-800 hover:to-purple-800 text-white px-4 py-2.5 rounded-lg text-sm font-medium tracking-wide transition-all duration-300"
-              onClick={() => setIsMenuOpen(false)}
-            >
-              Satın Al
-            </Link>
           </div>
         </div>
       </div>
 
-      {/* Overlay for mobile menu */}
+      {/* Mobile Overlay */}
       {isMenuOpen && (
         <div
           className="fixed inset-0 bg-black bg-opacity-25 md:hidden z-40"
