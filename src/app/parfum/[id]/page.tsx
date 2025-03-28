@@ -6,7 +6,14 @@ import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
-export default function ParfumDetay({ params }: { params: { id: string } }) {
+interface PageProps {
+  params: {
+    id: string;
+  };
+  searchParams: { [key: string]: string | string[] | undefined };
+}
+
+export default function ParfumDetay({ params }: PageProps) {
   const perfume = perfumes.find((p) => p.id === params.id);
   const isPreferred = PREFERRED_PERFUMES.includes(
     params.id as (typeof PREFERRED_PERFUMES)[number]
