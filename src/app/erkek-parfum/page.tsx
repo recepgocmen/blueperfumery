@@ -82,7 +82,7 @@ export default function ErkekParfum() {
                       href={`/parfum/${perfume.id}`}
                       className="flex-1 border-2 border-indigo-600 text-indigo-600 px-4 py-2 rounded-lg text-sm font-medium text-center hover:bg-indigo-50 transition-colors duration-300"
                     >
-                      Detaylı Bilgi
+                      Keşfet
                     </Link>
                     <Link
                       href="https://www.shopier.com/blueperfumery"
