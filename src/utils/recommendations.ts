@@ -3,6 +3,7 @@ import {
   SurveyResponse,
   RecommendationResult,
   BUDGET_RANGES,
+  PREFERRED_PERFUMES,
 } from "../types/survey";
 import { perfumes } from "../data/perfumes";
 
@@ -17,7 +18,6 @@ export function getLocalRecommendations(
       const matchReasons = getMatchReasons(perfume, survey);
 
       // Add a unique "flavor" score for each user to increase variation
-      // Use a combination of user preferences to create a unique fingerprint
       const userFingerprint =
         survey.gender + survey.age + (survey.preferences?.uniqueness || 0);
       const hashValue = simpleHash(perfume.id + userFingerprint);
@@ -25,16 +25,22 @@ export function getLocalRecommendations(
       // This creates a perfume-specific boost for each user
       const uniqueBoost = (hashValue % 30) / 100; // Perfume-specific boost of up to 30%
 
-      // Combine the calculated score with the unique boost
-      const boostedScore = matchScore * (1 + uniqueBoost);
+      // Check if this is a preferred perfume and add extra boost
+      const isPreferredPerfume = PREFERRED_PERFUMES.includes(
+        perfume.id as (typeof PREFERRED_PERFUMES)[number]
+      );
+      const preferredBoost = isPreferredPerfume ? 0.55 : 0;
+
+      // Combine the calculated score with the unique boost and preferred boost
+      const boostedScore = matchScore * (1 + uniqueBoost + preferredBoost);
 
       return {
         perfume,
         matchScore: boostedScore,
         matchReasons,
-        // Store original score for debugging
+        isPreferredPerfume,
         originalScore: matchScore,
-        boost: uniqueBoost,
+        boost: uniqueBoost + preferredBoost,
       };
     })
     .filter((result) => result.matchScore > 0); // Filter out 0 scores
@@ -45,7 +51,6 @@ export function getLocalRecommendations(
     const randomFactorA = 1 + (Math.random() - 0.5) * 0.3;
     const randomFactorB = 1 + (Math.random() - 0.5) * 0.3;
 
-    // Apply the random factor to the scores
     const finalScoreA = a.matchScore * randomFactorA;
     const finalScoreB = b.matchScore * randomFactorB;
 
@@ -64,16 +69,20 @@ export function getLocalRecommendations(
       score: r.matchScore,
       originalScore: r.originalScore,
       boost: r.boost,
+      isPreferredPerfume: r.isPreferredPerfume,
       characteristics: r.perfume.characteristics,
     }))
   );
 
   // Remove debugging properties from final results
-  return diverseResults.map(({ perfume, matchScore, matchReasons }) => ({
-    perfume,
-    matchScore,
-    matchReasons,
-  }));
+  return diverseResults.map(
+    ({ perfume, matchScore, matchReasons, isPreferredPerfume }) => ({
+      perfume,
+      matchScore,
+      matchReasons,
+      isPreferredPerfume,
+    })
+  );
 }
 
 // Simple string hash function
@@ -95,6 +104,7 @@ function applyDiversity(
     matchReasons: string[];
     originalScore: number;
     boost: number;
+    isPreferredPerfume: boolean;
   }>,
   maxRecommendations: number
 ): Array<{
@@ -103,6 +113,7 @@ function applyDiversity(
   matchReasons: string[];
   originalScore: number;
   boost: number;
+  isPreferredPerfume: boolean;
 }> {
   const diverseResults: Array<{
     perfume: Perfume;
@@ -110,6 +121,7 @@ function applyDiversity(
     matchReasons: string[];
     originalScore: number;
     boost: number;
+    isPreferredPerfume: boolean;
   }> = [];
   const brandsSeen = new Set<string>();
   const characteristicsSeen = new Set<string>();

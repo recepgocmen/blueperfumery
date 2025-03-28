@@ -1,4 +1,4 @@
-export type Gender = "male" | "female";
+export type Gender = "male" | "female" | "unisex";
 
 export type FragrancePreference = {
   woody?: boolean;
@@ -31,23 +31,7 @@ export type ScentPreference =
 
 export type Season = "spring" | "summer" | "autumn" | "winter";
 
-export type Element = "fire" | "water" | "air" | "earth";
-
-export type Color =
-  | "deep_purple"
-  | "gold"
-  | "light_blue"
-  | "forest_green"
-  | "ruby_red";
-
 export type Style = "classic" | "bohemian" | "sporty" | "vintage" | "modern";
-
-export type DailyRoutine =
-  | "coffee"
-  | "morning_run"
-  | "music"
-  | "meditation"
-  | "reading";
 
 export type Impression =
   | "confidence"
@@ -59,6 +43,19 @@ export type Impression =
   | "luxury"
   | "nature";
 
+// Preferred perfumes that should have 15% higher recommendation rate
+export const PREFERRED_PERFUMES = [
+  "nishane-hacivat",
+  "ysl-libre",
+  "mancera-roses-vanille",
+  "terenzi-kirke",
+  "lveb",
+  "amouage-reflection-man",
+  "pdm-pegasus",
+  "ex-nihilo-fleur-narcotique",
+  "tf-bitter-peach",
+] as const;
+
 export interface UserPreferences {
   gender: Gender;
   age: number;
@@ -66,10 +63,7 @@ export interface UserPreferences {
   personality: Personality;
   scentMemory: ScentPreference;
   season: Season;
-  element: Element;
-  color: Color;
   style: Style;
-  dailyRoutine: DailyRoutine;
   desiredImpression: Impression;
 }
 
@@ -99,7 +93,7 @@ export interface Perfume {
 }
 
 export interface SurveyResponse {
-  gender: "male" | "female" | "unisex";
+  gender: Gender;
   age: number;
   occasion: "daily" | "special" | "night" | "work";
   budget: "low" | "medium" | "high" | "luxury";
@@ -115,10 +109,7 @@ export interface SurveyResponse {
   personality?: Personality;
   scentMemory?: ScentPreference;
   season?: Season;
-  element?: Element;
-  color?: Color;
   style?: Style;
-  dailyRoutine?: DailyRoutine;
   desiredImpression?: Impression;
 }
 
@@ -126,6 +117,7 @@ export interface RecommendationResult {
   perfume: Perfume;
   matchScore: number;
   matchReasons: string[];
+  isPreferredPerfume: boolean; // Flag to indicate if this is one of the preferred perfumes
 }
 
 export const BUDGET_RANGES = {

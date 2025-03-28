@@ -19,6 +19,7 @@ export default function SurveyForm({ onSubmit }: SurveyFormProps) {
       options: [
         { value: "male", label: "Erkek", icon: "👔" },
         { value: "female", label: "Kadın", icon: "👗" },
+        { value: "unisex", label: "Unisex", icon: "✨" },
       ],
       field: "gender" as const,
     },
@@ -33,7 +34,6 @@ export default function SurveyForm({ onSubmit }: SurveyFormProps) {
       ],
       field: "age" as const,
       onSelect: (value: string) => {
-        // Yaş grubu seçimine göre ortalama yaş değeri ata
         const ageMap: Record<string, number> = {
           "18": 21,
           "25": 29,
@@ -86,6 +86,18 @@ export default function SurveyForm({ onSubmit }: SurveyFormProps) {
       field: "season" as const,
     },
     {
+      title: "👔 Tarzını Yansıt",
+      question: "Giyim tarzın nasıl?",
+      options: [
+        { value: "classic", label: "Klasik", icon: "👔" },
+        { value: "bohemian", label: "Bohem", icon: "🌺" },
+        { value: "sporty", label: "Sportif", icon: "🏃" },
+        { value: "vintage", label: "Vintage", icon: "🎭" },
+        { value: "modern", label: "Modern", icon: "✨" },
+      ],
+      field: "style" as const,
+    },
+    {
       title: "🔮 Büyülü Bir An",
       question: "Bir kokuyu giydiğinde insanlar ne hissetsin?",
       options: [
@@ -99,68 +111,6 @@ export default function SurveyForm({ onSubmit }: SurveyFormProps) {
         { value: "nature", label: "Doğallık", icon: "🌿" },
       ],
       field: "desiredImpression" as const,
-    },
-    {
-      title: "🎨 Renklerin Dili",
-      question: "Kokunu bir renkle tanımlasaydın hangisi olurdu?",
-      options: [
-        { value: "deep_purple", label: "Koyu Mor", icon: "💜" },
-        { value: "gold", label: "Altın Sarısı", icon: "✨" },
-        { value: "light_blue", label: "Açık Mavi", icon: "💠" },
-        { value: "forest_green", label: "Orman Yeşili", icon: "🌲" },
-        { value: "ruby_red", label: "Yakut Kırmızısı", icon: "❤️" },
-      ],
-      field: "color" as const,
-    },
-    {
-      title: "👔 Tarzını Yansıt",
-      question: "Giyim tarzın nasıl?",
-      options: [
-        { value: "classic", label: "Klasik", icon: "👔" },
-        { value: "bohemian", label: "Bohem", icon: "🌺" },
-        { value: "sporty", label: "Sportif", icon: "🏃" },
-        { value: "vintage", label: "Vintage", icon: "🎭" },
-        { value: "modern", label: "Modern", icon: "✨" },
-      ],
-      field: "style" as const,
-    },
-    {
-      title: "🌅 Güne Başlarken",
-      question: "Sabah ilk iş olarak ne yaparsın?",
-      options: [
-        { value: "coffee", label: "Kahve içmek", icon: "☕" },
-        { value: "morning_run", label: "Koşuya çıkmak", icon: "🏃" },
-        { value: "music", label: "Müzik dinlemek", icon: "🎧" },
-        { value: "meditation", label: "Meditasyon yapmak", icon: "🧘" },
-        { value: "reading", label: "Kitap okumak", icon: "📚" },
-      ],
-      field: "dailyRoutine" as const,
-    },
-    {
-      title: "💫 Etki Alanın",
-      question: "Parfümünün nasıl bir iz bırakmasını istersin?",
-      options: [
-        { value: "confidence", label: "Güçlü ve etkileyici", icon: "💪" },
-        { value: "elegance", label: "Zarif ve sofistike", icon: "👑" },
-        { value: "mystery", label: "Gizemli ve çekici", icon: "🌙" },
-        { value: "energy", label: "Dinamik ve canlı", icon: "⚡" },
-        { value: "romance", label: "Romantik ve duygusal", icon: "💝" },
-        { value: "freedom", label: "Özgür ve rahat", icon: "🦋" },
-        { value: "luxury", label: "Lüks ve seçkin", icon: "✨" },
-        { value: "nature", label: "Doğal ve saf", icon: "🌿" },
-      ],
-      field: "desiredImpression" as const,
-    },
-    {
-      title: "🌌 Doğanın Gücü",
-      question: "Hangi doğa elementi seni en iyi yansıtır?",
-      options: [
-        { value: "fire", label: "Ateşin tutkusu", icon: "🔥" },
-        { value: "water", label: "Suyun zerafeti", icon: "💧" },
-        { value: "air", label: "Rüzgarın özgürlüğü", icon: "🌪️" },
-        { value: "earth", label: "Toprağın gücü", icon: "🌍" },
-      ],
-      field: "element" as const,
     },
   ] as const;
 

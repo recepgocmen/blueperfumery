@@ -31,10 +31,7 @@ export default function PerfumeFinder() {
       preferences.desiredImpression === "elegance"
     ) {
       occasion = "special";
-    } else if (
-      preferences.dailyRoutine === "coffee" ||
-      preferences.style === "classic"
-    ) {
+    } else if (preferences.style === "classic") {
       occasion = "work";
     }
 
@@ -53,10 +50,7 @@ export default function PerfumeFinder() {
 
     // Renk ve tarz seçimine göre istenen koku özelliklerini belirle
     const preferences_map = {
-      sweetness:
-        preferences.color === "ruby_red" || preferences.color === "gold"
-          ? 4
-          : 3,
+      sweetness: preferences.desiredImpression === "romance" ? 4 : 3,
       longevity: preferences.desiredImpression === "luxury" ? 5 : 4,
       sillage:
         preferences.personality === "mysterious" ||
