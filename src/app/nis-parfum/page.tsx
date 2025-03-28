@@ -84,7 +84,7 @@ export default function NisParfum() {
                       href={`/parfum/${perfume.id}`}
                       className="flex-1 border-2 border-amber-600 text-amber-600 px-4 py-2 rounded-lg text-sm font-medium text-center hover:bg-amber-50 transition-colors duration-300"
                     >
-                      Detaylı Bilgi
+                      Keşfet
                     </Link>
                     <Link
                       href="https://www.shopier.com/blueperfumery"

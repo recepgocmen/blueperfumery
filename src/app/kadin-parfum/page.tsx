@@ -82,7 +82,7 @@ export default function KadinParfum() {
                       href={`/parfum/${perfume.id}`}
                       className="flex-1 border-2 border-purple-600 text-purple-600 px-4 py-2 rounded-lg text-sm font-medium text-center hover:bg-purple-50 transition-colors duration-300"
                     >
-                      Detaylı Bilgi
+                      Keşfet
                     </Link>
                     <Link
                       href="https://www.shopier.com/blueperfumery"
