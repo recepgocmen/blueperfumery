@@ -14,7 +14,7 @@ export default function Header() {
             <Link href="/" className="relative group">
               <div className="flex flex-col items-center">
                 <div className="font-serif font-bold text-xl sm:text-2xl relative">
-                  <span className="bg-gradient-to-r from-blue-800 via-indigo-600 to-purple-800 bg-clip-text text-transparent tracking-widest drop-shadow-sm group-hover:from-purple-800 group-hover:via-indigo-600 group-hover:to-blue-800 transition-all duration-700">
+                  <span className="bg-gradient-to-r from-blue-800 via-indigo-600 to-purple-800 bg-clip-text text-transparent tracking-widest drop-shadow-lg group-hover:from-purple-800 group-hover:via-indigo-600 group-hover:to-blue-800 transition-all duration-700 ease-in-out transform group-hover:scale-105">
                     BLUE
                   </span>
                 </div>
