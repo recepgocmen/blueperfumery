@@ -1,19 +1,11 @@
-"use client";
-
 import { perfumes } from "@/data/perfumes";
 import { PREFERRED_PERFUMES } from "@/types/survey";
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
-interface PageProps {
-  params: {
-    id: string;
-  };
-  searchParams: { [key: string]: string | string[] | undefined };
-}
-
-export default function ParfumDetay({ params }: PageProps) {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export default function ParfumDetay({ params }: any) {
   const perfume = perfumes.find((p) => p.id === params.id);
   const isPreferred = PREFERRED_PERFUMES.includes(
     params.id as (typeof PREFERRED_PERFUMES)[number]
