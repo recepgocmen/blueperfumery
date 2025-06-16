@@ -1,0 +1,9 @@
+{
+  "mcpServers": {
+    "blue-perfumery": {
+      "command": "node",
+      "args": ["./dist/index.js"],
+      "cwd": "/Users/recepgocmen/Desktop/blueperfumery/mcp-server"
+    }
+  }
+}
