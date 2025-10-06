@@ -63,7 +63,7 @@ export default function Header() {
               </Link>
 
               <Link
-                href="https://www.shopier.com/blueperfumery"
+                href="/satin-al"
                 className="relative overflow-hidden group bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white px-5 py-2 rounded-lg text-sm font-medium tracking-wide transition-all duration-300 transform hover:scale-105 hover:shadow-lg"
               >
                 <span className="relative z-10 flex items-center">
@@ -130,7 +130,7 @@ export default function Header() {
             </Link>
 
             <Link
-              href="https://www.shopier.com/blueperfumery"
+              href="/satin-al"
               className="block bg-gradient-to-r from-purple-600 to-pink-600 text-white px-4 py-3 rounded-lg text-sm font-medium tracking-wide transition-all duration-300 text-center shadow-md"
               onClick={() => setIsMenuOpen(false)}
             >

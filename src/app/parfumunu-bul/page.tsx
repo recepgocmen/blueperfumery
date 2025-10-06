@@ -1,4 +1,4 @@
-import { getProducts } from "@/lib/api";
+import { getProducts, type Product } from "@/lib/api";
 import PerfumeFinderClient from "./PerfumeFinderClient";
 
 export const metadata = {
@@ -9,7 +9,8 @@ export const metadata = {
 
 export default async function PerfumeFinder() {
   // Fetch all active products from API (Server Component)
-  let products;
+  let products: Product[] = [];
+
   try {
     const response = await getProducts({
       status: "active",

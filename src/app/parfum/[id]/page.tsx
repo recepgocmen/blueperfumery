@@ -226,10 +226,7 @@ export default async function ParfumDetay({
 
               <div className="flex gap-4">
                 <Link
-                  href={
-                    perfume.shopierLink ||
-                    "https://www.shopier.com/blueperfumery"
-                  }
+                  href={"/satin-al"}
                   target="_blank"
                   rel="noopener noreferrer"
                   className={`flex-1 bg-gradient-to-r ${theme.button.primary} text-white px-6 py-3 rounded-lg text-lg font-medium text-center transition-all duration-300 shadow-md hover:shadow-lg`}

@@ -6,161 +6,103 @@ interface ResultScreenProps {
   onReset: () => void;
 }
 
-const getEmoji = (perfume: string): string => {
-  // Map perfumes to emojis based on their characteristics
-  if (
-    perfume.toLowerCase().includes("fresh") ||
-    perfume.toLowerCase().includes("citrus")
-  ) {
-    return "🍊";
-  } else if (
-    perfume.toLowerCase().includes("floral") ||
-    perfume.toLowerCase().includes("flower")
-  ) {
-    return "🌸";
-  } else if (
-    perfume.toLowerCase().includes("woody") ||
-    perfume.toLowerCase().includes("wood")
-  ) {
-    return "🌳";
-  } else if (
-    perfume.toLowerCase().includes("spicy") ||
-    perfume.toLowerCase().includes("oriental")
-  ) {
-    return "✨";
-  } else if (
-    perfume.toLowerCase().includes("sweet") ||
-    perfume.toLowerCase().includes("vanilla")
-  ) {
-    return "🍯";
-  } else if (
-    perfume.toLowerCase().includes("aqua") ||
-    perfume.toLowerCase().includes("marine")
-  ) {
-    return "🌊";
-  } else {
-    return "🌟";
-  }
-};
-
 const getNoteEmoji = (note: string): string => {
   const noteMap: Record<string, string> = {
     // Çiçeksi notalar
     gül: "🌹",
     rose: "🌹",
-    jasmine: "🌸",
     yasemin: "🌸",
-    lavender: "💜",
+    jasmine: "🌸",
     lavanta: "💜",
-    lily: "🌺",
-    zambak: "🌺",
-    floral: "🌸",
-    çiçek: "🌸",
+    lavender: "💜",
+    iris: "🌺",
+    süsen: "🌺",
+    menekşe: "🌸",
+    violet: "🌸",
 
     // Meyveli notalar
-    citrus: "🍊",
-    narenciye: "🍊",
-    orange: "🍊",
     portakal: "🍊",
-    apple: "🍎",
-    elma: "🍎",
-    berry: "🫐",
-    üzüm: "🍇",
-    grape: "🍇",
-
-    // Tatlı notalar
-    vanilla: "🍯",
-    vanilya: "🍯",
-    honey: "🍯",
-    bal: "🍯",
-    caramel: "🍪",
-    karamel: "🍪",
-    chocolate: "🍫",
-    çikolata: "🍫",
-
-    // Baharatlı notalar
-    spicy: "🌶️",
-    baharat: "🌶️",
-    cinnamon: "🧂",
-    tarçın: "🧂",
-    pepper: "🌶️",
-    biber: "🌶️",
+    orange: "🍊",
+    bergamot: "🍋",
+    limon: "🍋",
+    lemon: "🍋",
+    greyfurt: "🍊",
+    grapefruit: "🍊",
+    kiraz: "🍒",
+    cherry: "🍒",
+    şeftali: "🍑",
+    peach: "🍑",
 
     // Odunsu notalar
-    woody: "🌳",
-    odunsu: "🌳",
-    cedar: "🌲",
     sedir: "🌲",
-    sandalwood: "🪵",
+    cedar: "🌲",
     sandal: "🪵",
+    sandalwood: "🪵",
+    vetiver: "🌿",
+    paçuli: "🍂",
+    patchouli: "🍂",
+    ud: "🪵",
+    oud: "🪵",
 
-    // Taze notalar
-    fresh: "🌿",
-    ferah: "🌿",
-    green: "🌱",
-    yeşil: "🌱",
-    mint: "🌿",
-    nane: "🌿",
+    // Tatlı notalar
+    vanilya: "🍦",
+    vanilla: "🍦",
+    amber: "🟡",
+    misk: "🤍",
+    musk: "🤍",
+    tonka: "🍯",
+    benjamin: "🍯",
+    benzoin: "🍯",
 
-    // Deniz notaları
-    marine: "🌊",
-    deniz: "🌊",
-    aqua: "💧",
-    su: "💧",
-    ocean: "🌊",
-    okyanus: "🌊",
-
-    // Amber ve misk
-    amber: "✨",
-    musk: "🌙",
-    müsk: "🌙",
+    // Baharatlı notalar
+    kakule: "🌶️",
+    cardamom: "🌶️",
+    tarçın: "🌶️",
+    cinnamon: "🌶️",
+    safran: "🟡",
+    saffron: "🟡",
+    zencefil: "🌶️",
+    ginger: "🌶️",
 
     // Diğer
-    leather: "🧥",
-    deri: "🧥",
-    tobacco: "🍂",
+    deri: "🟤",
+    leather: "🟤",
     tütün: "🍂",
-    coffee: "☕",
+    tobacco: "🍂",
     kahve: "☕",
-    powder: "🌸",
-    pudra: "🌸",
+    coffee: "☕",
   };
 
-  // Nota ismini küçük harfe çevir
-  const lowerNote = note.toLowerCase();
-
-  // Eşleşen emoji varsa döndür, yoksa varsayılan emoji
-  for (const [key, emoji] of Object.entries(noteMap)) {
-    if (lowerNote.includes(key)) {
-      return emoji;
-    }
-  }
-
-  return "✨"; // Varsayılan emoji
+  return noteMap[note.toLowerCase()] || "🌿";
 };
 
 export default function ResultScreen({ result, onReset }: ResultScreenProps) {
-  const emoji = getEmoji(result.perfume.name);
-  const { exchangeRate, loading } = useExchangeRate();
+  const { exchangeRate } = useExchangeRate();
 
-  const getShopierUrl = (perfumeName: string) => {
+  const generateShopierLink = (perfumeName: string): string => {
     const formattedName = perfumeName
       .toLowerCase()
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "")
+      .replace(/ğ/g, "g")
+      .replace(/ü/g, "u")
+      .replace(/ş/g, "s")
+      .replace(/ı/g, "i")
+      .replace(/ö/g, "o")
+      .replace(/ç/g, "c")
       .replace(/\s+/g, "-")
       .replace(/[^\w-]/g, "");
 
     return `https://shopier.com/blueperfumery/${formattedName}`;
   };
 
-  // TL değerini hesapla
+  // TL değerini hesapla - originalPrice optional olduğu için fallback
   const calculateTRYPrice = () => {
     if (!exchangeRate) return null;
-    return (result.perfume.originalPrice * exchangeRate).toLocaleString(
-      "tr-TR",
-      {
-        maximumFractionDigits: 0,
-      }
-    );
+    const priceToUse = result.perfume.originalPrice || result.perfume.price;
+    return (priceToUse * exchangeRate).toLocaleString("tr-TR", {
+      maximumFractionDigits: 0,
+    });
   };
 
   return (
@@ -172,118 +114,130 @@ export default function ResultScreen({ result, onReset }: ResultScreenProps) {
               <div className="text-white">
                 <h3 className="text-lg sm:text-xl md:text-2xl font-bold mb-1">
                   {result.perfume.name}
-                  <span
-                    className="text-2xl mx-auto ml-4"
-                    role="img"
-                    aria-hidden="true"
-                  >
-                    {emoji}
-                  </span>
                 </h3>
-                <p className="text-blue-100 text-sm">{result.perfume.brand}</p>
+                <p className="text-blue-100 text-sm sm:text-base">
+                  {result.perfume.brand}
+                </p>
+              </div>
+              <div className="flex justify-center">
+                <div className="bg-white bg-opacity-20 px-3 sm:px-4 py-1 sm:py-2 rounded-full text-xs sm:text-sm text-white font-medium">
+                  %{Math.round(result.matchScore)} Uyumluluk
+                </div>
               </div>
             </div>
           </div>
 
-          <div className="p-5 sm:p-6 md:p-8 space-y-4 sm:space-y-6">
-            <div className="bg-gray-50 rounded-xl p-3 sm:p-4">
-              <h4 className="font-medium text-gray-800 text-sm sm:text-base mb-2">
-                Neden Bu Parfüm?
+          <div className="p-6 sm:p-8 space-y-6">
+            <div>
+              <h4 className="text-base sm:text-lg font-semibold text-gray-900 mb-3">
+                📖 Parfüm Hakkında
               </h4>
-              <ul className="space-y-1.5">
-                {result.matchReasons.map((reason, index) => (
+              <p className="text-gray-600 text-sm sm:text-base leading-relaxed">
+                {result.perfume.description}
+              </p>
+            </div>
+
+            <div>
+              <h4 className="text-base sm:text-lg font-semibold text-gray-900 mb-3">
+                🎯 Neden Size Uygun?
+              </h4>
+              <ul className="space-y-2">
+                {result.matchReasons.slice(0, 3).map((reason, index) => (
                   <li
                     key={index}
-                    className="flex items-start gap-2 text-gray-600 text-xs sm:text-sm"
+                    className="flex items-start text-sm sm:text-base"
                   >
-                    <span className="text-blue-500 mt-1">•</span>
-                    <span>{reason}</span>
+                    <span className="text-blue-500 mr-2 mt-1 flex-shrink-0">
+                      ✓
+                    </span>
+                    <span className="text-gray-600">{reason}</span>
                   </li>
                 ))}
               </ul>
             </div>
 
-            <div className="space-y-4">
-              <div className="text-center">
-                <h4 className="font-medium text-gray-800 text-sm sm:text-base pb-2">
-                  Notalar
-                </h4>
-                <div className="flex justify-center flex-wrap gap-1.5 sm:gap-2">
-                  {result.perfume.notes.map((note, index) => (
-                    <span
-                      key={index}
-                      className="px-2 sm:px-3 py-1 bg-blue-50 text-blue-600 rounded-full text-xs sm:text-sm flex items-center gap-1.5"
-                    >
-                      <span role="img" aria-hidden="true">
-                        {getNoteEmoji(note)}
-                      </span>
-                      {note}
-                    </span>
-                  ))}
-                </div>
-              </div>
-
-              <div className="mt-4 p-4 sm:p-5 bg-blue-50 rounded-xl">
-                <div className="text-center">
-                  <div className="mb-3">
-                    <span className="font-medium text-gray-800 text-sm mb-1 mr-2">
-                      Orijinal Fiyat
-                    </span>
-
-                    <span className="text-gray-500 text-xs mt-0.5">
-                      {result.perfume.ml}ml - ${result.perfume.originalPrice}{" "}
-                      {!loading && exchangeRate
-                        ? `(≈ ${calculateTRYPrice()} ₺)`
-                        : ""}
-                    </span>
-                  </div>
-
-                  <div className="pt-3 border-t border-blue-100">
-                    <div className="flex items-center justify-center gap-4">
-                      <div className="inline-block text-blue-600 rounded-full bg-blue-50 text-xs px-2 py-0.5 flex items-center gap-1">
-                        Açılışa Özel 50ml
-                        <span role="img" aria-label="fire">
-                          🔥
-                        </span>
-                      </div>
-                      <span className="text-blue-600 font-bold text-xl sm:text-2xl">
-                        599₺
-                      </span>
-                      <a
-                        href={getShopierUrl(result.perfume.name)}
-                        className="py-2 px-3 !font-bold bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white rounded-xl transition-all duration-300 text-sm flex items-center gap-1 shadow-md hover:shadow-lg transform hover:scale-105 animate-pulse-subtle"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                      >
-                        <span className="whitespace-nowrap">HEMEN AL</span>
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          className="h-4 w-4"
-                          fill="none"
-                          viewBox="0 0 24 24"
-                          stroke="currentColor"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={2}
-                            d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"
-                          />
-                        </svg>
-                      </a>
-                    </div>
-                  </div>
-                </div>
+            <div>
+              <h4 className="text-base sm:text-lg font-semibold text-gray-900 mb-3">
+                🌺 Koku Notaları
+              </h4>
+              <div className="flex flex-wrap gap-2">
+                {result.perfume.notes.map((note, index) => (
+                  <span
+                    key={index}
+                    className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-blue-50 text-blue-700 rounded-full text-xs sm:text-sm"
+                  >
+                    <span>{getNoteEmoji(note)}</span>
+                    <span>{note}</span>
+                  </span>
+                ))}
               </div>
             </div>
 
-            <button
-              onClick={onReset}
-              className="w-full py-2.5 sm:py-3 px-4 bg-gray-100 hover:bg-gray-200 text-gray-800 rounded-xl transition-colors duration-200 font-medium text-sm sm:text-base"
-              type="button"
-            >
-              Yeni Test Yap
-            </button>
+            <div>
+              <h4 className="text-base sm:text-lg font-semibold text-gray-900 mb-3">
+                ✨ Özellikler
+              </h4>
+              <div className="flex flex-wrap gap-2">
+                {result.perfume.characteristics.map((char, index) => (
+                  <span
+                    key={index}
+                    className="px-3 py-1.5 bg-gradient-to-r from-blue-50 to-indigo-50 text-blue-700 rounded-full text-xs sm:text-sm font-medium"
+                  >
+                    {char}
+                  </span>
+                ))}
+              </div>
+            </div>
+
+            <div className="bg-blue-50 rounded-xl p-4 sm:p-6">
+              <div className="flex flex-col sm:flex-row justify-between items-center gap-4">
+                <div>
+                  <p className="text-gray-600 text-sm mb-1">Fiyat</p>
+                  <div className="flex items-baseline gap-2">
+                    <span className="text-2xl sm:text-3xl font-bold text-blue-600">
+                      ₺{result.perfume.price}
+                    </span>
+                    {result.perfume.originalPrice &&
+                      result.perfume.originalPrice > result.perfume.price && (
+                        <span className="text-sm sm:text-base text-gray-400 line-through">
+                          ₺{result.perfume.originalPrice}
+                        </span>
+                      )}
+                  </div>
+                  {calculateTRYPrice() && (
+                    <p className="text-gray-500 text-xs mt-1">
+                      (~{calculateTRYPrice()} TL)
+                    </p>
+                  )}
+                </div>
+                <a
+                  href={
+                    result.perfume.shopierLink ||
+                    generateShopierLink(result.perfume.name)
+                  }
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="w-full sm:w-auto bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white px-6 sm:px-8 py-2.5 sm:py-3 rounded-lg font-semibold shadow-md hover:shadow-lg transition-all duration-300 text-center text-sm sm:text-base"
+                >
+                  Satın Al
+                </a>
+              </div>
+            </div>
+
+            <div className="flex gap-3">
+              <button
+                onClick={onReset}
+                className="flex-1 border-2 border-blue-600 text-blue-600 hover:bg-blue-50 px-4 sm:px-6 py-2 sm:py-3 rounded-lg font-medium transition-colors duration-300 text-sm sm:text-base"
+              >
+                Yeni Test Yap
+              </button>
+              <a
+                href={`/parfum/${result.perfume.id}`}
+                className="flex-1 bg-blue-600 hover:bg-blue-700 text-white px-4 sm:px-6 py-2 sm:py-3 rounded-lg font-medium transition-colors duration-300 text-center text-sm sm:text-base"
+              >
+                Detayları Gör
+              </a>
+            </div>
           </div>
         </div>
       </div>

@@ -188,7 +188,7 @@ export default function AboutPage() {
                 </li>
                 <li>
                   <Link
-                    href="https://www.shopier.com/blueperfumery"
+                    href="/satin-al"
                     className="text-gray-400 hover:text-white transition-colors"
                   >
                     Satın Al

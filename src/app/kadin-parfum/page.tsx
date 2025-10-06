@@ -109,10 +109,7 @@ export default async function KadinParfum() {
                       Keşfet
                     </Link>
                     <Link
-                      href={
-                        perfume.shopierLink ||
-                        "https://www.shopier.com/blueperfumery"
-                      }
+                      href={"/satin-al"}
                       target="_blank"
                       rel="noopener noreferrer"
                       className="flex-1 bg-gradient-to-r from-purple-600 to-pink-600 text-white px-4 py-2 rounded-lg text-sm font-medium text-center hover:from-purple-700 hover:to-pink-700 transition-all duration-300 shadow-md hover:shadow-lg"
