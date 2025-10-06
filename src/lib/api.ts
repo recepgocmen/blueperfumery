@@ -237,3 +237,4 @@ export async function getCategories(): Promise<string[]> {
     return [];
   }
 }
+
