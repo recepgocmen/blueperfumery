@@ -1,18 +1,22 @@
 import {
-  Perfume,
   SurveyResponse,
   RecommendationResult,
   BUDGET_RANGES,
   PREFERRED_PERFUMES,
 } from "../types/survey";
-import { perfumes } from "../data/perfumes";
+import type { Product } from "../lib/api";
 
+/**
+ * Get personalized perfume recommendations based on survey
+ * Now accepts products from API instead of using hardcoded data
+ */
 export function getLocalRecommendations(
   survey: SurveyResponse,
+  products: Product[], // Now accepts products from API
   maxRecommendations: number = 3
 ): RecommendationResult[] {
   // Calculate scores for all perfumes
-  const results = perfumes
+  const results = products
     .map((perfume) => {
       const matchScore = calculateMatchScore(perfume, survey);
       const matchReasons = getMatchReasons(perfume, survey);
@@ -99,7 +103,7 @@ function simpleHash(str: string): number {
 // Ensure diversity in recommendations
 function applyDiversity(
   results: Array<{
-    perfume: Perfume;
+    perfume: Product;
     matchScore: number;
     matchReasons: string[];
     originalScore: number;
@@ -108,7 +112,7 @@ function applyDiversity(
   }>,
   maxRecommendations: number
 ): Array<{
-  perfume: Perfume;
+  perfume: Product;
   matchScore: number;
   matchReasons: string[];
   originalScore: number;
@@ -116,7 +120,7 @@ function applyDiversity(
   isPreferredPerfume: boolean;
 }> {
   const diverseResults: Array<{
-    perfume: Perfume;
+    perfume: Product;
     matchScore: number;
     matchReasons: string[];
     originalScore: number;
@@ -188,7 +192,7 @@ function applyDiversity(
   return diverseResults;
 }
 
-function calculateMatchScore(perfume: Perfume, survey: SurveyResponse): number {
+function calculateMatchScore(perfume: Product, survey: SurveyResponse): number {
   let score = 0;
   let multiplier = 1.0;
 
@@ -199,23 +203,21 @@ function calculateMatchScore(perfume: Perfume, survey: SurveyResponse): number {
     return 0; // Cinsiyet uyuşmuyorsa direk elenir
   }
 
-  // Yaş aralığı kontrolü - yaşa göre dinamik puanlama
+  // Yaş aralığı kontrolü
   if (
     survey.age >= perfume.ageRange.min &&
     survey.age <= perfume.ageRange.max
   ) {
-    // Yaş aralığının tam ortasına yakınlık bonus puan getirir
     const ageMidPoint = (perfume.ageRange.min + perfume.ageRange.max) / 2;
     const ageDifference = Math.abs(survey.age - ageMidPoint);
     const ageRangeSize = perfume.ageRange.max - perfume.ageRange.min;
     score += 15 * (1 - ageDifference / ageRangeSize);
   }
 
-  // Bütçe kontrolü - fiyat aralığına göre dinamik puanlama
+  // Bütçe kontrolü
   if (survey.budget) {
     const budgetRange = BUDGET_RANGES[survey.budget];
     if (perfume.price >= budgetRange.min && perfume.price <= budgetRange.max) {
-      // Bütçe aralığının ortasına yakınlık bonus puan getirir
       const budgetMidPoint = (budgetRange.min + budgetRange.max) / 2;
       const priceDifference = Math.abs(perfume.price - budgetMidPoint);
       const budgetRangeSize = budgetRange.max - budgetRange.min;
@@ -223,17 +225,15 @@ function calculateMatchScore(perfume: Perfume, survey: SurveyResponse): number {
     }
   }
 
-  // Notalar kontrolü - daha detaylı analiz
+  // Notalar kontrolü
   if (survey.likedNotes) {
     const matchingLikedNotes = perfume.notes.filter((note) =>
       survey.likedNotes?.includes(note)
     );
-    // Eşleşen nota sayısına göre artan bonus
     const matchBonus =
       matchingLikedNotes.length * (matchingLikedNotes.length + 5);
     score += matchBonus;
 
-    // Çok fazla eşleşen nota varsa çarpan artışı
     if (matchingLikedNotes.length >= 3) {
       multiplier += 0.2;
     }
@@ -243,12 +243,11 @@ function calculateMatchScore(perfume: Perfume, survey: SurveyResponse): number {
     const matchingDislikedNotes = perfume.notes.filter((note) =>
       survey.dislikedNotes?.includes(note)
     );
-    // Sevmediği notaların sayısına göre artan ceza
     const penaltyMultiplier = matchingDislikedNotes.length * 1.5;
     score -= 15 * penaltyMultiplier;
   }
 
-  // Kullanıcı kişiliği ile parfüm karakteri arasında ilişki kurma
+  // Personality matching
   if (survey.personality) {
     const personalityMap: Record<string, string[]> = {
       adventurous: ["unique", "fresh", "distinctive", "woody", "aromatic"],
@@ -265,16 +264,14 @@ function calculateMatchScore(perfume: Perfume, survey: SurveyResponse): number {
       associatedTraits.includes(char)
     );
 
-    // Her eşleşen özellik için puan ekle
     score += matchingTraits.length * 10;
 
-    // Güçlü eşleşme durumunda çarpan artışı
     if (matchingTraits.length >= 2) {
       multiplier += 0.15;
     }
   }
 
-  // Mevsim tercihi kontrolü
+  // Season matching
   if (survey.season) {
     const seasonMap: Record<string, string[]> = {
       spring: ["fresh", "floral", "light", "green", "citrusy"],
@@ -288,16 +285,14 @@ function calculateMatchScore(perfume: Perfume, survey: SurveyResponse): number {
       seasonTraits.includes(char)
     );
 
-    // Mevsimsel uyum puanı
     score += matchingSeasonTraits.length * 8;
 
-    // Güçlü mevsimsel uyum çarpan artışı getirir
     if (matchingSeasonTraits.length >= 3) {
       multiplier += 0.2;
     }
   }
 
-  // Kullanım amacına göre karakteristik analizi
+  // Occasion matching
   if (survey.occasion) {
     const occasionScores: Record<
       string,
@@ -326,19 +321,16 @@ function calculateMatchScore(perfume: Perfume, survey: SurveyResponse): number {
 
     const { primary, secondary } = occasionScores[survey.occasion];
 
-    // Birincil karakteristikler daha yüksek puan getirir
     const matchingPrimary = perfume.characteristics.filter((char) =>
       primary.includes(char)
     );
     score += matchingPrimary.length * 12;
 
-    // İkincil karakteristikler daha az puan getirir
     const matchingSecondary = perfume.characteristics.filter((char) =>
       secondary.includes(char)
     );
     score += matchingSecondary.length * 8;
 
-    // Karakteristik eşleşmesi çok iyiyse çarpan artışı
     if (
       matchingPrimary.length >= 2 ||
       matchingPrimary.length + matchingSecondary.length >= 4
@@ -347,9 +339,8 @@ function calculateMatchScore(perfume: Perfume, survey: SurveyResponse): number {
     }
   }
 
-  // Marka bilinci
+  // Brand consciousness
   if (survey.preferences?.brandConsciousness) {
-    // Premium markalardan mı hoşlanıyor?
     const isPremiumBrand = [
       "Blue Perfumery Luxury",
       "Blue Perfumery Premium",
@@ -358,15 +349,13 @@ function calculateMatchScore(perfume: Perfume, survey: SurveyResponse): number {
     ].includes(perfume.brand);
 
     if (isPremiumBrand && survey.preferences.brandConsciousness > 3) {
-      // Marka bilinci yüksek olan kullanıcıya premium markalar için bonus
       multiplier += 0.15;
     } else if (!isPremiumBrand && survey.preferences.brandConsciousness < 3) {
-      // Marka bilinci düşük olan kullanıcıya klasik markalar için bonus
       multiplier += 0.1;
     }
   }
 
-  // Stil eşleşmesi
+  // Style matching
   if (survey.style) {
     const styleMap: Record<string, string[]> = {
       classic: ["elegant", "timeless", "refined", "sophisticated", "iconic"],
@@ -381,11 +370,10 @@ function calculateMatchScore(perfume: Perfume, survey: SurveyResponse): number {
       styleTraits.includes(char)
     );
 
-    // Stil uyumu puanı
     score += matchingStyleTraits.length * 7;
   }
 
-  // Desired impression (istenen etki) analizi
+  // Desired impression
   if (survey.desiredImpression) {
     const impressionMap: Record<string, string[]> = {
       confidence: ["strong", "distinctive", "bold", "intense", "rich"],
@@ -403,26 +391,22 @@ function calculateMatchScore(perfume: Perfume, survey: SurveyResponse): number {
       impressionTraits.includes(char)
     );
 
-    // Etki uyumu puanı
     score += matchingImpressionTraits.length * 10;
 
-    // Güçlü etki uyumu çarpan artışı getirir
     if (matchingImpressionTraits.length >= 3) {
       multiplier += 0.2;
     }
   }
 
-  // Final skor hesaplama
+  // Final score
   const finalScore = Math.round(score * multiplier);
-
-  // Minimum skor kontrolü
   return Math.max(finalScore, 0);
 }
 
-function getMatchReasons(perfume: Perfume, survey: SurveyResponse): string[] {
+function getMatchReasons(perfume: Product, survey: SurveyResponse): string[] {
   const reasons: string[] = [];
 
-  // Cinsiyet ve yaş grubu uyumu
+  // Gender messages
   const genderMessages = {
     male: [
       "Erkek dünyasının güçlü karakterini yansıtan bir seçim",
@@ -441,14 +425,13 @@ function getMatchReasons(perfume: Perfume, survey: SurveyResponse): string[] {
     ],
   };
 
-  // Cinsiyet mesajını rastgele seç
   if (perfume.gender === survey.gender) {
     reasons.push(genderMessages[survey.gender][Math.floor(Math.random() * 3)]);
   } else if (perfume.gender === "unisex") {
     reasons.push(genderMessages.unisex[Math.floor(Math.random() * 3)]);
   }
 
-  // Yaş grubu mesajları
+  // Age group messages
   const getAgeGroupMessage = (age: number) => {
     if (age <= 24) {
       return [
@@ -480,102 +463,48 @@ function getMatchReasons(perfume: Perfume, survey: SurveyResponse): string[] {
   const ageMessages = getAgeGroupMessage(survey.age);
   reasons.push(ageMessages[Math.floor(Math.random() * 3)]);
 
-  // Karakteristik mesajları
-  const getCharMessage = () => {
-    const charMap: Record<string, string[]> = {
-      sweet: [
-        "Tatlı notalarla bezeli cezbedici bir koku",
-        "Baştan çıkarıcı tatlı dokunuşlar içeriyor",
-        "Tatlı ve yumuşak aromalarla sarmalanmış bir deneyim",
-      ],
-      fresh: [
-        "Ferah ve canlandırıcı bir tazelik sunuyor",
-        "Taze ve canlı notalar içeren modern bir parfüm",
-        "Gün boyu ferahlık hissi veren temiz bir koku",
-      ],
-      woody: [
-        "Odunsu notalarla derinlik kazanan güçlü bir karakter",
-        "Doğadan ilham alan odunsu aromalar içeriyor",
-        "Etkileyici odunsu temel notalarla desteklenmiş",
-      ],
-      floral: [
-        "Çiçeksi notalarla zenginleştirilmiş zarif bir kompozisyon",
-        "Çiçek bahçesinden ilham alan büyüleyici bir buket",
-        "Seçkin çiçek notalarıyla bezenmiş feminen bir koku",
-      ],
-      spicy: [
-        "Karakter sahibi baharatlı notalarla zenginleştirilmiş",
-        "Isıtıcı baharatlarla sarmalanmış güçlü bir imza",
-        "Cesur baharatlı dokunuşlar içeren etkileyici bir parfüm",
-      ],
-      citrusy: [
-        "Enerji dolu narenciye notalarıyla canlandırıcı",
-        "Tazelik veren narenciye harmonisi sunuyor",
-        "Pozitif enerji saçan narenciye dokunuşları içeriyor",
-      ],
-      oriental: [
-        "Doğunun egzotik cazibesini yansıtan bir koku",
-        "Mistik ve çekici oryantal notalarla bezeli",
-        "Oryantal esintiler taşıyan lüks bir kompozisyon",
-      ],
-      leather: [
-        "Sofistike deri notalarıyla bütünleşen güçlü karakter",
-        "Maskülen deri dokunuşlarıyla karakter kazanan bir parfüm",
-        "Zarif deri tonları içeren etkileyici bir koku",
-      ],
-      vanilla: [
-        "Sıcak vanilya notalarıyla sarmalayan rahatlatıcı bir koku",
-        "Baştan çıkarıcı vanilya dokunuşları içeren yumuşak bir parfüm",
-        "Kremsi vanilya aromalarıyla bezeli sakinleştirici bir deneyim",
-      ],
-      amber: [
-        "Sıcak amber notalarıyla baştan çıkarıcı",
-        "Zengin amber dokusuna sahip etkileyici bir parfüm",
-        "Lüks amber aromalarıyla sarmalayan güçlü bir koku",
-      ],
-    };
-
-    // Parfümün karakteristiklerine göre rastgele bir mesaj seç
-    const availableChars = perfume.characteristics.filter(
-      (char) => charMap[char]
-    );
-    if (availableChars.length > 0) {
-      const selectedChar =
-        availableChars[Math.floor(Math.random() * availableChars.length)];
-      const charMessages = charMap[selectedChar];
-      if (charMessages && charMessages.length > 0) {
-        return charMessages[Math.floor(Math.random() * charMessages.length)];
-      }
-    }
-
-    return "Blue Perfumery'nin özenle seçilmiş notalarıyla harmanlanan özel bir parfüm";
+  // Characteristic message
+  const charMap: Record<string, string[]> = {
+    sweet: [
+      "Tatlı notalarla bezeli cezbedici bir koku",
+      "Baştan çıkarıcı tatlı dokunuşlar içeriyor",
+    ],
+    fresh: [
+      "Ferah ve canlandırıcı bir tazelik sunuyor",
+      "Taze ve canlı notalar içeren modern bir parfüm",
+    ],
+    woody: [
+      "Odunsu notalarla derinlik kazanan güçlü bir karakter",
+      "Doğadan ilham alan odunsu aromalar içeriyor",
+    ],
+    floral: [
+      "Çiçeksi notalarla zenginleştirilmiş zarif bir kompozisyon",
+      "Çiçek bahçesinden ilham alan büyüleyici bir buket",
+    ],
+    spicy: [
+      "Karakter sahibi baharatlı notalarla zenginleştirilmiş",
+      "Isıtıcı baharatlarla sarmalanmış güçlü bir imza",
+    ],
   };
 
-  reasons.push(getCharMessage());
-
-  // Parfüm hakkında özel bir mesaj
-  const uniqueMessages = [
-    `${perfume.name}, Blue Perfumery'nin kişiliğinize özel olarak seçilen bir kompozisyonu`,
-    `Tercihlerinizle uyumlu özgün notalar içeren bir Blue Perfumery imzası`,
-    `Kişisel tarzınızı yansıtacak şekilde Blue Perfumery tarafından tasarlanmış`,
-    `Blue Perfumery koleksiyonunun sizin karakterinize hitap eden özel bir üyesi`,
-  ];
-
-  reasons.push(
-    uniqueMessages[Math.floor(Math.random() * uniqueMessages.length)]
+  const availableChars = perfume.characteristics.filter(
+    (char) => charMap[char]
   );
-
-  // Parfümün özellikleri hakkında özel mesaj
-  if (perfume.notes && perfume.notes.length > 0) {
-    const selectedNotes = perfume.notes.slice(
-      0,
-      Math.min(3, perfume.notes.length)
-    );
-    const notesMessage = `${selectedNotes.join(
-      ", "
-    )} notalarının uyumlu birleşimi`;
-    reasons.push(notesMessage);
+  if (availableChars.length > 0) {
+    const selectedChar =
+      availableChars[Math.floor(Math.random() * availableChars.length)];
+    const charMessages = charMap[selectedChar];
+    if (charMessages) {
+      reasons.push(
+        charMessages[Math.floor(Math.random() * charMessages.length)]
+      );
+    }
   }
+
+  // Unique message about the perfume
+  reasons.push(
+    `${perfume.name}, Blue Perfumery'nin kişiliğinize özel olarak seçilen bir kompozisyonu`
+  );
 
   return reasons;
 }

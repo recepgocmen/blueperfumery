@@ -1,14 +1,9 @@
-export interface Perfume {
-  id: string;
-  name: string;
-  brand: string;
-  price: number;
-  gender: "male" | "female" | "unisex";
-  notes: string[];
-  description: string;
-  ageRange: {
-    min: number;
-    max: number;
-  };
-  characteristics: string[];
-}
+/**
+ * @deprecated Use Product type from @/lib/api instead
+ * This file is kept for backward compatibility
+ */
+
+import type { Product } from "../lib/api";
+
+// Re-export Product as Perfume for backward compatibility
+export type Perfume = Product;

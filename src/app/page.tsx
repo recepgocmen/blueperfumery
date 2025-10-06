@@ -4,7 +4,13 @@ import Link from "next/link";
 import { useState, useEffect } from "react";
 import Image from "next/image";
 
-const images = ["/image-1.jpg", "/image-2.jpg", "/image-3.jpg", "/image-4.jpg"];
+const images = [
+  "/image-1.png",
+  "/image-2.png",
+  "/image-3.png",
+  "/image-4.png",
+  "/image-5.png",
+];
 
 // Content for each slider image
 const sliderContent = [
@@ -22,6 +28,11 @@ const sliderContent = [
     title: "Lüks ve Zarafet Bir Arada",
     description:
       "Premium parfüm koleksiyonumuzla benzersiz ve kalıcı kokulara sahip olun.",
+  },
+  {
+    title: "Siz Olmanın En Güzel Hali",
+    description:
+      "Kokular dünyasında kendinizi ifade etmenin en özel yolu Blue Perfumery'de.",
   },
   {
     title: "Siz Olmanın En Güzel Hali",
@@ -67,7 +78,7 @@ export default function Home() {
             </div>
           ))}
           {/* Overlay */}
-          <div className="absolute inset-0 bg-gradient-to-b from-blue-900/50 to-indigo-900/70 backdrop-blur-[2px]" />
+          <div className="absolute inset-0 bg-gradient-to-b from-blue-900/25 to-indigo-900/25 backdrop-blur-[2px]" />
         </div>
 
         {/* Content */}

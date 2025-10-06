@@ -1,3 +1,5 @@
+import type { Product } from "../lib/api";
+
 export type Gender = "male" | "female" | "unisex";
 
 export type FragrancePreference = {
@@ -43,10 +45,10 @@ export type Impression =
   | "luxury"
   | "nature";
 
-// Preferred perfumes that should have 15% higher recommendation rate
+// Preferred perfumes that should have higher recommendation rate
 export const PREFERRED_PERFUMES = [
   "nishane-hacivat",
-  "ysl-libre",
+  "ysl-libre-woman",
   "mancera-roses-vanille",
   "terenzi-kirke",
   "lveb",
@@ -54,6 +56,9 @@ export const PREFERRED_PERFUMES = [
   "pdm-pegasus",
   "ex-nihilo-fleur-narcotique",
   "tf-bitter-peach",
+  "mfk-br540",
+  "tf-lost-cherry",
+  "nasomatto-black-afgano",
 ] as const;
 
 export interface UserPreferences {
@@ -67,30 +72,8 @@ export interface UserPreferences {
   desiredImpression: Impression;
 }
 
-export interface Perfume {
-  id: string;
-  name: string;
-  brand: string;
-  price: number;
-  ml: number;
-  originalPrice: number;
-  gender: "male" | "female" | "unisex";
-  notes: string[];
-  description: string;
-  ageRange: {
-    min: number;
-    max: number;
-  };
-  characteristics: string[];
-  rating?: {
-    sweetness?: number;
-    longevity?: number;
-    sillage?: number;
-    uniqueness?: number;
-    versatility?: number;
-    value?: number;
-  };
-}
+// Use Product type from API instead of local Perfume type
+export type Perfume = Product;
 
 export interface SurveyResponse {
   gender: Gender;
@@ -114,36 +97,36 @@ export interface SurveyResponse {
 }
 
 export interface RecommendationResult {
-  perfume: Perfume;
+  perfume: Product; // Now uses Product from API
   matchScore: number;
   matchReasons: string[];
-  isPreferredPerfume: boolean; // Flag to indicate if this is one of the preferred perfumes
+  isPreferredPerfume: boolean;
 }
 
 export const BUDGET_RANGES = {
-  low: { min: 0, max: 500 },
-  medium: { min: 501, max: 1000 },
-  high: { min: 1001, max: 2000 },
-  luxury: { min: 2001, max: Infinity },
+  low: { min: 0, max: 700 },
+  medium: { min: 701, max: 1100 },
+  high: { min: 1101, max: 1500 },
+  luxury: { min: 1501, max: Infinity },
 } as const;
 
 export const COMMON_NOTES = [
   "amber",
-  "vanilla",
-  "oud",
-  "rose",
-  "jasmine",
-  "leather",
-  "tobacco",
-  "citrus",
-  "woody",
-  "floral",
-  "spicy",
-  "fruity",
-  "marine",
-  "fresh",
-  "sweet",
-  "powdery",
-  "musky",
-  "oriental",
+  "vanilya",
+  "ud",
+  "gül",
+  "yasemin",
+  "deri",
+  "tütün",
+  "narenciye",
+  "odunsu",
+  "çiçeksi",
+  "baharatlı",
+  "meyveli",
+  "deniz",
+  "ferah",
+  "tatlı",
+  "pudralı",
+  "misk",
+  "oryantal",
 ] as const;

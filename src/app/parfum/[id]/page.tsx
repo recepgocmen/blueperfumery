@@ -1,19 +1,46 @@
-import { perfumes } from "@/data/perfumes";
+import { getProductById } from "@/lib/api";
 import { PREFERRED_PERFUMES } from "@/types/survey";
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export default function ParfumDetay({ params }: any) {
-  const perfume = perfumes.find((p) => p.id === params.id);
-  const isPreferred = PREFERRED_PERFUMES.includes(
-    params.id as (typeof PREFERRED_PERFUMES)[number]
-  );
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}) {
+  const { id } = await params;
 
-  if (!perfume) {
+  try {
+    const perfume = await getProductById(id);
+    return {
+      title: `${perfume.name} | Blue Perfumery`,
+      description: perfume.description,
+    };
+  } catch {
+    return {
+      title: "Ürün Bulunamadı | Blue Perfumery",
+    };
+  }
+}
+
+export default async function ParfumDetay({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}) {
+  const { id } = await params;
+
+  let perfume;
+  try {
+    perfume = await getProductById(id);
+  } catch {
     notFound();
   }
+
+  const isPreferred = PREFERRED_PERFUMES.includes(
+    id as (typeof PREFERRED_PERFUMES)[number]
+  );
 
   // Parfüm kategorisine göre renk teması belirle
   const getColorTheme = () => {
@@ -71,7 +98,7 @@ export default function ParfumDetay({ params }: any) {
             {/* Sol taraf - Görsel */}
             <div className="relative h-[500px] md:h-full">
               <Image
-                src="/card-photos/1.png"
+                src={perfume.image || "/card-photos/1.png"}
                 alt={perfume.name}
                 fill
                 className="object-cover"
@@ -81,6 +108,11 @@ export default function ParfumDetay({ params }: any) {
                   className={`absolute top-4 right-4 ${theme.badge} text-white px-3 py-1 rounded-full text-sm font-medium`}
                 >
                   Öne Çıkan
+                </div>
+              )}
+              {perfume.stock <= 5 && (
+                <div className="absolute top-4 left-4 bg-red-600 text-white px-3 py-1 rounded-full text-sm font-medium">
+                  Son {perfume.stock} Adet!
                 </div>
               )}
             </div>
@@ -156,23 +188,50 @@ export default function ParfumDetay({ params }: any) {
                   </div>
                   <div>
                     <p className="text-sm text-gray-500">Hacim</p>
-                    <p className="font-medium text-gray-900">50 ml</p>
+                    <p className="font-medium text-gray-900">{perfume.ml} ml</p>
                   </div>
                   <div>
-                    <p className="text-sm text-gray-500">Fiyat</p>
-                    <div className="flex items-center gap-2">
-                      <p className="font-medium text-gray-900">599₺</p>
-                      <span className="bg-red-500 text-white px-3 py-1 rounded-full text-sm font-medium">
-                        Açılışa Özel
-                      </span>
-                    </div>
+                    <p className="text-sm text-gray-500">Stok</p>
+                    <p className="font-medium text-gray-900">
+                      {perfume.stock > 10
+                        ? "Stokta"
+                        : `Son ${perfume.stock} adet`}
+                    </p>
                   </div>
+                </div>
+              </div>
+
+              <div className="mb-6">
+                <div className="flex items-baseline gap-3">
+                  <span className="text-4xl font-bold text-gray-900">
+                    ₺{perfume.price}
+                  </span>
+                  {perfume.originalPrice &&
+                    perfume.originalPrice > perfume.price && (
+                      <>
+                        <span className="text-xl text-gray-400 line-through">
+                          ₺{perfume.originalPrice}
+                        </span>
+                        <span className="bg-red-500 text-white px-3 py-1 rounded-full text-sm font-medium">
+                          %
+                          {Math.round(
+                            (1 - perfume.price / perfume.originalPrice) * 100
+                          )}{" "}
+                          İndirim
+                        </span>
+                      </>
+                    )}
                 </div>
               </div>
 
               <div className="flex gap-4">
                 <Link
-                  href="https://www.shopier.com/blueperfumery"
+                  href={
+                    perfume.shopierLink ||
+                    "https://www.shopier.com/blueperfumery"
+                  }
+                  target="_blank"
+                  rel="noopener noreferrer"
                   className={`flex-1 bg-gradient-to-r ${theme.button.primary} text-white px-6 py-3 rounded-lg text-lg font-medium text-center transition-all duration-300 shadow-md hover:shadow-lg`}
                 >
                   Satın Al

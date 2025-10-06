@@ -1,15 +1,17 @@
-"use client";
-
-import { perfumes } from "@/data/perfumes";
+import { getProductsByGender } from "@/lib/api";
 import { PREFERRED_PERFUMES } from "@/types/survey";
 import Image from "next/image";
 import Link from "next/link";
 
-export default function ErkekParfum() {
-  // Erkek ve unisex parfümleri filtrele
-  const erkekParfumleri = perfumes.filter(
-    (perfume) => perfume.gender === "male" || perfume.gender === "unisex"
-  );
+export const metadata = {
+  title: "Erkek Parfümleri | Blue Perfumery",
+  description:
+    "Blue Perfumery'nin seçkin erkek parfüm koleksiyonu. Maskülen ve sofistike kokularla karakterinizi tamamlayın.",
+};
+
+export default async function ErkekParfum() {
+  // Fetch male products from API (Server Component - SEO friendly)
+  const erkekParfumleri = await getProductsByGender("male");
 
   // Preferred parfümleri öne çıkar
   const sortedParfumleri = [...erkekParfumleri].sort((a, b) => {
@@ -35,6 +37,9 @@ export default function ErkekParfum() {
             Blue Perfumery&apos;nin seçkin erkek parfüm koleksiyonu. Maskülen ve
             sofistike kokularla karakterinizi tamamlayın.
           </p>
+          <p className="text-sm text-gray-500 mt-2">
+            {erkekParfumleri.length} ürün bulundu
+          </p>
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -51,7 +56,7 @@ export default function ErkekParfum() {
               >
                 <div className="relative h-64 bg-white">
                   <Image
-                    src="/card-photos/1.png"
+                    src={perfume.image || "/card-photos/1.png"}
                     alt={perfume.name}
                     fill
                     className="object-cover transition-transform duration-500 group-hover:brightness-110"
@@ -61,12 +66,18 @@ export default function ErkekParfum() {
                       Öne Çıkan
                     </div>
                   )}
+                  {perfume.stock <= 5 && (
+                    <div className="absolute top-2 left-2 bg-red-600 text-white px-2 py-1 rounded-full text-xs font-medium">
+                      Son {perfume.stock} Adet
+                    </div>
+                  )}
                 </div>
                 <div className="p-4">
                   <h3 className="text-lg font-semibold text-gray-900 mb-1">
                     {perfume.name}
                   </h3>
-                  <p className="text-sm text-gray-600 mb-3">{perfume.brand}</p>
+                  <p className="text-sm text-gray-600 mb-1">{perfume.brand}</p>
+                  <p className="text-sm text-gray-500 mb-3">{perfume.ml}ml</p>
                   <div className="mt-3 flex flex-wrap gap-2 mb-4">
                     {perfume.characteristics.slice(0, 3).map((char, index) => (
                       <span
@@ -77,6 +88,19 @@ export default function ErkekParfum() {
                       </span>
                     ))}
                   </div>
+                  <div className="mb-3">
+                    <div className="flex items-baseline gap-2">
+                      <span className="text-2xl font-bold text-indigo-600">
+                        ₺{perfume.price}
+                      </span>
+                      {perfume.originalPrice &&
+                        perfume.originalPrice > perfume.price && (
+                          <span className="text-sm text-gray-400 line-through">
+                            ₺{perfume.originalPrice}
+                          </span>
+                        )}
+                    </div>
+                  </div>
                   <div className="flex gap-3">
                     <Link
                       href={`/parfum/${perfume.id}`}
@@ -85,7 +109,12 @@ export default function ErkekParfum() {
                       Keşfet
                     </Link>
                     <Link
-                      href="https://www.shopier.com/blueperfumery"
+                      href={
+                        perfume.shopierLink ||
+                        "https://www.shopier.com/blueperfumery"
+                      }
+                      target="_blank"
+                      rel="noopener noreferrer"
                       className="flex-1 bg-gradient-to-r from-indigo-600 to-blue-600 text-white px-4 py-2 rounded-lg text-sm font-medium text-center hover:from-indigo-700 hover:to-blue-700 transition-all duration-300 shadow-md hover:shadow-lg"
                     >
                       Satın Al
@@ -96,6 +125,14 @@ export default function ErkekParfum() {
             );
           })}
         </div>
+
+        {erkekParfumleri.length === 0 && (
+          <div className="text-center py-12">
+            <p className="text-gray-500 text-lg">
+              Şu anda erkek parfümü bulunmamaktadır.
+            </p>
+          </div>
+        )}
       </div>
     </div>
   );
