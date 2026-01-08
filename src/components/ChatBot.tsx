@@ -18,14 +18,24 @@ const API_BASE_URL =
     ? "http://localhost:3001/api"
     : "https://blueperfumery-backend.vercel.app/api");
 
-// Samimi karşılama mesajları
-const GREETING_MESSAGES = [
-  "Merhaba! 🌸 Ben Mavi. Size nasıl yardımcı olabilirim?",
-  "Selam! 💫 Bugün size özel bir koku mu arıyorsunuz?",
-  "Merhaba! ✨ Hayalinizdeki kokuyu birlikte bulalım mı?",
+// Chatbot isimleri - random seçilecek
+const BOT_NAMES = ["Mira", "Luna", "Zara", "Ela", "Ada", "Sena"];
+
+// Samimi karşılama mesajları - dinamik olarak bot ismi ile oluşturulacak
+const getGreetingMessages = (botName: string) => [
+  `Selam! 🌸 Ben ${botName}. Sana nasıl yardımcı olabilirim?`,
+  `Merhaba! ✨ Ben ${botName}. Bugün sana özel bir koku bulmamı ister misin?`,
+  `Hey! 💫 Ben ${botName}. Hayalindeki parfümü birlikte keşfedelim mi?`,
+  `Merhaba! 🌺 Ben ${botName}. Sana mükemmel bir parfüm önerebilirim!`,
+  `Selam! ✨ Ben ${botName}. Hangi kokuyu arıyorsun?`,
 ];
 
 export default function ChatBot() {
+  // Random bot ismi seç (component mount olduğunda bir kez)
+  const [botName] = useState(() => {
+    return BOT_NAMES[Math.floor(Math.random() * BOT_NAMES.length)];
+  });
+
   const [isOpen, setIsOpen] = useState(false);
   const [hasGreeted, setHasGreeted] = useState(false);
   const [messages, setMessages] = useState<Message[]>([]);
@@ -38,8 +48,9 @@ export default function ChatBot() {
   useEffect(() => {
     if (isOpen && !hasGreeted) {
       setIsTyping(true);
+      const greetingMessages = getGreetingMessages(botName);
       const randomGreeting =
-        GREETING_MESSAGES[Math.floor(Math.random() * GREETING_MESSAGES.length)];
+        greetingMessages[Math.floor(Math.random() * greetingMessages.length)];
 
       setTimeout(() => {
         setIsTyping(false);
@@ -54,7 +65,7 @@ export default function ChatBot() {
         setHasGreeted(true);
       }, 1000);
     }
-  }, [isOpen, hasGreeted]);
+  }, [isOpen, hasGreeted, botName]);
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -135,8 +146,12 @@ export default function ChatBot() {
     }
   };
 
-  // Öneri butonları
-  const suggestions = ["Erkek parfümü öner", "Yazlık parfüm", "En popüler?"];
+  // Öneri butonları - samimi ve merak uyandırıcı
+  const suggestions = [
+    "Bana özel bir şey öner ✨",
+    "En çok satan hangisi?",
+    "Yazın ne sürmeliyim?",
+  ];
 
   return (
     <>
@@ -172,7 +187,9 @@ export default function ChatBot() {
                   <span className="text-lg">🌸</span>
                 </div>
                 <div>
-                  <h3 className="text-white font-semibold text-base">Mavi</h3>
+                  <h3 className="text-white font-semibold text-base">
+                    {botName}
+                  </h3>
                   <p className="text-gray-400 text-xs flex items-center gap-1">
                     <span className="w-1.5 h-1.5 bg-green-400 rounded-full"></span>
                     Çevrimiçi
