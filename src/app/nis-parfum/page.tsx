@@ -10,17 +10,16 @@ export const metadata = {
 };
 
 export default async function NisParfum() {
-  // Fetch niche products (artisanal + exclusive categories)
+  // Fetch niche products (artisanal + exclusive + niches categories)
   const artisanalProducts = await getProductsByCategory("artisanal");
   const exclusiveProducts = await getProductsByCategory("exclusive");
+  const nichesProducts = await getProductsByCategory("niches");
 
   // Combine and deduplicate
-  const nisParfumleri = [
-    ...artisanalProducts,
-    ...exclusiveProducts.filter(
-      (ep) => !artisanalProducts.find((ap) => ap.id === ep.id)
-    ),
-  ];
+  const allProducts = [...artisanalProducts, ...exclusiveProducts, ...nichesProducts];
+  const nisParfumleri = allProducts.filter(
+    (product, index, self) => index === self.findIndex((p) => p.id === product.id)
+  );
 
   // Preferred parfümleri öne çıkar
   const sortedParfumleri = [...nisParfumleri].sort((a, b) => {
