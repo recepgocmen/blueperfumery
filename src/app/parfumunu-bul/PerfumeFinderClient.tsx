@@ -3,10 +3,10 @@
 import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import { 
-  Sparkles, User, Heart, Sun, Moon, Leaf, 
+  Sparkles, Heart, Sun, Moon, Leaf, 
   Wind, Flame, Coffee, Waves, TreePine, 
-  ArrowRight, ArrowLeft, RotateCcw, Loader2,
-  Send, ChevronRight, Crown, Zap
+  ArrowRight, ArrowLeft, RotateCcw,
+  Crown, Zap
 } from "lucide-react";
 import type { Product } from "@/lib/api";
 import PerfumeCard from "@/components/PerfumeCard";
@@ -249,7 +249,7 @@ Bu profile göre kısa, samimi ve Türkçe bir parfüm karakteri analizi yap (3-
       const notes = JSON.stringify(product.notes || {}).toLowerCase();
       const combined = chars + " " + notes;
 
-      Object.entries(answers).forEach(([key, value]) => {
+      Object.entries(answers).forEach(([, value]) => {
         const keywords = characteristicMap[value] || [];
         keywords.forEach(keyword => {
           if (combined.includes(keyword.toLowerCase())) {
