@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useCallback } from "react";
 import { Send, X, ExternalLink } from "lucide-react";
 import Link from "next/link";
 
@@ -37,6 +37,23 @@ const GREETING_MESSAGES = [
   `Merhaba! 💎 Ben Mira. Haydi birlikte senin tarzını keşfedelim!`,
 ];
 
+// Unique ID oluştur
+function generateId(): string {
+  return `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+}
+
+// LocalStorage'dan visitor ID al veya oluştur
+function getVisitorId(): string {
+  if (typeof window === "undefined") return generateId();
+
+  let visitorId = localStorage.getItem("bp_visitor_id");
+  if (!visitorId) {
+    visitorId = generateId();
+    localStorage.setItem("bp_visitor_id", visitorId);
+  }
+  return visitorId;
+}
+
 export default function ChatBot() {
   // Bot ismi - sabit Mira
   const botName = BOT_NAME;
@@ -48,8 +65,44 @@ export default function ChatBot() {
   const [isLoading, setIsLoading] = useState(false);
   const [isTyping, setIsTyping] = useState(false);
   const [questionCount, setQuestionCount] = useState(0); // Soru sayacı
+  const [sessionId, setSessionId] = useState<string>(""); // Chat session ID
+  const [visitorId, setVisitorId] = useState<string>(""); // Visitor ID
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null); // Input focus için
+
+  // Session ve Visitor ID'leri başlat
+  useEffect(() => {
+    setVisitorId(getVisitorId());
+    setSessionId(generateId());
+  }, []);
+
+  // Mesajı DB'ye kaydet
+  const saveMessageToDb = useCallback(
+    async (
+      message: string,
+      role: "user" | "assistant",
+      recommendedProducts?: RecommendedProduct[]
+    ) => {
+      if (!sessionId || !visitorId) return;
+
+      try {
+        await fetch(`${API_BASE_URL}/chat-sessions`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            sessionId,
+            visitorId,
+            message,
+            role,
+            recommendedProducts,
+          }),
+        });
+      } catch (error) {
+        console.error("Failed to save message:", error);
+      }
+    },
+    [sessionId, visitorId]
+  );
 
   // Chat açılınca karşılama mesajı
   useEffect(() => {
@@ -108,6 +161,9 @@ export default function ChatBot() {
     setInput("");
     setIsLoading(true);
     setIsTyping(true);
+
+    // Kullanıcı mesajını DB'ye kaydet
+    saveMessageToDb(userMessage.content, "user");
 
     // Soru sayacını artır
     const newQuestionCount = questionCount + 1;
@@ -169,6 +225,13 @@ export default function ChatBot() {
       };
 
       setMessages((prev) => [...prev, assistantMessage]);
+
+      // Bot mesajını DB'ye kaydet
+      saveMessageToDb(
+        assistantContent,
+        "assistant",
+        recommendedProducts.length > 0 ? recommendedProducts : undefined
+      );
     } catch {
       setIsTyping(false);
       const errorMessage: Message = {
@@ -219,6 +282,9 @@ export default function ChatBot() {
     setIsLoading(true);
     setIsTyping(true);
 
+    // Kullanıcı mesajını DB'ye kaydet
+    saveMessageToDb(query, "user");
+
     try {
       const response = await fetch(`${API_BASE_URL}/agent/chat`, {
         method: "POST",
@@ -229,25 +295,33 @@ export default function ChatBot() {
       const data = await response.json();
       setIsTyping(false);
 
+      const assistantContent = data.message || "Üzgünüm, bir hata oluştu.";
+      const recommendedProducts = data.recommendedProducts;
+
       const assistantMessage: Message = {
         id: (Date.now() + 1).toString(),
         role: "assistant",
-        content: data.message || "Üzgünüm, bir hata oluştu.",
+        content: assistantContent,
         timestamp: new Date(),
-        recommendedProducts: data.recommendedProducts,
+        recommendedProducts,
       };
 
       setMessages((prev) => [...prev, assistantMessage]);
       inputRef.current?.focus();
+
+      // Bot mesajını DB'ye kaydet
+      saveMessageToDb(assistantContent, "assistant", recommendedProducts);
     } catch {
       setIsTyping(false);
+      const errorContent = "Bağlantıda bir sorun var. Lütfen tekrar deneyin.";
       const errorMessage: Message = {
         id: (Date.now() + 1).toString(),
         role: "assistant",
-        content: "Bağlantıda bir sorun var. Lütfen tekrar deneyin.",
+        content: errorContent,
         timestamp: new Date(),
       };
       setMessages((prev) => [...prev, errorMessage]);
+      saveMessageToDb(errorContent, "assistant");
     } finally {
       setIsLoading(false);
     }
