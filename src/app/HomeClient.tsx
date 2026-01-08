@@ -39,7 +39,6 @@ const sliderContent = [
   },
 ];
 
-
 interface HomeClientProps {
   featuredProducts: Product[];
 }
@@ -185,52 +184,95 @@ export default function HomeClient({ featuredProducts }: HomeClientProps) {
                 <span className="text-gradient-gold">Danışmanınız</span>
               </h2>
               <p className="text-gray-600 text-lg leading-relaxed mb-8">
-                Bir butik mağazaya girdiğinizde sizi karşılayan uzman danışman 
-                deneyimini dijitale taşıdık. <strong className="text-navy">Mavi</strong>, 
-                yapay zeka destekli parfüm uzmanımız, size en uygun kokuları 
-                bulmak için burada.
+                Bir butik mağazaya girdiğinizde sizi karşılayan uzman danışman
+                deneyimini dijitale taşıdık.{" "}
+                <strong className="text-navy">Mira</strong>, yapay zeka destekli
+                parfüm uzmanımız, size en uygun kokuları bulmak için burada.
               </p>
 
               <div className="space-y-4 mb-8">
                 <div className="flex items-start gap-4">
                   <div className="w-10 h-10 rounded-full bg-gold/10 flex items-center justify-center flex-shrink-0">
-                    <svg className="w-5 h-5 text-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+                    <svg
+                      className="w-5 h-5 text-gold"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={1.5}
+                        d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"
+                      />
                     </svg>
                   </div>
                   <div>
-                    <h4 className="font-medium text-navy mb-1">7/24 Danışmanlık</h4>
-                    <p className="text-gray-500 text-sm">Her an yanınızda, sorularınızı anında yanıtlar</p>
+                    <h4 className="font-medium text-navy mb-1">
+                      7/24 Danışmanlık
+                    </h4>
+                    <p className="text-gray-500 text-sm">
+                      Her an yanınızda, sorularınızı anında yanıtlar
+                    </p>
                   </div>
                 </div>
 
                 <div className="flex items-start gap-4">
                   <div className="w-10 h-10 rounded-full bg-gold/10 flex items-center justify-center flex-shrink-0">
-                    <svg className="w-5 h-5 text-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
+                    <svg
+                      className="w-5 h-5 text-gold"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={1.5}
+                        d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"
+                      />
                     </svg>
                   </div>
                   <div>
-                    <h4 className="font-medium text-navy mb-1">Kişiselleştirilmiş Öneriler</h4>
-                    <p className="text-gray-500 text-sm">Zevkinize ve tarzınıza göre özel seçimler</p>
+                    <h4 className="font-medium text-navy mb-1">
+                      Kişiselleştirilmiş Öneriler
+                    </h4>
+                    <p className="text-gray-500 text-sm">
+                      Zevkinize ve tarzınıza göre özel seçimler
+                    </p>
                   </div>
                 </div>
 
                 <div className="flex items-start gap-4">
                   <div className="w-10 h-10 rounded-full bg-gold/10 flex items-center justify-center flex-shrink-0">
-                    <svg className="w-5 h-5 text-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z" />
+                    <svg
+                      className="w-5 h-5 text-gold"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={1.5}
+                        d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"
+                      />
                     </svg>
                   </div>
                   <div>
-                    <h4 className="font-medium text-navy mb-1">Uzman Bilgisi</h4>
-                    <p className="text-gray-500 text-sm">Notalar, karakteristikler ve kullanım önerileri</p>
+                    <h4 className="font-medium text-navy mb-1">
+                      Uzman Bilgisi
+                    </h4>
+                    <p className="text-gray-500 text-sm">
+                      Notalar, karakteristikler ve kullanım önerileri
+                    </p>
                   </div>
                 </div>
               </div>
 
               <p className="text-sm text-gray-400 italic">
-                💡 Sağ alttaki sohbet simgesine tıklayarak Mavi ile tanışabilirsiniz
+                💡 Sağ alttaki sohbet simgesine tıklayarak Mira ile
+                tanışabilirsiniz
               </p>
             </div>
 
@@ -240,7 +282,7 @@ export default function HomeClient({ featuredProducts }: HomeClientProps) {
                 {/* Decorative elements */}
                 <div className="absolute top-0 right-0 w-32 h-32 bg-gold/10 rounded-full blur-3xl" />
                 <div className="absolute bottom-0 left-0 w-40 h-40 bg-gold/5 rounded-full blur-3xl" />
-                
+
                 {/* Chat Preview */}
                 <div className="relative space-y-4">
                   <div className="flex items-start gap-3">
@@ -249,7 +291,8 @@ export default function HomeClient({ featuredProducts }: HomeClientProps) {
                     </div>
                     <div className="bg-white/10 backdrop-blur-sm rounded-2xl rounded-tl-md px-4 py-3 max-w-[280px]">
                       <p className="text-white/90 text-sm">
-                        Merhaba! ✨ Hoş geldiniz Blue Perfumery&apos;ye! Size nasıl yardımcı olabilirim?
+                        Merhaba! ✨ Hoş geldiniz Blue Perfumery&apos;ye! Size
+                        nasıl yardımcı olabilirim?
                       </p>
                     </div>
                   </div>
@@ -268,8 +311,11 @@ export default function HomeClient({ featuredProducts }: HomeClientProps) {
                     </div>
                     <div className="bg-white/10 backdrop-blur-sm rounded-2xl rounded-tl-md px-4 py-3 max-w-[280px]">
                       <p className="text-white/90 text-sm">
-                        Tabii! 💫 Kadınlar için <span className="text-gold">Burberry Her</span> - çilek ve yasemin notalarıyla feminen ve çekici. 
-                        Erkekler için <span className="text-gold">Stronger With You</span> - vanilya ve kestane ile sıcak ve karizmatik!
+                        Tabii! 💫 Kadınlar için{" "}
+                        <span className="text-gold">Burberry Her</span> - çilek
+                        ve yasemin notalarıyla feminen ve çekici. Erkekler için{" "}
+                        <span className="text-gold">Stronger With You</span> -
+                        vanilya ve kestane ile sıcak ve karizmatik!
                       </p>
                     </div>
                   </div>
@@ -278,7 +324,9 @@ export default function HomeClient({ featuredProducts }: HomeClientProps) {
                 {/* Badge */}
                 <div className="absolute -bottom-4 -right-4 bg-white rounded-full px-4 py-2 shadow-xl flex items-center gap-2">
                   <span className="w-2 h-2 bg-green-400 rounded-full animate-pulse" />
-                  <span className="text-sm font-medium text-navy">Mavi Çevrimiçi</span>
+                  <span className="text-sm font-medium text-navy">
+                    Mira Çevrimiçi
+                  </span>
                 </div>
               </div>
             </div>
@@ -308,7 +356,7 @@ export default function HomeClient({ featuredProducts }: HomeClientProps) {
                 <span className="text-gold">Keşfedin</span>
               </h2>
               <p className="text-white/70 text-lg max-w-2xl mx-auto mb-10">
-                Birkaç basit soruyla kişiliğinize, yaşam tarzınıza ve 
+                Birkaç basit soruyla kişiliğinize, yaşam tarzınıza ve
                 tercihlerinize en uygun parfümleri bulun.
               </p>
 
@@ -366,12 +414,15 @@ export default function HomeClient({ featuredProducts }: HomeClientProps) {
                   product.id as (typeof PREFERRED_PERFUMES)[number]
                 );
                 // Determine variant based on gender/category
-                const variant = product.category === "niches" || product.category === "artisanal" || product.category === "exclusive"
-                  ? "niche"
-                  : product.gender === "female"
-                  ? "female"
-                  : "male";
-                
+                const variant =
+                  product.category === "niches" ||
+                  product.category === "artisanal" ||
+                  product.category === "exclusive"
+                    ? "niche"
+                    : product.gender === "female"
+                    ? "female"
+                    : "male";
+
                 return (
                   <PerfumeCard
                     key={product.id}
@@ -429,8 +480,8 @@ export default function HomeClient({ featuredProducts }: HomeClientProps) {
                 </span>
               </div>
               <p className="text-white/60 text-sm leading-relaxed">
-                Lüks ve kişiselleştirilmiş parfüm deneyimi. 
-                Karakterinize uygun kokuları keşfedin.
+                Lüks ve kişiselleştirilmiş parfüm deneyimi. Karakterinize uygun
+                kokuları keşfedin.
               </p>
             </div>
 
@@ -439,17 +490,26 @@ export default function HomeClient({ featuredProducts }: HomeClientProps) {
               <h4 className="font-medium mb-4 text-white/80">Keşfet</h4>
               <ul className="space-y-3">
                 <li>
-                  <Link href="/erkek-parfum" className="text-white/60 hover:text-gold text-sm transition-colors">
+                  <Link
+                    href="/erkek-parfum"
+                    className="text-white/60 hover:text-gold text-sm transition-colors"
+                  >
                     Erkek Parfümleri
                   </Link>
                 </li>
                 <li>
-                  <Link href="/kadin-parfum" className="text-white/60 hover:text-gold text-sm transition-colors">
+                  <Link
+                    href="/kadin-parfum"
+                    className="text-white/60 hover:text-gold text-sm transition-colors"
+                  >
                     Kadın Parfümleri
                   </Link>
                 </li>
                 <li>
-                  <Link href="/nis-parfum" className="text-white/60 hover:text-gold text-sm transition-colors">
+                  <Link
+                    href="/nis-parfum"
+                    className="text-white/60 hover:text-gold text-sm transition-colors"
+                  >
                     Niş Koleksiyon
                   </Link>
                 </li>
@@ -461,17 +521,26 @@ export default function HomeClient({ featuredProducts }: HomeClientProps) {
               <h4 className="font-medium mb-4 text-white/80">Hizmetler</h4>
               <ul className="space-y-3">
                 <li>
-                  <Link href="/parfumunu-bul" className="text-white/60 hover:text-gold text-sm transition-colors">
+                  <Link
+                    href="/parfumunu-bul"
+                    className="text-white/60 hover:text-gold text-sm transition-colors"
+                  >
                     Parfümünü Bul
                   </Link>
                 </li>
                 <li>
-                  <Link href="/hakkimizda" className="text-white/60 hover:text-gold text-sm transition-colors">
+                  <Link
+                    href="/hakkimizda"
+                    className="text-white/60 hover:text-gold text-sm transition-colors"
+                  >
                     Hakkımızda
                   </Link>
                 </li>
                 <li>
-                  <Link href="/satin-al" className="text-white/60 hover:text-gold text-sm transition-colors">
+                  <Link
+                    href="/satin-al"
+                    className="text-white/60 hover:text-gold text-sm transition-colors"
+                  >
                     Satın Al
                   </Link>
                 </li>
@@ -486,14 +555,28 @@ export default function HomeClient({ featuredProducts }: HomeClientProps) {
                   blueperfumerie@gmail.com
                 </li>
                 <li className="flex gap-4 mt-4">
-                  <a href="#" className="text-white/60 hover:text-gold transition-colors">
-                    <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-                      <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
+                  <a
+                    href="#"
+                    className="text-white/60 hover:text-gold transition-colors"
+                  >
+                    <svg
+                      className="w-5 h-5"
+                      fill="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z" />
                     </svg>
                   </a>
-                  <a href="#" className="text-white/60 hover:text-gold transition-colors">
-                    <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-                      <path d="M24 4.557c-.883.392-1.832.656-2.828.775 1.017-.609 1.798-1.574 2.165-2.724-.951.564-2.005.974-3.127 1.195-.897-.957-2.178-1.555-3.594-1.555-3.179 0-5.515 2.966-4.797 6.045-4.091-.205-7.719-2.165-10.148-5.144-1.29 2.213-.669 5.108 1.523 6.574-.806-.026-1.566-.247-2.229-.616-.054 2.281 1.581 4.415 3.949 4.89-.693.188-1.452.232-2.224.084.626 1.956 2.444 3.379 4.6 3.419-2.07 1.623-4.678 2.348-7.29 2.04 2.179 1.397 4.768 2.212 7.548 2.212 9.142 0 14.307-7.721 13.995-14.646.962-.695 1.797-1.562 2.457-2.549z"/>
+                  <a
+                    href="#"
+                    className="text-white/60 hover:text-gold transition-colors"
+                  >
+                    <svg
+                      className="w-5 h-5"
+                      fill="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path d="M24 4.557c-.883.392-1.832.656-2.828.775 1.017-.609 1.798-1.574 2.165-2.724-.951.564-2.005.974-3.127 1.195-.897-.957-2.178-1.555-3.594-1.555-3.179 0-5.515 2.966-4.797 6.045-4.091-.205-7.719-2.165-10.148-5.144-1.29 2.213-.669 5.108 1.523 6.574-.806-.026-1.566-.247-2.229-.616-.054 2.281 1.581 4.415 3.949 4.89-.693.188-1.452.232-2.224.084.626 1.956 2.444 3.379 4.6 3.419-2.07 1.623-4.678 2.348-7.29 2.04 2.179 1.397 4.768 2.212 7.548 2.212 9.142 0 14.307-7.721 13.995-14.646.962-.695 1.797-1.562 2.457-2.549z" />
                     </svg>
                   </a>
                 </li>
@@ -506,10 +589,16 @@ export default function HomeClient({ featuredProducts }: HomeClientProps) {
               © 2025 Blue Perfumery. Tüm hakları saklıdır.
             </p>
             <div className="flex items-center gap-6">
-              <Link href="#" className="text-white/40 hover:text-white/60 text-sm transition-colors">
+              <Link
+                href="#"
+                className="text-white/40 hover:text-white/60 text-sm transition-colors"
+              >
                 Gizlilik Politikası
               </Link>
-              <Link href="#" className="text-white/40 hover:text-white/60 text-sm transition-colors">
+              <Link
+                href="#"
+                className="text-white/40 hover:text-white/60 text-sm transition-colors"
+              >
                 Kullanım Şartları
               </Link>
             </div>

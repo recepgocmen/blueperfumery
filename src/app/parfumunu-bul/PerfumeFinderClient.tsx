@@ -2,10 +2,22 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import { 
-  Sparkles, Heart, Sun, Moon, Leaf, 
-  Wind, Flame, Coffee, Waves, TreePine, 
-  ArrowRight, RotateCcw, Crown, Zap, Check
+import {
+  Sparkles,
+  Heart,
+  Sun,
+  Moon,
+  Leaf,
+  Wind,
+  Flame,
+  Coffee,
+  Waves,
+  TreePine,
+  ArrowRight,
+  RotateCcw,
+  Crown,
+  Zap,
+  Check,
 } from "lucide-react";
 import type { Product } from "@/lib/api";
 import PerfumeCard from "@/components/PerfumeCard";
@@ -18,7 +30,8 @@ interface PerfumeFinderClientProps {
 const conversationFlow = [
   {
     id: "intro",
-    miraMessage: "Merhaba! Ben Mavi 💫\n\nSana özel parfüm önerisi yapmak istiyorum.",
+    miraMessage:
+      "Merhaba! Ben Mira 💫\n\nSana özel parfüm önerisi yapmak istiyorum.",
     question: null,
     options: null,
     field: null,
@@ -30,7 +43,11 @@ const conversationFlow = [
     options: [
       { value: "male", label: "Erkek", icon: <Wind className="w-4 h-4" /> },
       { value: "female", label: "Kadın", icon: <Leaf className="w-4 h-4" /> },
-      { value: "unisex", label: "Farketmez", icon: <Sparkles className="w-4 h-4" /> },
+      {
+        value: "unisex",
+        label: "Farketmez",
+        icon: <Sparkles className="w-4 h-4" />,
+      },
     ],
     field: "gender",
   },
@@ -46,10 +63,22 @@ const conversationFlow = [
     },
     question: "Sabahları nasıl hissedersin?",
     options: [
-      { value: "energetic", label: "Enerjik", icon: <Zap className="w-4 h-4" /> },
+      {
+        value: "energetic",
+        label: "Enerjik",
+        icon: <Zap className="w-4 h-4" />,
+      },
       { value: "calm", label: "Sakin", icon: <Waves className="w-4 h-4" /> },
-      { value: "mysterious", label: "Düşünceli", icon: <Moon className="w-4 h-4" /> },
-      { value: "passionate", label: "Tutkulu", icon: <Flame className="w-4 h-4" /> },
+      {
+        value: "mysterious",
+        label: "Düşünceli",
+        icon: <Moon className="w-4 h-4" />,
+      },
+      {
+        value: "passionate",
+        label: "Tutkulu",
+        icon: <Flame className="w-4 h-4" />,
+      },
     ],
     field: "personality",
   },
@@ -67,8 +96,16 @@ const conversationFlow = [
     question: "Hangi koku daha çok seni mutlu eder?",
     options: [
       { value: "seaside", label: "Deniz", icon: <Waves className="w-4 h-4" /> },
-      { value: "forest", label: "Orman", icon: <TreePine className="w-4 h-4" /> },
-      { value: "warmth", label: "Sıcaklık", icon: <Heart className="w-4 h-4" /> },
+      {
+        value: "forest",
+        label: "Orman",
+        icon: <TreePine className="w-4 h-4" />,
+      },
+      {
+        value: "warmth",
+        label: "Sıcaklık",
+        icon: <Heart className="w-4 h-4" />,
+      },
       { value: "coffee", label: "Kahve", icon: <Coffee className="w-4 h-4" /> },
     ],
     field: "scentMemory",
@@ -86,9 +123,17 @@ const conversationFlow = [
     },
     question: "Favori mevsimin?",
     options: [
-      { value: "spring", label: "İlkbahar", icon: <Leaf className="w-4 h-4" /> },
+      {
+        value: "spring",
+        label: "İlkbahar",
+        icon: <Leaf className="w-4 h-4" />,
+      },
       { value: "summer", label: "Yaz", icon: <Sun className="w-4 h-4" /> },
-      { value: "autumn", label: "Sonbahar", icon: <Wind className="w-4 h-4" /> },
+      {
+        value: "autumn",
+        label: "Sonbahar",
+        icon: <Wind className="w-4 h-4" />,
+      },
       { value: "winter", label: "Kış", icon: <Moon className="w-4 h-4" /> },
     ],
     field: "season",
@@ -106,16 +151,30 @@ const conversationFlow = [
     },
     question: "Nasıl hatırlanmak istersin?",
     options: [
-      { value: "elegance", label: "Zarif", icon: <Crown className="w-4 h-4" /> },
-      { value: "confidence", label: "Çekici", icon: <Sparkles className="w-4 h-4" /> },
+      {
+        value: "elegance",
+        label: "Zarif",
+        icon: <Crown className="w-4 h-4" />,
+      },
+      {
+        value: "confidence",
+        label: "Çekici",
+        icon: <Sparkles className="w-4 h-4" />,
+      },
       { value: "warmth", label: "Samimi", icon: <Heart className="w-4 h-4" /> },
-      { value: "unique", label: "Benzersiz", icon: <Zap className="w-4 h-4" /> },
+      {
+        value: "unique",
+        label: "Benzersiz",
+        icon: <Zap className="w-4 h-4" />,
+      },
     ],
     field: "desiredImpression",
   },
 ];
 
-export default function PerfumeFinderClient({ products }: PerfumeFinderClientProps) {
+export default function PerfumeFinderClient({
+  products,
+}: PerfumeFinderClientProps) {
   const [step, setStep] = useState(0);
   const [answers, setAnswers] = useState<Record<string, string>>({});
   const [isTyping, setIsTyping] = useState(true);
@@ -131,7 +190,7 @@ export default function PerfumeFinderClient({ products }: PerfumeFinderClientPro
   useEffect(() => {
     setIsTyping(true);
     setShowOptions(false);
-    
+
     const typingTimer = setTimeout(() => {
       setIsTyping(false);
       setTimeout(() => setShowOptions(true), 200);
@@ -140,7 +199,7 @@ export default function PerfumeFinderClient({ products }: PerfumeFinderClientPro
     return () => clearTimeout(typingTimer);
   }, [step]);
 
-  const getMaviMessage = () => {
+  const getMiraMessage = () => {
     const message = currentConversation.miraMessage;
     if (typeof message === "function") {
       return message(answers);
@@ -150,7 +209,7 @@ export default function PerfumeFinderClient({ products }: PerfumeFinderClientPro
 
   const handleOptionSelect = async (value: string) => {
     if (!currentConversation.field) return;
-    
+
     const newAnswers = { ...answers, [currentConversation.field]: value };
     setAnswers(newAnswers);
     setShowOptions(false);
@@ -168,7 +227,7 @@ export default function PerfumeFinderClient({ products }: PerfumeFinderClientPro
 
   const calculateResults = async (finalAnswers: Record<string, string>) => {
     setIsLoading(true);
-    
+
     try {
       const analysisPrompt = `Kullanıcı profili:
 - Cinsiyet: ${finalAnswers.gender}
@@ -179,22 +238,29 @@ export default function PerfumeFinderClient({ products }: PerfumeFinderClientPro
 
 Kısa, samimi Türkçe parfüm analizi (2-3 cümle).`;
 
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'https://blueperfumery-backend.vercel.app'}/api/agent/chat`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ message: analysisPrompt }),
-      });
+      const response = await fetch(
+        `${
+          process.env.NEXT_PUBLIC_API_URL ||
+          "https://blueperfumery-backend.vercel.app"
+        }/api/agent/chat`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ message: analysisPrompt }),
+        }
+      );
 
       if (response.ok) {
         const data = await response.json();
-        setAiAnalysis(data.data?.message || "Senin için harika parfümler buldum!");
+        setAiAnalysis(
+          data.data?.message || "Senin için harika parfümler buldum!"
+        );
       } else {
         setAiAnalysis("Sana özel önerilerim hazır! 💫");
       }
 
       const filteredProducts = filterProducts(products, finalAnswers);
       setRecommendations(filteredProducts.slice(0, 3));
-      
     } catch (error) {
       console.error("AI analysis error:", error);
       setAiAnalysis("Sana özel önerilerim hazır! 💫");
@@ -206,12 +272,15 @@ Kısa, samimi Türkçe parfüm analizi (2-3 cümle).`;
     }
   };
 
-  const filterProducts = (products: Product[], answers: Record<string, string>): Product[] => {
+  const filterProducts = (
+    products: Product[],
+    answers: Record<string, string>
+  ): Product[] => {
     let filtered = [...products];
 
     if (answers.gender !== "unisex") {
-      filtered = filtered.filter(p => 
-        p.gender === answers.gender || p.gender === "unisex"
+      filtered = filtered.filter(
+        (p) => p.gender === answers.gender || p.gender === "unisex"
       );
     }
 
@@ -230,7 +299,7 @@ Kısa, samimi Türkçe parfüm analizi (2-3 cümle).`;
       winter: ["oryantal", "derin", "yoğun", "oud"],
     };
 
-    const scoredProducts = filtered.map(product => {
+    const scoredProducts = filtered.map((product) => {
       let score = 0;
       const chars = product.characteristics?.join(" ").toLowerCase() || "";
       const notes = JSON.stringify(product.notes || {}).toLowerCase();
@@ -238,7 +307,7 @@ Kısa, samimi Türkçe parfüm analizi (2-3 cümle).`;
 
       Object.entries(answers).forEach(([, value]) => {
         const keywords = characteristicMap[value] || [];
-        keywords.forEach(keyword => {
+        keywords.forEach((keyword) => {
           if (combined.includes(keyword.toLowerCase())) {
             score += 10;
           }
@@ -249,7 +318,7 @@ Kısa, samimi Türkçe parfüm analizi (2-3 cümle).`;
     });
 
     scoredProducts.sort((a, b) => b.score - a.score);
-    return scoredProducts.map(sp => sp.product);
+    return scoredProducts.map((sp) => sp.product);
   };
 
   const handleReset = () => {
@@ -270,7 +339,7 @@ Kısa, samimi Türkçe parfüm analizi (2-3 cümle).`;
           <div className="text-center mb-8">
             <div className="inline-flex items-center gap-2 bg-gold/10 rounded-full px-3 py-1.5 mb-4">
               <Sparkles className="w-4 h-4 text-gold" />
-              <span className="text-gold text-sm">Mavi&apos;nın Önerileri</span>
+              <span className="text-gold text-sm">Mira&apos;nın Önerileri</span>
             </div>
             <h1 className="font-heading text-2xl sm:text-3xl font-semibold text-white">
               Senin İçin Seçtiklerim ✨
@@ -284,8 +353,12 @@ Kısa, samimi Türkçe parfüm analizi (2-3 cümle).`;
                 <Sparkles className="w-5 h-5 text-gold" />
               </div>
               <div>
-                <span className="text-gold text-sm font-medium block mb-1">Mavi</span>
-                <p className="text-white/80 text-sm sm:text-base leading-relaxed">{aiAnalysis}</p>
+                <span className="text-gold text-sm font-medium block mb-1">
+                  Mira
+                </span>
+                <p className="text-white/80 text-sm sm:text-base leading-relaxed">
+                  {aiAnalysis}
+                </p>
               </div>
             </div>
           </div>
@@ -300,10 +373,16 @@ Kısa, samimi Türkçe parfüm analizi (2-3 cümle).`;
                       <Crown className="w-3 h-3" /> En Uygun
                     </div>
                   )}
-                  <PerfumeCard 
+                  <PerfumeCard
                     perfume={product}
                     isPreferred={index === 0}
-                    variant={product.gender === "female" ? "female" : product.gender === "male" ? "male" : "niche"}
+                    variant={
+                      product.gender === "female"
+                        ? "female"
+                        : product.gender === "male"
+                        ? "male"
+                        : "niche"
+                    }
                   />
                 </div>
               ))}
@@ -344,8 +423,12 @@ Kısa, samimi Türkçe parfüm analizi (2-3 cümle).`;
           <div className="w-14 h-14 rounded-full bg-gradient-to-br from-gold/20 to-amber-600/20 flex items-center justify-center mx-auto mb-4 animate-pulse">
             <Sparkles className="w-7 h-7 text-gold animate-spin" />
           </div>
-          <h2 className="font-heading text-xl text-white mb-2">Mavi düşünüyor...</h2>
-          <p className="text-gray-400 text-sm">Senin için en uygun parfümleri seçiyorum ✨</p>
+          <h2 className="font-heading text-xl text-white mb-2">
+            Mira düşünüyor...
+          </h2>
+          <p className="text-gray-400 text-sm">
+            Senin için en uygun parfümleri seçiyorum ✨
+          </p>
         </div>
       </div>
     );
@@ -360,7 +443,7 @@ Kısa, samimi Türkçe parfüm analizi (2-3 cümle).`;
           <h1 className="font-heading text-xl sm:text-2xl font-semibold text-white mb-2">
             Parfümünü Bul
           </h1>
-          
+
           {/* Progress Bar */}
           {step > 0 && (
             <div className="flex items-center justify-center gap-1.5 mt-3">
@@ -389,27 +472,42 @@ Kısa, samimi Türkçe parfüm analizi (2-3 cümle).`;
         <div className="w-full max-w-md">
           {/* Message Card */}
           <div className="bg-white/5 border border-white/10 rounded-2xl overflow-hidden">
-            {/* Mavi's Message */}
+            {/* Mira's Message */}
             <div className="p-4">
               <div className="flex items-start gap-3">
                 <div className="w-10 h-10 rounded-full bg-gradient-to-br from-gold/20 to-amber-600/20 flex items-center justify-center flex-shrink-0 border border-gold/30">
                   <Sparkles className="w-5 h-5 text-gold" />
                 </div>
                 <div className="flex-1 min-w-0">
-                  <span className="text-gold text-xs font-medium block mb-1">Mavi</span>
+                  <span className="text-gold text-xs font-medium block mb-1">
+                    Mira
+                  </span>
                   {isTyping ? (
                     <div className="bg-white/10 rounded-xl rounded-tl-sm px-3 py-2 inline-block">
                       <div className="flex gap-1">
-                        <span className="w-2 h-2 bg-gold/60 rounded-full animate-bounce" style={{ animationDelay: "0ms" }} />
-                        <span className="w-2 h-2 bg-gold/60 rounded-full animate-bounce" style={{ animationDelay: "150ms" }} />
-                        <span className="w-2 h-2 bg-gold/60 rounded-full animate-bounce" style={{ animationDelay: "300ms" }} />
+                        <span
+                          className="w-2 h-2 bg-gold/60 rounded-full animate-bounce"
+                          style={{ animationDelay: "0ms" }}
+                        />
+                        <span
+                          className="w-2 h-2 bg-gold/60 rounded-full animate-bounce"
+                          style={{ animationDelay: "150ms" }}
+                        />
+                        <span
+                          className="w-2 h-2 bg-gold/60 rounded-full animate-bounce"
+                          style={{ animationDelay: "300ms" }}
+                        />
                       </div>
                     </div>
                   ) : (
                     <div className="bg-white/10 rounded-xl rounded-tl-sm px-3 py-2.5">
-                      <p className="text-white/90 text-sm whitespace-pre-line">{getMaviMessage()}</p>
+                      <p className="text-white/90 text-sm whitespace-pre-line">
+                        {getMiraMessage()}
+                      </p>
                       {currentConversation.question && (
-                        <p className="text-white font-medium mt-2 text-sm">{currentConversation.question}</p>
+                        <p className="text-white font-medium mt-2 text-sm">
+                          {currentConversation.question}
+                        </p>
                       )}
                     </div>
                   )}
@@ -439,7 +537,9 @@ Kısa, samimi Türkçe parfüm analizi (2-3 cümle).`;
                         <div className="w-8 h-8 rounded-full bg-white/10 group-hover:bg-gold/20 flex items-center justify-center text-white/70 group-hover:text-gold mx-auto mb-1.5 transition-colors">
                           {option.icon}
                         </div>
-                        <span className="text-white text-sm font-medium">{option.label}</span>
+                        <span className="text-white text-sm font-medium">
+                          {option.label}
+                        </span>
                       </button>
                     ))}
                   </div>
@@ -452,13 +552,17 @@ Kısa, samimi Türkçe parfüm analizi (2-3 cümle).`;
           {Object.keys(answers).length > 0 && (
             <div className="mt-4 flex flex-wrap gap-1.5 justify-center">
               {Object.entries(answers).map(([field, value]) => {
-                const question = conversationFlow.find(q => q.field === field);
-                const option = question?.options?.find(o => o.value === value);
+                const question = conversationFlow.find(
+                  (q) => q.field === field
+                );
+                const option = question?.options?.find(
+                  (o) => o.value === value
+                );
                 if (!option) return null;
-                
+
                 return (
-                  <span 
-                    key={field} 
+                  <span
+                    key={field}
                     className="inline-flex items-center gap-1 bg-gold/20 text-gold px-2 py-1 rounded-full text-xs"
                   >
                     <Check className="w-3 h-3" />
