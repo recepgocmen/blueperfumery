@@ -6,7 +6,7 @@ export const revalidate = 60; // Revalidate every 60 seconds
 export default async function Home() {
   // Fetch featured products from API (Server Component - SEO friendly)
   let featuredProducts: Product[] = [];
-  
+
   try {
     const response = await getProducts({
       status: "active",

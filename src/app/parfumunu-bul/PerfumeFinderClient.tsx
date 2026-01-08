@@ -1,12 +1,11 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { 
   Sparkles, Heart, Sun, Moon, Leaf, 
   Wind, Flame, Coffee, Waves, TreePine, 
-  ArrowRight, ArrowLeft, RotateCcw,
-  Crown, Zap
+  ArrowRight, RotateCcw, Crown, Zap, Check
 } from "lucide-react";
 import type { Product } from "@/lib/api";
 import PerfumeCard from "@/components/PerfumeCard";
@@ -19,98 +18,98 @@ interface PerfumeFinderClientProps {
 const conversationFlow = [
   {
     id: "intro",
-    miraMessage: "Merhaba! Ben Mavi, Blue Perfumery'nin koku danışmanı 💫\n\nSana özel bir parfüm keşfi yapmaya ne dersin? Birkaç kısa sohbetle, karakterine en uygun kokuları bulacağım.",
+    miraMessage: "Merhaba! Ben Mavi 💫\n\nSana özel parfüm önerisi yapmak istiyorum.",
     question: null,
     options: null,
     field: null,
   },
   {
     id: "gender",
-    miraMessage: "Öncelikle biraz tanışalım...",
-    question: "Hangi koku dünyasını keşfetmek istersin?",
+    miraMessage: "Öncelikle...",
+    question: "Hangi tarafa bakalım?",
     options: [
-      { value: "male", label: "Erkek parfümleri", icon: <Wind className="w-5 h-5" />, description: "Maskülen, güçlü notalar" },
-      { value: "female", label: "Kadın parfümleri", icon: <Leaf className="w-5 h-5" />, description: "Feminen, zarif notalar" },
-      { value: "unisex", label: "Her ikisi de olur", icon: <Sparkles className="w-5 h-5" />, description: "Sınırsız keşif" },
+      { value: "male", label: "Erkek", icon: <Wind className="w-4 h-4" /> },
+      { value: "female", label: "Kadın", icon: <Leaf className="w-4 h-4" /> },
+      { value: "unisex", label: "Farketmez", icon: <Sparkles className="w-4 h-4" /> },
     ],
     field: "gender",
   },
   {
     id: "energy",
     miraMessage: (prev: Record<string, string>) => {
-      const genderResponse: Record<string, string> = {
-        male: "Harika seçim! Erkek parfümlerinde çok etkileyici seçeneklerimiz var ✨",
-        female: "Mükemmel! Kadın parfümlerimiz arasında gerçek hazineler var 💎",
-        unisex: "Açık fikirli biri! Sınırları aşan kokular seni bekliyor 🌟",
+      const r: Record<string, string> = {
+        male: "Harika! ✨",
+        female: "Mükemmel! 💎",
+        unisex: "Açık fikirli! 🌟",
       };
-      return genderResponse[prev.gender] || "Güzel bir başlangıç!";
+      return r[prev.gender] || "Güzel!";
     },
-    question: "Şimdi biraz enerjinden bahsedelim. Sabah kalktığında kendini nasıl hissedersin?",
+    question: "Sabahları nasıl hissedersin?",
     options: [
-      { value: "energetic", label: "Enerjik & Dinamik", icon: <Zap className="w-5 h-5" />, description: "Güne hızlı başlarım" },
-      { value: "calm", label: "Sakin & Huzurlu", icon: <Waves className="w-5 h-5" />, description: "Yavaş ve keyifli uyanırım" },
-      { value: "mysterious", label: "Düşünceli & Derin", icon: <Moon className="w-5 h-5" />, description: "İçsel bir dünya" },
-      { value: "passionate", label: "Tutkulu & Kararlı", icon: <Flame className="w-5 h-5" />, description: "Hedeflerime odaklıyım" },
+      { value: "energetic", label: "Enerjik", icon: <Zap className="w-4 h-4" /> },
+      { value: "calm", label: "Sakin", icon: <Waves className="w-4 h-4" /> },
+      { value: "mysterious", label: "Düşünceli", icon: <Moon className="w-4 h-4" /> },
+      { value: "passionate", label: "Tutkulu", icon: <Flame className="w-4 h-4" /> },
     ],
     field: "personality",
   },
   {
     id: "memory",
     miraMessage: (prev: Record<string, string>) => {
-      const personalityResponse: Record<string, string> = {
-        energetic: "Enerjin bulaşıcı! Sana taze ve canlandırıcı notalar çok yakışır 💫",
-        calm: "Huzur arayan bir ruh... Yumuşak ve sarmalayan kokular tam senlik ☁️",
-        mysterious: "İlginç! Gizemli karakterler için derin ve kompleks notalar harika olur 🌙",
-        passionate: "Tutku! Sana güçlü ve iz bırakan parfümler önerebilirim 🔥",
+      const r: Record<string, string> = {
+        energetic: "Taze notalar sana çok yakışır! 💫",
+        calm: "Yumuşak kokular tam senlik ☁️",
+        mysterious: "Derin notalar harika olur 🌙",
+        passionate: "Güçlü parfümler önerebilirim 🔥",
       };
-      return personalityResponse[prev.personality] || "Çok güzel!";
+      return r[prev.personality] || "Çok güzel!";
     },
-    question: "Bir koku anısına dönelim... Aşağıdakilerden hangisi sende en güzel duyguyu uyandırır?",
+    question: "Hangi koku daha çok seni mutlu eder?",
     options: [
-      { value: "seaside", label: "Deniz kenarındaki tuz ve esinti", icon: <Waves className="w-5 h-5" />, description: "Özgürlük hissi" },
-      { value: "forest", label: "Yağmur sonrası orman", icon: <TreePine className="w-5 h-5" />, description: "Doğayla bütünlük" },
-      { value: "warmth", label: "Sıcak bir kucaklama", icon: <Heart className="w-5 h-5" />, description: "Güven ve sıcaklık" },
-      { value: "coffee", label: "Sabah kahvesinin kokusu", icon: <Coffee className="w-5 h-5" />, description: "Keyif ve uyanış" },
+      { value: "seaside", label: "Deniz", icon: <Waves className="w-4 h-4" /> },
+      { value: "forest", label: "Orman", icon: <TreePine className="w-4 h-4" /> },
+      { value: "warmth", label: "Sıcaklık", icon: <Heart className="w-4 h-4" /> },
+      { value: "coffee", label: "Kahve", icon: <Coffee className="w-4 h-4" /> },
     ],
     field: "scentMemory",
   },
   {
     id: "season",
     miraMessage: (prev: Record<string, string>) => {
-      const memoryResponse: Record<string, string> = {
-        seaside: "Ahh deniz! Marine notalar seni çok mutlu edecek 🌊",
-        forest: "Doğa aşığı bir ruh! Odunsu ve yeşil notalar senin için 🌲",
-        warmth: "Ne güzel... Sarmalayan, yumuşak notalar arayalım 💕",
-        coffee: "Bir kahve tutkunu! Baharatlı ve tatlı notalar dikkatini çekebilir ☕",
+      const r: Record<string, string> = {
+        seaside: "Marine notalar 🌊",
+        forest: "Odunsu notalar 🌲",
+        warmth: "Yumuşak notalar 💕",
+        coffee: "Baharatlı notalar ☕",
       };
-      return memoryResponse[prev.scentMemory] || "Güzel bir anı!";
+      return r[prev.scentMemory] || "Güzel!";
     },
-    question: "Kendini hangi mevsimde en iyi hissedersin?",
+    question: "Favori mevsimin?",
     options: [
-      { value: "spring", label: "İlkbahar", icon: <Leaf className="w-5 h-5" />, description: "Taze başlangıçlar" },
-      { value: "summer", label: "Yaz", icon: <Sun className="w-5 h-5" />, description: "Enerji ve canlılık" },
-      { value: "autumn", label: "Sonbahar", icon: <Wind className="w-5 h-5" />, description: "Sıcak tonlar" },
-      { value: "winter", label: "Kış", icon: <Moon className="w-5 h-5" />, description: "Derinlik ve gizem" },
+      { value: "spring", label: "İlkbahar", icon: <Leaf className="w-4 h-4" /> },
+      { value: "summer", label: "Yaz", icon: <Sun className="w-4 h-4" /> },
+      { value: "autumn", label: "Sonbahar", icon: <Wind className="w-4 h-4" /> },
+      { value: "winter", label: "Kış", icon: <Moon className="w-4 h-4" /> },
     ],
     field: "season",
   },
   {
     id: "impression",
     miraMessage: (prev: Record<string, string>) => {
-      const seasonResponse: Record<string, string> = {
-        spring: "İlkbahar ruhu! Çiçeksi ve taze notalar sana çok yakışır 🌸",
-        summer: "Yaz enerjisi! Ferah ve canlı kokular tam senlik ☀️",
-        autumn: "Sonbahar... Sıcak, baharatlı notalar harika olur 🍂",
-        winter: "Kış büyüsü! Derin ve yoğun kokular seni bekliyor ❄️",
+      const r: Record<string, string> = {
+        spring: "Çiçeksi notalar 🌸",
+        summer: "Ferah kokular ☀️",
+        autumn: "Sıcak tonlar 🍂",
+        winter: "Derin kokular ❄️",
       };
-      return seasonResponse[prev.season] || "Güzel bir mevsim!";
+      return r[prev.season] || "Güzel!";
     },
-    question: "Son olarak... Bir parfüm giydiğinde insanlar seni nasıl hatırlasın?",
+    question: "Nasıl hatırlanmak istersin?",
     options: [
-      { value: "elegance", label: "Zarif & Sofistike", icon: <Crown className="w-5 h-5" />, description: "Kalıcı bir etki" },
-      { value: "confidence", label: "Özgüvenli & Çekici", icon: <Sparkles className="w-5 h-5" />, description: "Dikkat çekici" },
-      { value: "warmth", label: "Sıcak & Samimi", icon: <Heart className="w-5 h-5" />, description: "Yakınlık hissi" },
-      { value: "unique", label: "Farklı & Benzersiz", icon: <Zap className="w-5 h-5" />, description: "Unutulmaz bir iz" },
+      { value: "elegance", label: "Zarif", icon: <Crown className="w-4 h-4" /> },
+      { value: "confidence", label: "Çekici", icon: <Sparkles className="w-4 h-4" /> },
+      { value: "warmth", label: "Samimi", icon: <Heart className="w-4 h-4" /> },
+      { value: "unique", label: "Benzersiz", icon: <Zap className="w-4 h-4" /> },
     ],
     field: "desiredImpression",
   },
@@ -125,24 +124,18 @@ export default function PerfumeFinderClient({ products }: PerfumeFinderClientPro
   const [aiAnalysis, setAiAnalysis] = useState<string>("");
   const [isLoading, setIsLoading] = useState(false);
   const [showResults, setShowResults] = useState(false);
-  const chatEndRef = useRef<HTMLDivElement>(null);
 
   const currentConversation = conversationFlow[step];
 
-  // Auto-scroll to bottom
-  useEffect(() => {
-    chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [step, showOptions, isTyping]);
-
-  // Typing effect simulation
+  // Typing effect simulation - no scroll
   useEffect(() => {
     setIsTyping(true);
     setShowOptions(false);
     
     const typingTimer = setTimeout(() => {
       setIsTyping(false);
-      setTimeout(() => setShowOptions(true), 300);
-    }, 1200);
+      setTimeout(() => setShowOptions(true), 200);
+    }, 800);
 
     return () => clearTimeout(typingTimer);
   }, [step]);
@@ -162,11 +155,10 @@ export default function PerfumeFinderClient({ products }: PerfumeFinderClientPro
     setAnswers(newAnswers);
     setShowOptions(false);
 
-    // Son soru ise sonuçları hesapla
     if (step === conversationFlow.length - 1) {
       await calculateResults(newAnswers);
     } else {
-      setTimeout(() => setStep(step + 1), 500);
+      setTimeout(() => setStep(step + 1), 300);
     }
   };
 
@@ -178,36 +170,34 @@ export default function PerfumeFinderClient({ products }: PerfumeFinderClientPro
     setIsLoading(true);
     
     try {
-      // AI'dan analiz al
       const analysisPrompt = `Kullanıcı profili:
-- Cinsiyet tercihi: ${finalAnswers.gender}
+- Cinsiyet: ${finalAnswers.gender}
 - Kişilik: ${finalAnswers.personality}
-- Koku anısı: ${finalAnswers.scentMemory}
+- Koku: ${finalAnswers.scentMemory}
 - Mevsim: ${finalAnswers.season}
-- İstenilen etki: ${finalAnswers.desiredImpression}
+- Etki: ${finalAnswers.desiredImpression}
 
-Bu profile göre kısa, samimi ve Türkçe bir parfüm karakteri analizi yap (3-4 cümle).`;
+Kısa, samimi Türkçe parfüm analizi (2-3 cümle).`;
 
       const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'https://blueperfumery-backend.vercel.app'}/api/agent/chat`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ question: analysisPrompt }),
+        body: JSON.stringify({ message: analysisPrompt }),
       });
 
       if (response.ok) {
         const data = await response.json();
-        setAiAnalysis(data.data || "Senin için harika parfümler buldum!");
+        setAiAnalysis(data.data?.message || "Senin için harika parfümler buldum!");
       } else {
-        setAiAnalysis("Koku profilini analiz ettim ve sana özel önerilerim hazır! 💫");
+        setAiAnalysis("Sana özel önerilerim hazır! 💫");
       }
 
-      // Ürünleri filtrele
       const filteredProducts = filterProducts(products, finalAnswers);
       setRecommendations(filteredProducts.slice(0, 3));
       
     } catch (error) {
       console.error("AI analysis error:", error);
-      setAiAnalysis("Koku profilini analiz ettim ve sana özel önerilerim hazır! 💫");
+      setAiAnalysis("Sana özel önerilerim hazır! 💫");
       const filteredProducts = filterProducts(products, finalAnswers);
       setRecommendations(filteredProducts.slice(0, 3));
     } finally {
@@ -219,14 +209,12 @@ Bu profile göre kısa, samimi ve Türkçe bir parfüm karakteri analizi yap (3-
   const filterProducts = (products: Product[], answers: Record<string, string>): Product[] => {
     let filtered = [...products];
 
-    // Gender filter
     if (answers.gender !== "unisex") {
       filtered = filtered.filter(p => 
         p.gender === answers.gender || p.gender === "unisex"
       );
     }
 
-    // Karakteristik eşleştirme
     const characteristicMap: Record<string, string[]> = {
       energetic: ["taze", "fresh", "citrus", "ferah"],
       calm: ["yumuşak", "soft", "powder", "misk"],
@@ -242,7 +230,6 @@ Bu profile göre kısa, samimi ve Türkçe bir parfüm karakteri analizi yap (3-
       winter: ["oryantal", "derin", "yoğun", "oud"],
     };
 
-    // Score products
     const scoredProducts = filtered.map(product => {
       let score = 0;
       const chars = product.characteristics?.join(" ").toLowerCase() || "";
@@ -261,9 +248,7 @@ Bu profile göre kısa, samimi ve Türkçe bir parfüm karakteri analizi yap (3-
       return { product, score };
     });
 
-    // Sort by score
     scoredProducts.sort((a, b) => b.score - a.score);
-    
     return scoredProducts.map(sp => sp.product);
   };
 
@@ -278,40 +263,40 @@ Bu profile göre kısa, samimi ve Türkçe bir parfüm karakteri analizi yap (3-
 
   // Results Screen
   if (showResults) {
-  return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-800 via-slate-900 to-navy pt-24 pb-12">
-        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-slate-800 via-slate-900 to-navy pt-20 sm:pt-24 pb-8">
+        <div className="max-w-5xl mx-auto px-4">
           {/* Header */}
-          <div className="text-center mb-12">
-            <div className="inline-flex items-center gap-2 bg-gold/10 backdrop-blur-sm rounded-full px-4 py-2 mb-6">
+          <div className="text-center mb-8">
+            <div className="inline-flex items-center gap-2 bg-gold/10 rounded-full px-3 py-1.5 mb-4">
               <Sparkles className="w-4 h-4 text-gold" />
-              <span className="text-gold text-sm font-medium">Mavi&apos;nın Önerileri</span>
+              <span className="text-gold text-sm">Mavi&apos;nın Önerileri</span>
             </div>
-            <h1 className="font-heading text-3xl lg:text-4xl font-semibold text-white mb-4">
+            <h1 className="font-heading text-2xl sm:text-3xl font-semibold text-white">
               Senin İçin Seçtiklerim ✨
             </h1>
           </div>
 
           {/* AI Analysis */}
-          <div className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl p-6 mb-10">
-            <div className="flex items-start gap-4">
-              <div className="w-12 h-12 rounded-full bg-gradient-to-br from-gold/20 to-amber-600/20 flex items-center justify-center flex-shrink-0 border border-gold/30">
-                <Sparkles className="w-6 h-6 text-gold" />
+          <div className="bg-white/5 border border-white/10 rounded-xl p-4 mb-8">
+            <div className="flex items-start gap-3">
+              <div className="w-10 h-10 rounded-full bg-gradient-to-br from-gold/20 to-amber-600/20 flex items-center justify-center flex-shrink-0 border border-gold/30">
+                <Sparkles className="w-5 h-5 text-gold" />
               </div>
               <div>
-                <span className="text-gold text-sm font-medium block mb-2">Mavi</span>
-                <p className="text-white/80 text-lg leading-relaxed">{aiAnalysis}</p>
+                <span className="text-gold text-sm font-medium block mb-1">Mavi</span>
+                <p className="text-white/80 text-sm sm:text-base leading-relaxed">{aiAnalysis}</p>
               </div>
             </div>
           </div>
 
           {/* Recommendations */}
           {recommendations.length > 0 ? (
-            <div className="grid md:grid-cols-3 gap-6 mb-10">
+            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-8">
               {recommendations.map((product, index) => (
                 <div key={product.id} className="relative">
                   {index === 0 && (
-                    <div className="absolute -top-3 left-1/2 -translate-x-1/2 z-10 bg-gold text-navy px-4 py-1 rounded-full text-xs font-semibold flex items-center gap-1">
+                    <div className="absolute -top-2 left-1/2 -translate-x-1/2 z-10 bg-gold text-navy px-3 py-1 rounded-full text-xs font-semibold flex items-center gap-1">
                       <Crown className="w-3 h-3" /> En Uygun
                     </div>
                   )}
@@ -324,25 +309,25 @@ Bu profile göre kısa, samimi ve Türkçe bir parfüm karakteri analizi yap (3-
               ))}
             </div>
           ) : (
-            <div className="text-center py-12">
-              <p className="text-gray-400">Henüz uygun parfüm bulunamadı. Koleksiyonumuzu keşfetmeye ne dersin?</p>
+            <div className="text-center py-8">
+              <p className="text-gray-400">Henüz uygun parfüm bulunamadı.</p>
             </div>
           )}
 
           {/* Actions */}
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+          <div className="flex flex-col sm:flex-row gap-3 justify-center">
             <button
               onClick={handleReset}
-              className="inline-flex items-center justify-center gap-2 px-6 py-3 border border-white/20 text-white rounded-full hover:bg-white/5 hover:border-white/40 transition-all duration-300"
+              className="inline-flex items-center justify-center gap-2 px-5 py-2.5 border border-white/20 text-white rounded-full hover:bg-white/5 transition-all text-sm"
             >
               <RotateCcw className="w-4 h-4" />
               Tekrar Dene
             </button>
             <Link
               href="/satin-al"
-              className="inline-flex items-center justify-center gap-2 px-8 py-3 bg-gold text-navy font-semibold rounded-full hover:bg-gold-light transition-all duration-300"
+              className="inline-flex items-center justify-center gap-2 px-6 py-2.5 bg-gold text-navy font-semibold rounded-full hover:bg-gold-light transition-all text-sm"
             >
-              Tüm Koleksiyonu Gör
+              Tüm Koleksiyon
               <ArrowRight className="w-4 h-4" />
             </Link>
           </div>
@@ -356,152 +341,134 @@ Bu profile göre kısa, samimi ve Türkçe bir parfüm karakteri analizi yap (3-
     return (
       <div className="min-h-screen bg-gradient-to-br from-slate-800 via-slate-900 to-navy flex items-center justify-center">
         <div className="text-center">
-          <div className="w-16 h-16 rounded-full bg-gradient-to-br from-gold/20 to-amber-600/20 flex items-center justify-center mx-auto mb-6 animate-pulse">
-            <Sparkles className="w-8 h-8 text-gold animate-spin" />
+          <div className="w-14 h-14 rounded-full bg-gradient-to-br from-gold/20 to-amber-600/20 flex items-center justify-center mx-auto mb-4 animate-pulse">
+            <Sparkles className="w-7 h-7 text-gold animate-spin" />
           </div>
-          <h2 className="font-heading text-2xl text-white mb-2">Mavi düşünüyor...</h2>
-          <p className="text-gray-400">Senin için en uygun parfümleri seçiyorum ✨</p>
+          <h2 className="font-heading text-xl text-white mb-2">Mavi düşünüyor...</h2>
+          <p className="text-gray-400 text-sm">Senin için en uygun parfümleri seçiyorum ✨</p>
         </div>
       </div>
     );
   }
 
-  // Chat Interface
+  // Chat Interface - Mobile Optimized, Fixed Layout
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-800 via-slate-900 to-navy pt-20 pb-8">
-      <div className="max-w-2xl mx-auto px-4 sm:px-6">
-        {/* Header */}
-        <div className="text-center mb-6 pt-4">
-          <div className="inline-flex items-center gap-2 bg-gold/10 backdrop-blur-sm rounded-full px-4 py-2 mb-4">
-            <Sparkles className="w-4 h-4 text-gold" />
-            <span className="text-gold text-sm font-medium">Kişisel Parfüm Keşfi</span>
-          </div>
-          <h1 className="font-heading text-2xl lg:text-3xl font-semibold text-white">
+    <div className="min-h-screen bg-gradient-to-br from-slate-800 via-slate-900 to-navy flex flex-col">
+      {/* Fixed Header */}
+      <div className="flex-shrink-0 pt-16 sm:pt-20 pb-4 px-4">
+        <div className="text-center">
+          <h1 className="font-heading text-xl sm:text-2xl font-semibold text-white mb-2">
             Parfümünü Bul
           </h1>
-        </div>
-
-        {/* Progress Bar - Top */}
-        {step > 0 && (
-          <div className="mb-6 flex items-center justify-center gap-4">
-            <button
-              onClick={() => step > 1 && setStep(step - 1)}
-              className={`p-2 rounded-full transition-all ${
-                step > 1 ? "text-white/60 hover:bg-white/10" : "opacity-0 pointer-events-none"
-              }`}
-            >
-              <ArrowLeft className="w-5 h-5" />
-            </button>
-            
-            <div className="flex gap-1.5">
+          
+          {/* Progress Bar */}
+          {step > 0 && (
+            <div className="flex items-center justify-center gap-1.5 mt-3">
               {conversationFlow.slice(1).map((_, i) => (
                 <div
                   key={i}
-                  className={`h-2 rounded-full transition-all duration-300 ${
+                  className={`h-1.5 rounded-full transition-all duration-300 ${
                     i + 1 === step
-                      ? "w-8 bg-gold"
+                      ? "w-6 bg-gold"
                       : i + 1 < step
                       ? "w-3 bg-gold/50"
                       : "w-3 bg-white/20"
                   }`}
                 />
               ))}
-            </div>
-            
-            <span className="text-white/40 text-sm min-w-[40px] text-right">
-              {step}/{conversationFlow.length - 1}
-            </span>
-            </div>
-          )}
-
-        {/* Main Card - Question & Options Together */}
-        <div className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl overflow-hidden">
-          {/* Mavi's Message */}
-          <div className="p-6 pb-4">
-            <div className="flex items-start gap-3 mb-6">
-              <div className="w-12 h-12 rounded-full bg-gradient-to-br from-gold/20 to-amber-600/20 flex items-center justify-center flex-shrink-0 border border-gold/30">
-                <Sparkles className="w-6 h-6 text-gold" />
-              </div>
-              <div className="flex-1">
-                <span className="text-gold text-sm font-medium block mb-2">Mavi</span>
-                {isTyping ? (
-                  <div className="bg-white/10 rounded-2xl rounded-tl-sm px-4 py-3 inline-block">
-                    <div className="flex gap-1.5">
-                      <span className="w-2.5 h-2.5 bg-gold/60 rounded-full animate-bounce" style={{ animationDelay: "0ms" }} />
-                      <span className="w-2.5 h-2.5 bg-gold/60 rounded-full animate-bounce" style={{ animationDelay: "150ms" }} />
-                      <span className="w-2.5 h-2.5 bg-gold/60 rounded-full animate-bounce" style={{ animationDelay: "300ms" }} />
-                    </div>
-                  </div>
-                ) : (
-                  <div className="bg-white/10 rounded-2xl rounded-tl-sm px-5 py-4">
-                    <p className="text-white/90 whitespace-pre-line text-base leading-relaxed">{getMaviMessage()}</p>
-                    {currentConversation.question && (
-                      <p className="text-white font-semibold mt-4 text-lg">{currentConversation.question}</p>
-                    )}
-                  </div>
-                )}
-              </div>
-            </div>
-          </div>
-
-          {/* Options - Directly Below Question */}
-          {showOptions && (
-            <div className="px-6 pb-6">
-              {step === 0 ? (
-                // Start button
-                <button
-                  onClick={handleStart}
-                  className="w-full bg-gold text-navy font-semibold py-4 rounded-xl hover:bg-gold-light transition-all duration-300 flex items-center justify-center gap-2 text-lg"
-                >
-                  Başlayalım
-                  <ArrowRight className="w-5 h-5" />
-                </button>
-              ) : currentConversation.options ? (
-                // Option buttons - 2x2 grid
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                  {currentConversation.options.map((option) => (
-                    <button
-                      key={option.value}
-                      onClick={() => handleOptionSelect(option.value)}
-                      className="group bg-white/5 border border-white/10 rounded-xl p-4 text-left hover:bg-gold/10 hover:border-gold/40 transition-all duration-300"
-                    >
-                      <div className="flex items-center gap-3 mb-1">
-                        <div className="w-10 h-10 rounded-full bg-gold/10 flex items-center justify-center text-gold group-hover:bg-gold/20 transition-colors">
-                          {option.icon}
-                        </div>
-                        <span className="text-white font-medium text-base">{option.label}</span>
-                      </div>
-                      <p className="text-gray-400 text-sm pl-[52px]">{option.description}</p>
-                    </button>
-                  ))}
-                </div>
-              ) : null}
+              <span className="text-white/40 text-xs ml-2">
+                {step}/{conversationFlow.length - 1}
+              </span>
             </div>
           )}
         </div>
+      </div>
 
-        {/* Previous Answers Summary - Compact */}
-        {Object.keys(answers).length > 0 && (
-          <div className="mt-4 flex flex-wrap gap-2 justify-center">
-            {Object.entries(answers).map(([field, value]) => {
-              const question = conversationFlow.find(q => q.field === field);
-              const option = question?.options?.find(o => o.value === value);
-              if (!option) return null;
-              
-              return (
-                <span 
-                  key={field} 
-                  className="inline-flex items-center gap-2 bg-gold/10 text-gold/80 px-3 py-1.5 rounded-full text-sm border border-gold/20"
-                >
-                  {option.icon}
-                  {option.label}
-                </span>
-              );
-            })}
+      {/* Main Content - Centered */}
+      <div className="flex-1 flex items-center justify-center px-4 pb-4">
+        <div className="w-full max-w-md">
+          {/* Message Card */}
+          <div className="bg-white/5 border border-white/10 rounded-2xl overflow-hidden">
+            {/* Mavi's Message */}
+            <div className="p-4">
+              <div className="flex items-start gap-3">
+                <div className="w-10 h-10 rounded-full bg-gradient-to-br from-gold/20 to-amber-600/20 flex items-center justify-center flex-shrink-0 border border-gold/30">
+                  <Sparkles className="w-5 h-5 text-gold" />
+                </div>
+                <div className="flex-1 min-w-0">
+                  <span className="text-gold text-xs font-medium block mb-1">Mavi</span>
+                  {isTyping ? (
+                    <div className="bg-white/10 rounded-xl rounded-tl-sm px-3 py-2 inline-block">
+                      <div className="flex gap-1">
+                        <span className="w-2 h-2 bg-gold/60 rounded-full animate-bounce" style={{ animationDelay: "0ms" }} />
+                        <span className="w-2 h-2 bg-gold/60 rounded-full animate-bounce" style={{ animationDelay: "150ms" }} />
+                        <span className="w-2 h-2 bg-gold/60 rounded-full animate-bounce" style={{ animationDelay: "300ms" }} />
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="bg-white/10 rounded-xl rounded-tl-sm px-3 py-2.5">
+                      <p className="text-white/90 text-sm whitespace-pre-line">{getMaviMessage()}</p>
+                      {currentConversation.question && (
+                        <p className="text-white font-medium mt-2 text-sm">{currentConversation.question}</p>
+                      )}
+                    </div>
+                  )}
+                </div>
+              </div>
+            </div>
+
+            {/* Options */}
+            {showOptions && (
+              <div className="px-4 pb-4">
+                {step === 0 ? (
+                  <button
+                    onClick={handleStart}
+                    className="w-full bg-gold text-navy font-semibold py-3 rounded-xl hover:bg-gold-light transition-all flex items-center justify-center gap-2"
+                  >
+                    Başlayalım
+                    <ArrowRight className="w-4 h-4" />
+                  </button>
+                ) : currentConversation.options ? (
+                  <div className="grid grid-cols-2 gap-2">
+                    {currentConversation.options.map((option) => (
+                      <button
+                        key={option.value}
+                        onClick={() => handleOptionSelect(option.value)}
+                        className="group bg-transparent border-2 border-white/20 rounded-xl p-3 text-center hover:border-gold hover:bg-gold/10 transition-all active:scale-95"
+                      >
+                        <div className="w-8 h-8 rounded-full bg-white/10 group-hover:bg-gold/20 flex items-center justify-center text-white/70 group-hover:text-gold mx-auto mb-1.5 transition-colors">
+                          {option.icon}
+                        </div>
+                        <span className="text-white text-sm font-medium">{option.label}</span>
+                      </button>
+                    ))}
+                  </div>
+                ) : null}
+              </div>
+            )}
           </div>
-        )}
 
-        <div ref={chatEndRef} />
+          {/* Selected Answers - Compact Pills */}
+          {Object.keys(answers).length > 0 && (
+            <div className="mt-4 flex flex-wrap gap-1.5 justify-center">
+              {Object.entries(answers).map(([field, value]) => {
+                const question = conversationFlow.find(q => q.field === field);
+                const option = question?.options?.find(o => o.value === value);
+                if (!option) return null;
+                
+                return (
+                  <span 
+                    key={field} 
+                    className="inline-flex items-center gap-1 bg-gold/20 text-gold px-2 py-1 rounded-full text-xs"
+                  >
+                    <Check className="w-3 h-3" />
+                    {option.label}
+                  </span>
+                );
+              })}
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );
