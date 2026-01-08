@@ -49,38 +49,38 @@ export default async function ParfumDetay({
       perfume.brand.includes("Exclusive")
     ) {
       return {
-        gradient: "from-amber-50 to-orange-100",
-        border: "border-amber-500",
-        badge: "bg-amber-600",
-        tag: "bg-amber-50 text-amber-700",
+        gradient: "from-amber-900/80 via-slate-900 to-navy",
+        border: "border-gold",
+        badge: "bg-gold text-navy",
+        tag: "bg-gold/10 text-gold",
         button: {
-          outline: "border-amber-600 text-amber-600 hover:bg-amber-50",
+          outline: "border-gold text-gold hover:bg-gold/10",
           primary:
-            "from-amber-600 to-orange-600 hover:from-amber-700 hover:to-orange-700",
+            "from-gold to-gold-light hover:from-gold-light hover:to-gold text-navy",
         },
       };
     } else if (perfume.gender === "female") {
       return {
-        gradient: "from-pink-50 to-purple-100",
-        border: "border-purple-500",
-        badge: "bg-purple-600",
-        tag: "bg-purple-50 text-purple-700",
+        gradient: "from-purple-900 via-slate-900 to-navy",
+        border: "border-gold",
+        badge: "bg-gold text-navy",
+        tag: "bg-purple-500/20 text-purple-300",
         button: {
-          outline: "border-purple-600 text-purple-600 hover:bg-purple-50",
+          outline: "border-gold text-gold hover:bg-gold/10",
           primary:
-            "from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700",
+            "from-gold to-gold-light hover:from-gold-light hover:to-gold text-navy",
         },
       };
     } else {
       return {
-        gradient: "from-blue-50 to-indigo-100",
-        border: "border-indigo-500",
-        badge: "bg-indigo-600",
-        tag: "bg-indigo-50 text-indigo-700",
+        gradient: "from-slate-800 via-slate-900 to-navy",
+        border: "border-gold",
+        badge: "bg-gold text-navy",
+        tag: "bg-blue-500/20 text-blue-300",
         button: {
-          outline: "border-indigo-600 text-indigo-600 hover:bg-indigo-50",
+          outline: "border-gold text-gold hover:bg-gold/10",
           primary:
-            "from-indigo-600 to-blue-600 hover:from-indigo-700 hover:to-blue-700",
+            "from-gold to-gold-light hover:from-gold-light hover:to-gold text-navy",
         },
       };
     }

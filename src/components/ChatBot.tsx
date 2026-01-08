@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
+import { MessageCircle, Send, X } from "lucide-react";
 
 interface Message {
   id: string;
@@ -9,15 +10,19 @@ interface Message {
   timestamp: Date;
 }
 
+// Local development: http://localhost:3002/api
+// Production: https://blueperfumery-backend.vercel.app/api
 const API_BASE_URL =
   process.env.NEXT_PUBLIC_API_URL ||
-  "https://blueperfumery-backend.vercel.app/api";
+  (typeof window !== "undefined" && window.location.hostname === "localhost"
+    ? "http://localhost:3002/api"
+    : "https://blueperfumery-backend.vercel.app/api");
 
 // Samimi karşılama mesajları
 const GREETING_MESSAGES = [
-  "Merhaba! 🌸 Hoş geldiniz Blue Perfumery'ye! Ben Mira, parfüm danışmanınız. Size nasıl yardımcı olabilirim?",
-  "Selam! ✨ Blue Perfumery'ye hoş geldiniz! Ben Mira. Bugün size özel bir koku mu arıyorsunuz?",
-  "Merhaba! 💫 Ben Mira, kişisel parfüm danışmanınız. Hayalinizdeki kokuyu birlikte bulalım mı?",
+  "Merhaba! ✨ Hoş geldiniz Blue Perfumery'ye! Ben Mavi, parfüm danışmanınız. Size nasıl yardımcı olabilirim?",
+  "Selam! 💫 Blue Perfumery'ye hoş geldiniz! Ben Mavi. Bugün size özel bir koku mu arıyorsunuz?",
+  "Merhaba! 🌟 Ben Mavi, kişisel parfüm danışmanınız. Hayalinizdeki kokuyu birlikte bulalım mı?",
 ];
 
 export default function ChatBot() {
@@ -153,27 +158,29 @@ export default function ChatBot() {
           className="fixed bottom-24 right-6 z-50 animate-bounce-slow cursor-pointer"
           onClick={handleOpen}
         >
-          <div className="relative bg-white rounded-2xl shadow-2xl p-4 max-w-[220px] border border-gray-100">
-            <div className="absolute -bottom-2 right-6 w-4 h-4 bg-white transform rotate-45 border-r border-b border-gray-100"></div>
+          <div className="relative bg-navy/95 backdrop-blur-sm rounded-2xl shadow-2xl p-4 max-w-[220px] border border-gold/30">
+            <div className="absolute -bottom-2 right-6 w-4 h-4 bg-navy/95 transform rotate-45 border-r border-b border-gold/30"></div>
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-full bg-gradient-to-br from-rose-400 to-pink-500 flex items-center justify-center flex-shrink-0 shadow-lg">
-                <span className="text-white text-lg">👩</span>
+              <div className="w-10 h-10 rounded-full bg-gradient-to-br from-gold to-amber-600 flex items-center justify-center flex-shrink-0 shadow-lg">
+                <span className="text-navy font-heading font-bold text-lg">
+                  M
+                </span>
               </div>
               <div>
-                <p className="text-sm font-medium text-gray-800">Merhaba! 👋</p>
-                <p className="text-xs text-gray-500">
+                <p className="text-sm font-medium text-white">Merhaba! 👋</p>
+                <p className="text-xs text-gray-400">
                   Size yardımcı olabilir miyim?
                 </p>
               </div>
             </div>
             <button
-              className="absolute -top-2 -right-2 w-6 h-6 bg-gray-200 rounded-full text-gray-500 text-xs hover:bg-gray-300 transition-colors"
+              className="absolute -top-2 -right-2 w-6 h-6 bg-white/10 rounded-full text-gray-400 text-xs hover:bg-white/20 transition-colors flex items-center justify-center"
               onClick={(e) => {
                 e.stopPropagation();
                 setShowBubble(false);
               }}
             >
-              ✕
+              <X className="w-3 h-3" />
             </button>
           </div>
         </div>
@@ -188,23 +195,23 @@ export default function ChatBot() {
         aria-label="Parfüm Danışmanı ile Sohbet"
       >
         {/* Outer Ring Animation */}
-        <div className="absolute inset-0 rounded-full bg-gradient-to-r from-rose-400 to-pink-500 animate-ping opacity-30"></div>
-        <div className="absolute -inset-1 rounded-full bg-gradient-to-r from-rose-400 via-pink-500 to-purple-500 opacity-70 blur-sm group-hover:opacity-100 transition-opacity animate-pulse"></div>
+        <div className="absolute inset-0 rounded-full bg-gold animate-ping opacity-20"></div>
+        <div className="absolute -inset-1 rounded-full bg-gradient-to-r from-gold via-amber-500 to-gold opacity-50 blur-sm group-hover:opacity-80 transition-opacity"></div>
 
         {/* Main Button */}
-        <div className="relative w-16 h-16 bg-gradient-to-br from-rose-500 via-pink-500 to-purple-600 rounded-full shadow-2xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
-          {/* Avatar */}
+        <div className="relative w-16 h-16 bg-gradient-to-br from-navy via-slate-800 to-navy rounded-full shadow-2xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300 border border-gold/30">
+          {/* Icon */}
           <div className="relative">
-            <span className="text-2xl">👩‍💼</span>
+            <MessageCircle className="w-7 h-7 text-gold" />
             {/* Online Indicator */}
-            <span className="absolute -bottom-1 -right-1 w-4 h-4 bg-green-400 rounded-full border-2 border-white animate-pulse"></span>
+            <span className="absolute -bottom-1 -right-1 w-3.5 h-3.5 bg-green-400 rounded-full border-2 border-navy animate-pulse"></span>
           </div>
         </div>
 
         {/* Hover Label */}
-        <div className="absolute right-full mr-3 top-1/2 -translate-y-1/2 bg-gray-900 text-white text-sm px-3 py-2 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap shadow-xl">
-          Parfüm Danışmanı Mira 💄
-          <div className="absolute left-full top-1/2 -translate-y-1/2 border-8 border-transparent border-l-gray-900"></div>
+        <div className="absolute right-full mr-3 top-1/2 -translate-y-1/2 bg-navy text-white text-sm px-3 py-2 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap shadow-xl border border-white/10">
+          Parfüm Danışmanı Mavi ✨
+          <div className="absolute left-full top-1/2 -translate-y-1/2 border-8 border-transparent border-l-navy"></div>
         </div>
       </button>
 
@@ -216,24 +223,27 @@ export default function ChatBot() {
             : "scale-95 opacity-0 pointer-events-none"
         }`}
       >
-        <div className="w-[380px] h-[550px] bg-white rounded-3xl shadow-2xl flex flex-col overflow-hidden border border-gray-100">
+        <div className="w-[380px] h-[550px] bg-navy/95 backdrop-blur-md rounded-2xl shadow-2xl flex flex-col overflow-hidden border border-white/10">
           {/* Header */}
-          <div className="relative bg-gradient-to-r from-rose-500 via-pink-500 to-purple-600 px-5 py-4">
-            {/* Decorative circles */}
-            <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full -translate-y-1/2 translate-x-1/2"></div>
-            <div className="absolute bottom-0 left-0 w-20 h-20 bg-white/5 rounded-full translate-y-1/2 -translate-x-1/2"></div>
+          <div className="relative bg-gradient-to-r from-navy via-slate-800 to-navy px-5 py-4 border-b border-gold/20">
+            {/* Decorative elements */}
+            <div className="absolute top-0 right-0 w-32 h-32 bg-gold/5 rounded-full -translate-y-1/2 translate-x-1/2 blur-2xl"></div>
 
             <div className="relative flex items-center justify-between">
               <div className="flex items-center gap-3">
                 <div className="relative">
-                  <div className="w-12 h-12 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center shadow-lg border-2 border-white/30">
-                    <span className="text-2xl">👩‍💼</span>
+                  <div className="w-12 h-12 rounded-full bg-gradient-to-br from-gold to-amber-600 flex items-center justify-center shadow-lg">
+                    <span className="text-navy font-heading font-bold text-xl">
+                      M
+                    </span>
                   </div>
-                  <span className="absolute bottom-0 right-0 w-3.5 h-3.5 bg-green-400 rounded-full border-2 border-white"></span>
+                  <span className="absolute bottom-0 right-0 w-3.5 h-3.5 bg-green-400 rounded-full border-2 border-navy"></span>
                 </div>
                 <div>
-                  <h3 className="text-white font-semibold text-lg">Mira</h3>
-                  <p className="text-white/80 text-xs flex items-center gap-1">
+                  <h3 className="text-white font-heading font-semibold text-lg">
+                    Mavi
+                  </h3>
+                  <p className="text-gray-400 text-xs flex items-center gap-1">
                     <span className="w-1.5 h-1.5 bg-green-400 rounded-full inline-block"></span>
                     Parfüm Danışmanı • Çevrimiçi
                   </p>
@@ -241,27 +251,15 @@ export default function ChatBot() {
               </div>
               <button
                 onClick={() => setIsOpen(false)}
-                className="w-8 h-8 rounded-full bg-white/20 hover:bg-white/30 flex items-center justify-center transition-colors"
+                className="w-8 h-8 rounded-full bg-white/5 hover:bg-white/10 flex items-center justify-center transition-colors border border-white/10"
               >
-                <svg
-                  className="w-5 h-5 text-white"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M6 18L18 6M6 6l12 12"
-                  />
-                </svg>
+                <X className="w-4 h-4 text-gray-400" />
               </button>
             </div>
           </div>
 
           {/* Messages */}
-          <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-gradient-to-b from-gray-50 to-white">
+          <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-gradient-to-b from-slate-900/50 to-navy/50">
             {messages.map((message) => (
               <div
                 key={message.id}
@@ -270,15 +268,17 @@ export default function ChatBot() {
                 } animate-fade-in`}
               >
                 {message.role === "assistant" && (
-                  <div className="w-8 h-8 rounded-full bg-gradient-to-br from-rose-400 to-pink-500 flex items-center justify-center mr-2 flex-shrink-0 shadow-md">
-                    <span className="text-sm">👩</span>
+                  <div className="w-8 h-8 rounded-full bg-gradient-to-br from-gold to-amber-600 flex items-center justify-center mr-2 flex-shrink-0 shadow-md">
+                    <span className="text-navy font-heading font-bold text-sm">
+                      M
+                    </span>
                   </div>
                 )}
                 <div
                   className={`max-w-[75%] px-4 py-3 ${
                     message.role === "user"
-                      ? "bg-gradient-to-r from-rose-500 to-pink-500 text-white rounded-2xl rounded-br-md shadow-lg"
-                      : "bg-white text-gray-800 rounded-2xl rounded-bl-md shadow-md border border-gray-100"
+                      ? "bg-gold text-navy rounded-2xl rounded-br-sm shadow-lg"
+                      : "bg-white/5 backdrop-blur-sm text-white rounded-2xl rounded-bl-sm shadow-md border border-white/10"
                   }`}
                 >
                   <p className="text-sm whitespace-pre-wrap leading-relaxed">
@@ -286,9 +286,7 @@ export default function ChatBot() {
                   </p>
                   <p
                     className={`text-xs mt-1.5 ${
-                      message.role === "user"
-                        ? "text-white/70"
-                        : "text-gray-400"
+                      message.role === "user" ? "text-navy/60" : "text-gray-500"
                     }`}
                   >
                     {message.timestamp.toLocaleTimeString("tr-TR", {
@@ -303,21 +301,23 @@ export default function ChatBot() {
             {/* Typing Indicator */}
             {isTyping && (
               <div className="flex justify-start animate-fade-in">
-                <div className="w-8 h-8 rounded-full bg-gradient-to-br from-rose-400 to-pink-500 flex items-center justify-center mr-2 flex-shrink-0 shadow-md">
-                  <span className="text-sm">👩</span>
+                <div className="w-8 h-8 rounded-full bg-gradient-to-br from-gold to-amber-600 flex items-center justify-center mr-2 flex-shrink-0 shadow-md">
+                  <span className="text-navy font-heading font-bold text-sm">
+                    M
+                  </span>
                 </div>
-                <div className="bg-white px-4 py-3 rounded-2xl rounded-bl-md shadow-md border border-gray-100">
+                <div className="bg-white/5 backdrop-blur-sm px-4 py-3 rounded-2xl rounded-bl-sm shadow-md border border-white/10">
                   <div className="flex items-center gap-1.5">
                     <div
-                      className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"
+                      className="w-2 h-2 bg-gold/60 rounded-full animate-bounce"
                       style={{ animationDelay: "0ms" }}
                     ></div>
                     <div
-                      className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"
+                      className="w-2 h-2 bg-gold/60 rounded-full animate-bounce"
                       style={{ animationDelay: "150ms" }}
                     ></div>
                     <div
-                      className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"
+                      className="w-2 h-2 bg-gold/60 rounded-full animate-bounce"
                       style={{ animationDelay: "300ms" }}
                     ></div>
                   </div>
@@ -331,7 +331,7 @@ export default function ChatBot() {
           {/* Suggestions */}
           {messages.length <= 1 && !isTyping && (
             <div className="px-4 pb-2">
-              <p className="text-xs text-gray-400 mb-2">Hızlı sorular:</p>
+              <p className="text-xs text-gray-500 mb-2">Hızlı sorular:</p>
               <div className="flex flex-wrap gap-2">
                 {suggestions.map((suggestion, idx) => (
                   <button
@@ -339,7 +339,7 @@ export default function ChatBot() {
                     onClick={() => {
                       setInput(suggestion);
                     }}
-                    className="px-3 py-1.5 bg-gray-100 hover:bg-rose-50 hover:text-rose-600 text-gray-600 text-xs rounded-full transition-colors border border-gray-200 hover:border-rose-200"
+                    className="px-3 py-1.5 bg-white/5 hover:bg-gold/10 hover:text-gold text-gray-400 text-xs rounded-full transition-colors border border-white/10 hover:border-gold/30"
                   >
                     {suggestion}
                   </button>
@@ -349,7 +349,7 @@ export default function ChatBot() {
           )}
 
           {/* Input */}
-          <div className="p-4 bg-white border-t border-gray-100">
+          <div className="p-4 bg-slate-900/50 border-t border-white/10">
             <div className="flex items-center gap-3">
               <div className="flex-1 relative">
                 <input
@@ -358,32 +358,20 @@ export default function ChatBot() {
                   onChange={(e) => setInput(e.target.value)}
                   onKeyPress={handleKeyPress}
                   placeholder="Mesajınızı yazın..."
-                  className="w-full px-4 py-3 bg-gray-100 rounded-2xl text-sm focus:outline-none focus:ring-2 focus:ring-rose-300 text-gray-800 placeholder-gray-400 pr-12"
+                  className="w-full px-4 py-3 bg-white/5 backdrop-blur-sm rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-gold/50 text-white placeholder-gray-500 border border-white/10"
                   disabled={isLoading}
                 />
               </div>
               <button
                 onClick={handleSend}
                 disabled={!input.trim() || isLoading}
-                className="w-12 h-12 bg-gradient-to-r from-rose-500 to-pink-500 rounded-2xl flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed hover:shadow-lg hover:scale-105 transition-all duration-200 active:scale-95"
+                className="w-12 h-12 bg-gold rounded-xl flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gold-light hover:scale-105 transition-all duration-200 active:scale-95"
               >
-                <svg
-                  className="w-5 h-5 text-white"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"
-                  />
-                </svg>
+                <Send className="w-5 h-5 text-navy" />
               </button>
             </div>
-            <p className="text-xs text-gray-400 mt-2 text-center">
-              AI destekli kişisel parfüm danışmanınız 💄
+            <p className="text-xs text-gray-500 mt-2 text-center">
+              AI destekli kişisel parfüm danışmanınız ✨
             </p>
           </div>
         </div>

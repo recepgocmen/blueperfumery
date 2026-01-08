@@ -3,8 +3,10 @@
 import { useState } from "react";
 import Link from "next/link";
 import type { Product } from "@/lib/api";
+import PerfumeCard from "@/components/PerfumeCard";
+import { Sparkles, Filter, Grid3X3, LayoutGrid } from "lucide-react";
 
-type Category = "all" | "unisex" | "male" | "female" | "exclusive" | "premium";
+type Category = "all" | "unisex" | "male" | "female" | "niches";
 
 interface ShopPageClientProps {
   products: Product[];
@@ -12,354 +14,202 @@ interface ShopPageClientProps {
 
 export default function ShopPageClient({ products }: ShopPageClientProps) {
   const [activeCategory, setActiveCategory] = useState<Category>("all");
+  const [gridSize, setGridSize] = useState<3 | 4>(3);
 
   // Filtreleme işlevi
   const filteredPerfumes = products.filter((perfume) => {
     if (activeCategory === "all") return true;
-    if (
-      activeCategory === "male" ||
-      activeCategory === "female" ||
-      activeCategory === "unisex"
-    ) {
+    if (activeCategory === "male" || activeCategory === "female" || activeCategory === "unisex") {
       return perfume.gender === activeCategory;
     }
-    if (activeCategory === "exclusive") {
+    if (activeCategory === "niches") {
       return (
-        perfume.category === "exclusive" || perfume.brand.includes("Exclusive")
-      );
-    }
-    if (activeCategory === "premium") {
-      return (
-        perfume.category === "premium" || perfume.brand.includes("Premium")
+        perfume.category === "niches" || 
+        perfume.category === "exclusive" || 
+        perfume.category === "artisanal"
       );
     }
     return true;
   });
 
-  return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
-      {/* Header */}
-      <header className="bg-white shadow">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-          <div className="flex justify-between items-center">
-            <div className="flex items-center">
-              <Link href="/" className="text-blue-600 font-bold text-xl">
-                Blue Perfumery
-              </Link>
-            </div>
-            <nav className="flex space-x-4">
-              <Link
-                href="/parfumunu-bul"
-                className="text-gray-600 hover:text-blue-500 px-3 py-2 rounded-md text-sm font-medium"
-              >
-                Parfümünü Bul
-              </Link>
-              <Link
-                href="/satin-al"
-                className="text-white bg-blue-600 hover:bg-blue-700 shadow-md hover:shadow-lg px-4 py-2 rounded-md text-sm font-medium transition-all duration-200"
-              >
-                Satın Al
-              </Link>
-              <Link
-                href="/hakkimizda"
-                className="text-gray-600 hover:text-blue-500 px-3 py-2 rounded-md text-sm font-medium"
-              >
-                Hakkımızda
-              </Link>
-            </nav>
-          </div>
-        </div>
-      </header>
+  const categories: { value: Category; label: string; count: number }[] = [
+    { value: "all", label: "Tümü", count: products.length },
+    { value: "male", label: "Erkek", count: products.filter((p) => p.gender === "male").length },
+    { value: "female", label: "Kadın", count: products.filter((p) => p.gender === "female").length },
+    { value: "unisex", label: "Unisex", count: products.filter((p) => p.gender === "unisex").length },
+    { value: "niches", label: "Niş", count: products.filter((p) => 
+      p.category === "niches" || p.category === "exclusive" || p.category === "artisanal"
+    ).length },
+  ];
 
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+  const getVariant = (product: Product): "male" | "female" | "niche" => {
+    if (product.category === "niches" || product.category === "exclusive" || product.category === "artisanal") {
+      return "niche";
+    }
+    return product.gender === "female" ? "female" : "male";
+  };
+
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-slate-800 via-slate-900 to-navy pt-24 pb-12">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        {/* Header */}
         <div className="text-center mb-12">
-          <h1 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-4">
+          <div className="flex items-center justify-center gap-3 mb-4">
+            <div className="w-12 h-[1px] bg-gold" />
+            <span className="text-gold text-sm font-medium tracking-[0.15em] uppercase">
+              Koleksiyon
+            </span>
+            <div className="w-12 h-[1px] bg-gold" />
+          </div>
+          <h1 className="text-3xl sm:text-4xl font-heading font-semibold text-white mb-4">
             Blue Perfumery Koleksiyonu
           </h1>
-          <p className="text-gray-600 text-lg max-w-3xl mx-auto">
-            En özel anlarda size eşlik edecek seçkin parfüm koleksiyonumuzu
-            keşfedin. Karakterinizi yansıtan kokular ile tanışın.
+          <p className="text-gray-300 max-w-2xl mx-auto">
+            En özel anlarda size eşlik edecek seçkin parfüm koleksiyonumuzu keşfedin. 
+            Karakterinizi yansıtan kokular ile tanışın.
           </p>
-          <p className="text-sm text-gray-500 mt-2">
-            {products.length} ürün bulundu
+          <p className="text-sm text-gray-400 mt-2">
+            {filteredPerfumes.length} ürün
           </p>
         </div>
 
-        {/* Kategori Filtreleme */}
-        <div className="flex flex-wrap justify-center gap-3 mb-12">
-          <button
-            onClick={() => setActiveCategory("all")}
-            className={`px-5 py-2 rounded-full ${
-              activeCategory === "all"
-                ? "bg-blue-600 text-white"
-                : "bg-white text-gray-700 hover:bg-gray-100"
-            } transition-colors duration-200`}
-          >
-            Tümü ({products.length})
-          </button>
-          <button
-            onClick={() => setActiveCategory("male")}
-            className={`px-5 py-2 rounded-full ${
-              activeCategory === "male"
-                ? "bg-blue-600 text-white"
-                : "bg-white text-gray-700 hover:bg-gray-100"
-            } transition-colors duration-200`}
-          >
-            Erkek ({products.filter((p) => p.gender === "male").length})
-          </button>
-          <button
-            onClick={() => setActiveCategory("female")}
-            className={`px-5 py-2 rounded-full ${
-              activeCategory === "female"
-                ? "bg-blue-600 text-white"
-                : "bg-white text-gray-700 hover:bg-gray-100"
-            } transition-colors duration-200`}
-          >
-            Kadın ({products.filter((p) => p.gender === "female").length})
-          </button>
-          <button
-            onClick={() => setActiveCategory("unisex")}
-            className={`px-5 py-2 rounded-full ${
-              activeCategory === "unisex"
-                ? "bg-blue-600 text-white"
-                : "bg-white text-gray-700 hover:bg-gray-100"
-            } transition-colors duration-200`}
-          >
-            Unisex ({products.filter((p) => p.gender === "unisex").length})
-          </button>
-          <button
-            onClick={() => setActiveCategory("exclusive")}
-            className={`px-5 py-2 rounded-full ${
-              activeCategory === "exclusive"
-                ? "bg-blue-600 text-white"
-                : "bg-white text-gray-700 hover:bg-gray-100"
-            } transition-colors duration-200`}
-          >
-            Exclusive
-          </button>
-          <button
-            onClick={() => setActiveCategory("premium")}
-            className={`px-5 py-2 rounded-full ${
-              activeCategory === "premium"
-                ? "bg-blue-600 text-white"
-                : "bg-white text-gray-700 hover:bg-gray-100"
-            } transition-colors duration-200`}
-          >
-            Premium
-          </button>
-        </div>
+        {/* Filters & Controls */}
+        <div className="flex flex-col sm:flex-row items-center justify-between gap-4 mb-10">
+          {/* Category Filters */}
+          <div className="flex flex-wrap justify-center gap-2">
+            {categories.map((cat) => (
+              <button
+                key={cat.value}
+                onClick={() => setActiveCategory(cat.value)}
+                className={`px-4 py-2 rounded-full text-sm font-medium transition-all duration-300 ${
+                  activeCategory === cat.value
+                    ? "bg-gold text-navy"
+                    : "bg-white/5 text-white hover:bg-white/10 border border-white/10"
+                }`}
+              >
+                {cat.label}
+                <span className="ml-1.5 opacity-60">({cat.count})</span>
+              </button>
+            ))}
+          </div>
 
-        {/* Parfüm Listesi */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mb-16">
-          {filteredPerfumes.map((perfume) => (
-            <Link
-              key={perfume.id}
-              href={
-                perfume.shopierLink ||
-                `https://www.shopier.com/blueperfumery/${encodeURIComponent(
-                  perfume.name.replace(/\s+/g, "-").toLowerCase()
-                )}`
-              }
-              target="_blank"
-              rel="noopener noreferrer"
-              className="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-xl transition-all duration-300 group block"
+          {/* Grid Controls */}
+          <div className="flex items-center gap-2">
+            <button
+              onClick={() => setGridSize(3)}
+              className={`p-2 rounded-lg transition-all duration-300 ${
+                gridSize === 3 ? "bg-gold text-navy" : "bg-white/5 text-white hover:bg-white/10"
+              }`}
+              title="3 sütun"
             >
-              <div className="relative pt-[100%] bg-gray-100 overflow-hidden">
-                <div className="absolute inset-0 flex items-center justify-center bg-blue-50 group-hover:bg-blue-100 transition-colors duration-300">
-                  <div className="w-24 h-24 bg-gradient-to-br from-blue-500 to-indigo-500 rounded-full flex items-center justify-center text-white text-5xl">
-                    {perfume.gender === "male"
-                      ? "♂"
-                      : perfume.gender === "female"
-                      ? "♀"
-                      : "⚭"}
-                  </div>
-                </div>
-                {(perfume.category === "exclusive" ||
-                  perfume.brand.includes("Exclusive")) && (
-                  <div className="absolute top-2 right-2 bg-amber-500 text-white text-xs px-2 py-1 rounded">
-                    Exclusive
-                  </div>
-                )}
-                {perfume.stock <= 5 && (
-                  <div className="absolute top-2 left-2 bg-red-600 text-white text-xs px-2 py-1 rounded">
-                    Son {perfume.stock} Adet
-                  </div>
-                )}
-                <div className="absolute inset-0 bg-blue-600 bg-opacity-0 group-hover:bg-opacity-20 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-300">
-                  <span className="px-4 py-2 bg-white rounded-md text-blue-600 font-medium shadow-md">
-                    Satın Al
-                  </span>
-                </div>
-              </div>
-              <div className="p-5">
-                <h2 className="text-lg font-bold text-gray-900 mb-1 group-hover:text-blue-600 transition-colors duration-300">
-                  {perfume.name}
-                </h2>
-                <p className="text-blue-600 text-sm mb-2">{perfume.brand}</p>
-                <p className="text-gray-600 text-sm line-clamp-2 mb-3">
-                  {perfume.description}
-                </p>
-                <div className="mb-3">
-                  <div className="flex items-baseline gap-2">
-                    <span className="text-xl font-bold text-blue-600">
-                      ₺{perfume.price}
-                    </span>
-                    {perfume.originalPrice &&
-                      perfume.originalPrice > perfume.price && (
-                        <span className="text-sm text-gray-400 line-through">
-                          ₺{perfume.originalPrice}
-                        </span>
-                      )}
-                  </div>
-                  <p className="text-xs text-gray-500">{perfume.ml}ml</p>
-                </div>
-                <div className="flex flex-wrap gap-1">
-                  {perfume.notes.slice(0, 3).map((note, idx) => (
-                    <span
-                      key={idx}
-                      className="inline-block px-2 py-1 bg-blue-50 text-blue-600 rounded text-xs"
-                    >
-                      {note}
-                    </span>
-                  ))}
-                </div>
-              </div>
-            </Link>
+              <Grid3X3 className="w-5 h-5" />
+            </button>
+            <button
+              onClick={() => setGridSize(4)}
+              className={`p-2 rounded-lg transition-all duration-300 ${
+                gridSize === 4 ? "bg-gold text-navy" : "bg-white/5 text-white hover:bg-white/10"
+              }`}
+              title="4 sütun"
+            >
+              <LayoutGrid className="w-5 h-5" />
+            </button>
+          </div>
+        </div>
+
+        {/* Product Grid */}
+        <div className={`grid grid-cols-1 sm:grid-cols-2 ${
+          gridSize === 3 ? "lg:grid-cols-3" : "lg:grid-cols-4"
+        } gap-6 lg:gap-8 mb-16`}>
+          {filteredPerfumes.map((perfume) => (
+            <PerfumeCard
+              key={perfume.id}
+              perfume={perfume}
+              variant={getVariant(perfume)}
+            />
           ))}
         </div>
 
         {filteredPerfumes.length === 0 && (
-          <div className="text-center py-12">
-            <p className="text-gray-500 text-lg">
+          <div className="text-center py-16">
+            <div className="w-16 h-16 rounded-full bg-white/5 flex items-center justify-center mx-auto mb-4">
+              <Filter className="w-8 h-8 text-gray-400" />
+            </div>
+            <p className="text-gray-400 text-lg">
               Bu kategoride henüz ürün bulunmamaktadır.
             </p>
+            <button
+              onClick={() => setActiveCategory("all")}
+              className="mt-4 text-gold hover:underline"
+            >
+              Tüm ürünleri göster
+            </button>
           </div>
         )}
 
-        {/* Özel Koleksiyonlar */}
+        {/* Special Collections */}
         <div className="mb-16">
-          <h2 className="text-2xl font-bold text-gray-900 text-center mb-8">
-            Özel Koleksiyonlar
-          </h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+          <div className="text-center mb-10">
+            <h2 className="text-2xl font-heading font-semibold text-white mb-2">
+              Özel Koleksiyonlar
+            </h2>
+            <p className="text-gray-400">
+              Size özel hazırladığımız koleksiyonları keşfedin
+            </p>
+          </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <Link
               href="/nis-parfum"
-              className="relative bg-white rounded-xl shadow-lg overflow-hidden h-64 block group"
+              className="group relative bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl overflow-hidden h-64 block hover:border-gold/30 transition-all duration-500"
             >
-              <div className="absolute inset-0 bg-gradient-to-r from-blue-500 to-indigo-600 opacity-90 group-hover:opacity-100 transition-opacity"></div>
+              <div className="absolute inset-0 bg-gradient-to-br from-gold/10 to-amber-600/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
               <div className="relative p-8 h-full flex flex-col justify-between">
                 <div>
-                  <h3 className="text-2xl font-bold text-white mb-2">
-                    Signature Collection
+                  <div className="inline-flex items-center gap-2 bg-gold/10 rounded-full px-3 py-1 mb-4">
+                    <Sparkles className="w-4 h-4 text-gold" />
+                    <span className="text-gold text-sm font-medium">Özel Koleksiyon</span>
+                  </div>
+                  <h3 className="text-2xl font-heading font-semibold text-white mb-2 group-hover:text-gold transition-colors duration-300">
+                    Niş Parfümler
                   </h3>
-                  <p className="text-blue-100">
-                    Blue Perfumery&apos;nin özel imza koleksiyonu ile tanışın.
+                  <p className="text-gray-400">
+                    Benzersiz ve ayırt edici kokularla fark yaratın.
                   </p>
                 </div>
-                <button className="self-start px-6 py-2 bg-white text-blue-600 rounded-md hover:bg-blue-50 transition-colors duration-200">
+                <span className="inline-flex items-center gap-2 text-gold font-medium">
                   Keşfet
-                </button>
+                  <span className="group-hover:translate-x-1 transition-transform duration-300">→</span>
+                </span>
               </div>
             </Link>
+
             <Link
               href="/parfumunu-bul"
-              className="relative bg-white rounded-xl shadow-lg overflow-hidden h-64 block group"
+              className="group relative bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl overflow-hidden h-64 block hover:border-gold/30 transition-all duration-500"
             >
-              <div className="absolute inset-0 bg-gradient-to-r from-purple-500 to-pink-600 opacity-90 group-hover:opacity-100 transition-opacity"></div>
+              <div className="absolute inset-0 bg-gradient-to-br from-purple-500/10 to-pink-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
               <div className="relative p-8 h-full flex flex-col justify-between">
                 <div>
-                  <h3 className="text-2xl font-bold text-white mb-2">
+                  <div className="inline-flex items-center gap-2 bg-purple-500/10 rounded-full px-3 py-1 mb-4">
+                    <Sparkles className="w-4 h-4 text-purple-400" />
+                    <span className="text-purple-400 text-sm font-medium">AI Destekli</span>
+                  </div>
+                  <h3 className="text-2xl font-heading font-semibold text-white mb-2 group-hover:text-purple-400 transition-colors duration-300">
                     Kişiye Özel Öneri
                   </h3>
-                  <p className="text-purple-100">
-                    Kişilik testini yapın, size özel parfümleri keşfedin.
+                  <p className="text-gray-400">
+                    Yapay zeka ile size en uygun parfümü bulun.
                   </p>
                 </div>
-                <button className="self-start px-6 py-2 bg-white text-purple-600 rounded-md hover:bg-purple-50 transition-colors duration-200">
+                <span className="inline-flex items-center gap-2 text-purple-400 font-medium">
                   Teste Başla
-                </button>
+                  <span className="group-hover:translate-x-1 transition-transform duration-300">→</span>
+                </span>
               </div>
             </Link>
           </div>
         </div>
-      </main>
-
-      {/* Footer */}
-      <footer className="bg-gray-900 text-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
-            <div>
-              <h3 className="text-xl font-bold mb-4">Blue Perfumery</h3>
-              <p className="text-gray-400">
-                Lüks ve kişiselleştirilmiş parfüm deneyiminiz için yanınızdayız.
-              </p>
-            </div>
-            <div>
-              <h3 className="text-lg font-bold mb-4">Hızlı Linkler</h3>
-              <ul className="space-y-2">
-                <li>
-                  <Link
-                    href="/"
-                    className="text-gray-400 hover:text-white transition-colors"
-                  >
-                    Ana Sayfa
-                  </Link>
-                </li>
-                <li>
-                  <Link
-                    href="/parfumunu-bul"
-                    className="text-gray-400 hover:text-white transition-colors"
-                  >
-                    Parfümünü Bul
-                  </Link>
-                </li>
-                <li>
-                  <Link
-                    href="/hakkimizda"
-                    className="text-gray-400 hover:text-white transition-colors"
-                  >
-                    Hakkımızda
-                  </Link>
-                </li>
-                <li>
-                  <Link
-                    href="/satin-al"
-                    className="text-gray-400 hover:text-white transition-colors"
-                  >
-                    Satın Al
-                  </Link>
-                </li>
-              </ul>
-            </div>
-            <div>
-              <h3 className="text-lg font-bold mb-4">Bizi Takip Edin</h3>
-              <div className="flex space-x-4">
-                <a
-                  href="#"
-                  className="text-gray-400 hover:text-white transition-colors"
-                >
-                  Instagram
-                </a>
-                <a
-                  href="#"
-                  className="text-gray-400 hover:text-white transition-colors"
-                >
-                  Facebook
-                </a>
-                <a
-                  href="#"
-                  className="text-gray-400 hover:text-white transition-colors"
-                >
-                  Twitter
-                </a>
-              </div>
-            </div>
-          </div>
-          <div className="mt-12 pt-8 border-t border-gray-800 text-center text-gray-400">
-            <p>© 2025 Blue Perfumery. Tüm hakları saklıdır.</p>
-          </div>
-        </div>
-      </footer>
+      </div>
     </div>
   );
 }
