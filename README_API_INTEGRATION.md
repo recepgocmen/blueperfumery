@@ -226,3 +226,4 @@ Frontend artık **tamamen backend API'ye bağlı!**
 ---
 
 **🚀 Başarılar! Frontend hazır!**
+
