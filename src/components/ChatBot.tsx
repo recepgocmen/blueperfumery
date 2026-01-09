@@ -29,12 +29,12 @@ const API_BASE_URL =
 // Bot ismi - sabit
 const BOT_NAME = "Mira";
 
-// Samimi karşılama mesajları - tanışmaya yönelik
+// Samimi karşılama mesajları - profilleme odaklı
 const GREETING_MESSAGES = [
-  `Selam! 💫 Ben Mira. Seninle tanışmak isterim! Kendinden biraz bahseder misin?`,
-  `Merhaba! ✨ Ben Mira. Seni tanımak ve sana özel bir koku bulmak istiyorum!`,
-  `Hey! 🌟 Ben Mira. Bugün nasılsın? Sana en uygun parfümü bulmak için buradayım!`,
-  `Merhaba! 💎 Ben Mira. Haydi birlikte senin tarzını keşfedelim!`,
+  `Merhaba! 💫 Ben Mira, Blue Perfumery'nin koku danışmanı.\n\nSana özel bir imza koku bulmak için buradayım. Kendine mi arıyorsun, yoksa birine hediye mi?\n\n_(Yeni başladım, bazen takılabilirim 🌱)_`,
+  `Selam! ✨ Ben Mira.\n\nParfüm seçmek bazen zor olabiliyor, ama merak etme - birlikte senin kokunu bulacağız!\n\n_(Henüz her şeyi bilemiyorum ama elimden geleni yapacağım 🌱)_`,
+  `Hey! 🌟 Ben Mira, Blue Perfumery'den.\n\nSana yardımcı olmak için buradayım! Ne tür bir parfüm arıyorsun?\n\n_(Öğrenmeye devam ediyorum, anlayışın için teşekkürler 🌱)_`,
+  `Merhaba! 💎 Ben Mira.\n\nSenin için en uygun kokuyu bulmak istiyorum. Bana biraz kendinden bahseder misin?\n\n_(Hâlâ gelişiyorum, kusurlarım olabilir 🌱)_`,
 ];
 
 // Unique ID oluştur
@@ -67,6 +67,7 @@ export default function ChatBot() {
   const [questionCount, setQuestionCount] = useState(0); // Soru sayacı
   const [sessionId, setSessionId] = useState<string>(""); // Chat session ID
   const [visitorId, setVisitorId] = useState<string>(""); // Visitor ID
+  const [showBubble, setShowBubble] = useState(true); // Merhaba balonu görünürlüğü
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null); // Input focus için
 
@@ -74,6 +75,14 @@ export default function ChatBot() {
   useEffect(() => {
     setVisitorId(getVisitorId());
     setSessionId(generateId());
+  }, []);
+
+  // Merhaba balonu 6 saniye sonra kaybolsun
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setShowBubble(false);
+    }, 6000);
+    return () => clearTimeout(timer);
   }, []);
 
   // Mesajı DB'ye kaydet
@@ -175,12 +184,21 @@ export default function ChatBot() {
     }, 100);
 
     try {
+      // Conversation history hazırla (son 10 mesaj)
+      const conversationHistory = messages.slice(-10).map((m) => ({
+        role: m.role,
+        content: m.content,
+      }));
+
       const response = await fetch(`${API_BASE_URL}/agent/chat`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ message: userMessage.content }),
+        body: JSON.stringify({
+          message: userMessage.content,
+          conversationHistory,
+        }),
       });
 
       const data = await response.json();
@@ -257,19 +275,28 @@ export default function ChatBot() {
     }
   };
 
-  // Öneri butonları - spesifik ve tutarlı cevaplar için
-  const suggestions = [
-    { text: "En çok satanlar 🔥", query: "En çok satan parfümler hangileri?" },
-    {
-      text: "Yazlık öneriler ☀️",
-      query: "Yaz için erkek parfümü önerir misin?",
-    },
-    { text: "Hediye önerisi 🎁", query: "Hediye için parfüm önerir misin?" },
+  // Hızlı başlangıç butonları - sadece cinsiyet seçimi
+  const quickStartOptions = [
+    { text: "Erkek parfümü 🧔", query: "Erkek parfümü arıyorum" },
+    { text: "Kadın parfümü 💄", query: "Kadın parfümü arıyorum" },
   ];
 
   // Hazır öneri butonuna tıklayınca direkt gönder
   const handleSuggestionClick = async (query: string) => {
     if (isLoading) return;
+
+    // Soru limiti kontrolü
+    if (questionCount >= 15) {
+      const limitMessage: Message = {
+        id: Date.now().toString(),
+        role: "assistant",
+        content:
+          "Soru hakkın doldu! 🌸 Daha fazla yardım için bize ulaşabilirsin. Teşekkürler!",
+        timestamp: new Date(),
+      };
+      setMessages((prev) => [...prev, limitMessage]);
+      return;
+    }
 
     const userMessage: Message = {
       id: Date.now().toString(),
@@ -285,32 +312,67 @@ export default function ChatBot() {
     // Kullanıcı mesajını DB'ye kaydet
     saveMessageToDb(query, "user");
 
+    // Soru sayacını artır
+    const newQuestionCount = questionCount + 1;
+    setQuestionCount(newQuestionCount);
+
     try {
+      // Conversation history hazırla (mevcut mesajlar + yeni mesaj)
+      const currentMessages = [...messages, userMessage];
+      const conversationHistory = currentMessages.slice(-10).map((m) => ({
+        role: m.role,
+        content: m.content,
+      }));
+
       const response = await fetch(`${API_BASE_URL}/agent/chat`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ message: query }),
+        body: JSON.stringify({
+          message: query,
+          conversationHistory,
+        }),
       });
 
       const data = await response.json();
+      
+      // Typing animasyonu için kısa bir bekleme
+      await new Promise((resolve) => setTimeout(resolve, 500));
       setIsTyping(false);
 
-      const assistantContent = data.message || "Üzgünüm, bir hata oluştu.";
-      const recommendedProducts = data.recommendedProducts;
+      let assistantContent = "";
+      let recommendedProducts: RecommendedProduct[] = [];
+
+      if (response.ok && data.success && data.data?.message) {
+        assistantContent = data.data.message;
+        recommendedProducts = data.data.recommendedProducts || [];
+      } else if (data.error) {
+        assistantContent = `Üzgünüm, bir sorun oluştu: ${data.error}`;
+      } else if (data.code === "AI_SERVICE_UNAVAILABLE") {
+        assistantContent =
+          "AI asistan şu an kullanılamıyor. Lütfen daha sonra tekrar deneyin. 🙏";
+      } else {
+        assistantContent =
+          "Şu an bir sorun yaşıyorum. Biraz sonra tekrar dener misiniz? 🙏";
+      }
 
       const assistantMessage: Message = {
         id: (Date.now() + 1).toString(),
         role: "assistant",
         content: assistantContent,
         timestamp: new Date(),
-        recommendedProducts,
+        recommendedProducts:
+          recommendedProducts.length > 0 ? recommendedProducts : undefined,
       };
 
       setMessages((prev) => [...prev, assistantMessage]);
       inputRef.current?.focus();
 
       // Bot mesajını DB'ye kaydet
-      saveMessageToDb(assistantContent, "assistant", recommendedProducts);
+      saveMessageToDb(
+        assistantContent,
+        "assistant",
+        recommendedProducts.length > 0 ? recommendedProducts : undefined
+      );
     } catch {
       setIsTyping(false);
       const errorContent = "Bağlantıda bir sorun var. Lütfen tekrar deneyin.";
@@ -324,6 +386,10 @@ export default function ChatBot() {
       saveMessageToDb(errorContent, "assistant");
     } finally {
       setIsLoading(false);
+      // Mesaj gönderildikten sonra focus'u koru
+      setTimeout(() => {
+        inputRef.current?.focus();
+      }, 100);
     }
   };
 
@@ -412,61 +478,61 @@ export default function ChatBot() {
 
   return (
     <>
-      {/* Chat Button - Lüks Parfüm Şişesi Tasarımı */}
+      {/* Chat Button - Dikkat Çekici Floating Design */}
       <button
         onClick={() => setIsOpen(true)}
-        className={`fixed bottom-4 right-4 z-50 transition-all duration-500 ${
+        className={`fixed bottom-6 right-6 z-[9999] transition-all duration-500 ${
           isOpen ? "scale-0 opacity-0" : "scale-100 opacity-100"
         }`}
         aria-label="Parfüm Danışmanı"
       >
         <div className="relative group">
-          {/* Outer glow - altın halo */}
-          <div className="absolute -inset-3 bg-gradient-to-br from-gold/40 via-amber-300/30 to-transparent rounded-full blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+          {/* Sürekli görünen pulse ring - dikkat çekici */}
+          <div className="absolute -inset-2 bg-gradient-to-r from-gold via-amber-400 to-gold rounded-full blur-md opacity-60 animate-pulse"></div>
+          <div className="absolute -inset-4 bg-gradient-to-r from-gold/30 via-amber-300/20 to-gold/30 rounded-full blur-xl opacity-50 animate-[pulse_2s_ease-in-out_infinite]"></div>
 
-          {/* Pulsing glow ring */}
-          <div className="absolute -inset-1 bg-gradient-to-r from-gold via-amber-300 to-gold rounded-2xl opacity-40 group-hover:opacity-70 blur-sm animate-pulse"></div>
-
-          {/* Main button - kristal parfüm şişesi efekti */}
-          <div className="relative w-16 h-16 sm:w-[68px] sm:h-[68px] bg-gradient-to-br from-slate-900 via-navy to-slate-800 rounded-2xl shadow-2xl flex items-center justify-center hover:scale-105 active:scale-95 transition-all duration-300 border border-gold/50 overflow-hidden">
+          {/* Main button - Daha büyük ve belirgin */}
+          <div className="relative w-[72px] h-[72px] sm:w-20 sm:h-20 bg-gradient-to-br from-slate-900 via-navy to-slate-800 rounded-full shadow-[0_8px_32px_rgba(212,175,55,0.4)] flex items-center justify-center hover:scale-110 active:scale-95 transition-all duration-300 border-2 border-gold/60 overflow-hidden">
             {/* İç cam efekti */}
-            <div className="absolute inset-0.5 bg-gradient-to-br from-white/10 via-transparent to-transparent rounded-2xl"></div>
+            <div className="absolute inset-1 bg-gradient-to-br from-white/15 via-transparent to-transparent rounded-full"></div>
 
-            {/* Diagonal shine */}
-            <div className="absolute inset-0 bg-gradient-to-br from-white/20 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+            {/* Rotating shine effect */}
+            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent animate-[spin_4s_linear_infinite] opacity-50"></div>
 
-            {/* Parfüm şişesi ikonu */}
-            <FlowerIcon className="w-8 h-8 sm:w-9 sm:h-9 text-gold drop-shadow-lg relative z-10" />
-
-            {/* Altın köşe aksan */}
-            <div className="absolute top-0 right-0 w-4 h-4 bg-gradient-to-bl from-gold/60 to-transparent rounded-bl-xl"></div>
-            <div className="absolute bottom-0 left-0 w-4 h-4 bg-gradient-to-tr from-gold/40 to-transparent rounded-tr-xl"></div>
-
-            {/* Online indicator - elmas şeklinde */}
-            <div className="absolute -top-1 -right-1 w-5 h-5 bg-gradient-to-br from-emerald-400 to-emerald-600 rotate-45 shadow-lg border border-white/50">
-              <div className="absolute inset-0.5 bg-emerald-400 animate-pulse"></div>
-            </div>
+            {/* Parfüm şişesi ikonu - daha büyük */}
+            <FlowerIcon className="w-9 h-9 sm:w-10 sm:h-10 text-gold drop-shadow-[0_2px_8px_rgba(212,175,55,0.5)] relative z-10" />
           </div>
 
-          {/* Floating sparkles */}
+          {/* Floating message bubble - 6 saniye sonra kaybolur */}
+          <div 
+            className={`absolute -top-2 -left-28 sm:-left-32 flex items-center gap-2 px-4 py-2.5 bg-white text-slate-800 text-sm font-medium rounded-2xl shadow-xl whitespace-nowrap border border-gold/20 transition-all duration-500 ${
+              showBubble && !isOpen ? "opacity-100 animate-bounce" : "opacity-0 scale-90 pointer-events-none"
+            }`}
+          >
+            <span>Merhaba! 👋</span>
+            {/* Konuşma balonu ok işareti */}
+            <div className="absolute -right-2 top-1/2 -translate-y-1/2 w-0 h-0 border-t-[8px] border-b-[8px] border-l-[10px] border-transparent border-l-white"></div>
+          </div>
+
+          {/* Floating sparkles - daha belirgin */}
           <div
-            className="absolute -top-2 left-1/2 w-1 h-1 bg-gold rounded-full animate-bounce opacity-80"
-            style={{ animationDelay: "0s", animationDuration: "2s" }}
+            className="absolute -top-3 left-1/2 w-2 h-2 bg-gold rounded-full animate-bounce shadow-lg"
+            style={{ animationDelay: "0s", animationDuration: "1.5s" }}
           ></div>
           <div
-            className="absolute top-1/2 -right-2 w-1.5 h-1.5 bg-amber-300 rounded-full animate-bounce opacity-60"
-            style={{ animationDelay: "0.5s", animationDuration: "2.5s" }}
+            className="absolute top-1/2 -right-3 w-2 h-2 bg-amber-400 rounded-full animate-bounce shadow-lg"
+            style={{ animationDelay: "0.3s", animationDuration: "1.8s" }}
           ></div>
           <div
-            className="absolute -bottom-1 left-0 w-1 h-1 bg-gold rounded-full animate-bounce opacity-70"
-            style={{ animationDelay: "1s", animationDuration: "2s" }}
+            className="absolute -bottom-2 left-1/4 w-1.5 h-1.5 bg-gold rounded-full animate-bounce shadow-lg"
+            style={{ animationDelay: "0.6s", animationDuration: "2s" }}
           ></div>
 
-          {/* Tooltip - lüks stil */}
-          <div className="hidden sm:flex absolute bottom-full right-0 mb-3 items-center gap-2 px-4 py-2 bg-gradient-to-r from-navy via-slate-800 to-navy text-white text-xs rounded-xl shadow-2xl opacity-0 group-hover:opacity-100 transition-all duration-300 whitespace-nowrap border border-gold/30">
+          {/* Hover tooltip - ek bilgi */}
+          <div className="hidden sm:flex absolute bottom-full right-0 mb-4 items-center gap-2 px-4 py-2.5 bg-gradient-to-r from-navy via-slate-800 to-navy text-white text-sm rounded-xl shadow-2xl opacity-0 group-hover:opacity-100 transition-all duration-300 whitespace-nowrap border border-gold/40">
             <span className="text-gold">✨</span>
-            <span className="font-medium">Parfüm Danışmanı</span>
-            <div className="absolute top-full right-5 w-0 h-0 border-l-[6px] border-r-[6px] border-t-[6px] border-transparent border-t-slate-800"></div>
+            <span className="font-medium">Koku Danışmanı Mira</span>
+            <div className="absolute top-full right-6 w-0 h-0 border-l-[8px] border-r-[8px] border-t-[8px] border-transparent border-t-slate-800"></div>
           </div>
         </div>
       </button>
@@ -660,21 +726,21 @@ export default function ChatBot() {
             <div ref={messagesEndRef} />
           </div>
 
-          {/* Suggestions - Lüks Parfüm Temalı */}
+          {/* Quick Start Options - Kompakt cinsiyet seçimi */}
           {messages.length <= 1 && !isTyping && (
             <div className="px-5 py-3 border-t border-gold/20 bg-gradient-to-r from-slate-900/50 via-navy/30 to-slate-900/50 backdrop-blur-sm flex-shrink-0">
-              <p className="text-xs text-gold/60 mb-3 px-1 flex items-center gap-2">
+              <p className="text-xs text-gold/60 mb-2 px-1 flex items-center gap-2">
                 <span>✦</span> Hızlı başlangıç
               </p>
-              <div className="flex flex-wrap gap-2">
-                {suggestions.map((suggestion, idx) => (
+              <div className="flex gap-2">
+                {quickStartOptions.map((option, idx) => (
                   <button
-                    key={idx}
-                    onClick={() => handleSuggestionClick(suggestion.query)}
+                    key={`quick-${idx}`}
+                    onClick={() => handleSuggestionClick(option.query)}
                     disabled={isLoading}
-                    className="px-4 py-2.5 bg-gradient-to-r from-slate-800/80 to-navy/80 hover:from-gold/20 hover:to-amber-500/20 text-gray-300 hover:text-gold text-xs rounded-xl transition-all duration-300 border border-gold/20 hover:border-gold/50 hover:scale-105 active:scale-95 shadow-md hover:shadow-lg hover:shadow-gold/10 disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="flex-1 px-4 py-2.5 bg-gradient-to-r from-slate-800/80 to-navy/80 hover:from-gold/20 hover:to-amber-500/20 text-gray-300 hover:text-gold text-sm rounded-xl transition-all duration-300 border border-gold/20 hover:border-gold/50 hover:scale-[1.02] active:scale-[0.98] shadow-md hover:shadow-lg hover:shadow-gold/10 disabled:opacity-50 disabled:cursor-not-allowed"
                   >
-                    {suggestion.text}
+                    {option.text}
                   </button>
                 ))}
               </div>

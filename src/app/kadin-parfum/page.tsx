@@ -41,7 +41,7 @@ export default async function KadinParfum() {
           </h1>
           <p className="text-gray-300 max-w-2xl mx-auto">
             Blue Perfumery&apos;nin zarif kadın parfüm koleksiyonu. Feminen ve
-            etkileyici kokularla tarzınızı tamamlayın.
+            etkileyici kokularla tarzınızı tamamlayın
           </p>
           <p className="text-sm text-gray-400 mt-2">
             {kadinParfumleri.length} ürün bulundu
@@ -54,7 +54,7 @@ export default async function KadinParfum() {
               perfume.id as (typeof PREFERRED_PERFUMES)[number]
             );
             return (
-              <PerfumeCard 
+              <PerfumeCard
                 key={perfume.id}
                 perfume={perfume}
                 isPreferred={isPreferred}
