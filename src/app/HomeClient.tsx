@@ -6,7 +6,6 @@ import Image from "next/image";
 import { Sparkles } from "lucide-react";
 import type { Product } from "@/lib/api";
 import PerfumeCard from "@/components/PerfumeCard";
-import { PREFERRED_PERFUMES } from "@/types/survey";
 
 const images = [
   "/image-1.png",
@@ -39,12 +38,19 @@ const sliderContent = [
   },
 ];
 
+// En Çok Tercih Edilenler - Ürün ID'leri
+const MOST_PREFERRED = {
+  female: ["burberry-her", "dior-jadore", "burberry-goddess"],
+  male: ["armani-stronger-with-you-seluz", "dior-sauvage-edp", "exnihilo-fleur-narcotique"],
+};
+
 interface HomeClientProps {
-  featuredProducts: Product[];
+  allProducts: Product[]; // Tüm ürünler (filtreleme için)
 }
 
-export default function HomeClient({ featuredProducts }: HomeClientProps) {
+export default function HomeClient({ allProducts }: HomeClientProps) {
   const [currentImage, setCurrentImage] = useState(0);
+  const [preferredTab, setPreferredTab] = useState<"female" | "male">("female");
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -54,6 +60,16 @@ export default function HomeClient({ featuredProducts }: HomeClientProps) {
   }, []);
 
   const currentContent = sliderContent[currentImage];
+
+  // En çok tercih edilenleri filtrele
+  const preferredProducts = allProducts.filter((product) =>
+    MOST_PREFERRED[preferredTab].includes(product.id)
+  );
+
+  // ID sırasına göre sırala
+  const sortedPreferredProducts = MOST_PREFERRED[preferredTab]
+    .map((id) => preferredProducts.find((p) => p.id === id))
+    .filter((p): p is Product => p !== undefined);
 
   return (
     <div className="min-h-screen bg-white">
@@ -388,46 +404,59 @@ export default function HomeClient({ featuredProducts }: HomeClientProps) {
         </div>
       </section>
 
-      {/* Featured Products - FROM API */}
+      {/* En Çok Tercih Edilenler - Tab'lı */}
       <section className="py-24 lg:py-32 bg-gradient-to-br from-slate-800 via-slate-900 to-navy">
         <div className="max-w-7xl mx-auto px-6 lg:px-8">
-          <div className="text-center mb-16">
+          <div className="text-center mb-12">
             <div className="flex items-center justify-center gap-3 mb-6">
               <div className="w-12 h-[1px] bg-gold" />
               <span className="text-gold text-sm font-medium tracking-[0.15em] uppercase">
-                Koleksiyon
+                Favori Seçimler
               </span>
               <div className="w-12 h-[1px] bg-gold" />
             </div>
             <h2 className="font-heading text-3xl lg:text-4xl font-semibold text-white mb-4">
-              Öne Çıkan Parfümler
+              En Çok Tercih Edilenler
             </h2>
-            <p className="text-gray-400 max-w-2xl mx-auto">
-              En çok tercih edilen ve beğenilen Blue Perfumery imzalı kokular
+            <p className="text-gray-400 max-w-2xl mx-auto mb-8">
+              Müşterilerimizin en beğendiği Blue Perfumery imzalı kokular
             </p>
+
+            {/* Tab Buttons */}
+            <div className="inline-flex bg-white/5 backdrop-blur-sm rounded-full p-1.5 border border-white/10">
+              <button
+                onClick={() => setPreferredTab("female")}
+                className={`px-6 py-2.5 rounded-full text-sm font-medium transition-all duration-300 ${
+                  preferredTab === "female"
+                    ? "bg-gradient-to-r from-rose-500 to-pink-500 text-white shadow-lg"
+                    : "text-gray-400 hover:text-white"
+                }`}
+              >
+                💄 Kadın
+              </button>
+              <button
+                onClick={() => setPreferredTab("male")}
+                className={`px-6 py-2.5 rounded-full text-sm font-medium transition-all duration-300 ${
+                  preferredTab === "male"
+                    ? "bg-gradient-to-r from-blue-500 to-indigo-500 text-white shadow-lg"
+                    : "text-gray-400 hover:text-white"
+                }`}
+              >
+                🧔 Erkek
+              </button>
+            </div>
           </div>
 
           <div className="grid md:grid-cols-3 gap-8 mb-12">
-            {featuredProducts.length > 0 ? (
-              featuredProducts.map((product) => {
-                const isPreferred = PREFERRED_PERFUMES.includes(
-                  product.id as (typeof PREFERRED_PERFUMES)[number]
-                );
-                // Determine variant based on gender/category
-                const variant =
-                  product.category === "niches" ||
-                  product.category === "artisanal" ||
-                  product.category === "exclusive"
-                    ? "niche"
-                    : product.gender === "female"
-                    ? "female"
-                    : "male";
+            {sortedPreferredProducts.length > 0 ? (
+              sortedPreferredProducts.map((product) => {
+                const variant = preferredTab === "female" ? "female" : "male";
 
                 return (
                   <PerfumeCard
                     key={product.id}
                     perfume={product}
-                    isPreferred={isPreferred}
+                    isPreferred={true}
                     variant={variant}
                   />
                 );
@@ -442,10 +471,10 @@ export default function HomeClient({ featuredProducts }: HomeClientProps) {
 
           <div className="text-center">
             <Link
-              href="/satin-al"
+              href={preferredTab === "female" ? "/kadin-parfum" : "/erkek-parfum"}
               className="inline-flex items-center justify-center gap-2 px-8 py-4 border border-white/20 text-white font-medium rounded-full hover:bg-white/5 hover:border-gold/50 transition-all duration-300"
             >
-              Tüm Koleksiyonu Görüntüle
+              Tüm {preferredTab === "female" ? "Kadın" : "Erkek"} Parfümlerini Gör
               <svg
                 className="w-5 h-5"
                 fill="none"

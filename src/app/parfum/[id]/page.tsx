@@ -98,10 +98,17 @@ export default async function ParfumDetay({
             {/* Sol taraf - Görsel */}
             <div className="relative h-[500px] md:h-full">
               <Image
-                src={perfume.image || "/card-photos/1.png"}
+                src={
+                  perfume.image &&
+                  perfume.image.trim() !== "" &&
+                  perfume.image !== "/card-photos/1.png" &&
+                  !perfume.image.includes("placeholder")
+                    ? perfume.image
+                    : "https://framerusercontent.com/images/Kr4buJy50VrffvLOvJMs7f8tpI.png"
+                }
                 alt={perfume.name}
                 fill
-                className="object-cover"
+                className="object-contain p-4 bg-gradient-to-br from-slate-100 to-gray-50"
               />
               {isPreferred && (
                 <div
@@ -202,26 +209,9 @@ export default async function ParfumDetay({
               </div>
 
               <div className="mb-6">
-                <div className="flex items-baseline gap-3">
-                  <span className="text-4xl font-bold text-gray-900">
-                    ₺{perfume.price}
-                  </span>
-                  {perfume.originalPrice &&
-                    perfume.originalPrice > perfume.price && (
-                      <>
-                        <span className="text-xl text-gray-400 line-through">
-                          ₺{perfume.originalPrice}
-                        </span>
-                        <span className="bg-red-500 text-white px-3 py-1 rounded-full text-sm font-medium">
-                          %
-                          {Math.round(
-                            (1 - perfume.price / perfume.originalPrice) * 100
-                          )}{" "}
-                          İndirim
-                        </span>
-                      </>
-                    )}
-                </div>
+                <span className="text-4xl font-bold text-gray-900">
+                  ₺{perfume.price}
+                </span>
               </div>
 
               <div className="flex gap-4">

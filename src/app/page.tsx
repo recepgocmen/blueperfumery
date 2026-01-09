@@ -4,18 +4,18 @@ import HomeClient from "./HomeClient";
 export const revalidate = 60; // Revalidate every 60 seconds
 
 export default async function Home() {
-  // Fetch featured products from API (Server Component - SEO friendly)
-  let featuredProducts: Product[] = [];
+  // Fetch products from API (Server Component - SEO friendly)
+  let allProducts: Product[] = [];
 
   try {
     const response = await getProducts({
       status: "active",
-      limit: 6,
+      limit: 50, // En çok tercih edilenler için yeterli ürün çek
     });
-    featuredProducts = response.data.slice(0, 3);
+    allProducts = response.data;
   } catch (error) {
-    console.error("Error fetching featured products:", error);
+    console.error("Error fetching products:", error);
   }
 
-  return <HomeClient featuredProducts={featuredProducts} />;
+  return <HomeClient allProducts={allProducts} />;
 }

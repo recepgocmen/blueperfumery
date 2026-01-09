@@ -39,15 +39,10 @@ const conversationFlow = [
   {
     id: "gender",
     miraMessage: "Öncelikle...",
-    question: "Hangi tarafa bakalım?",
+    question: "Kime parfüm arıyorsun?",
     options: [
-      { value: "male", label: "Erkek", icon: <Wind className="w-4 h-4" /> },
-      { value: "female", label: "Kadın", icon: <Leaf className="w-4 h-4" /> },
-      {
-        value: "unisex",
-        label: "Farketmez",
-        icon: <Sparkles className="w-4 h-4" />,
-      },
+      { value: "female", label: "Kadın 💄", icon: <Leaf className="w-4 h-4" /> },
+      { value: "male", label: "Erkek 🧔", icon: <Wind className="w-4 h-4" /> },
     ],
     field: "gender",
   },
@@ -55,9 +50,8 @@ const conversationFlow = [
     id: "energy",
     miraMessage: (prev: Record<string, string>) => {
       const r: Record<string, string> = {
-        male: "Harika! ✨",
-        female: "Mükemmel! 💎",
-        unisex: "Açık fikirli! 🌟",
+        female: "Mükemmel! 💎 Kadın parfümleri ve unisex seçeneklere bakalım.",
+        male: "Harika! ✨ Erkek parfümleri ve unisex seçeneklere bakalım.",
       };
       return r[prev.gender] || "Güzel!";
     },

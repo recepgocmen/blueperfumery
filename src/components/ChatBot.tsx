@@ -54,6 +54,104 @@ function getVisitorId(): string {
   return visitorId;
 }
 
+// Basit markdown parser - **bold**, _italic_, ve satır başı işlemleri
+function parseMarkdown(text: string): React.ReactNode {
+  if (!text) return null;
+
+  // Satırlara böl
+  const lines = text.split("\n");
+
+  return lines.map((line, lineIndex) => {
+    // Satırı parçalara ayır ve markdown işle
+    const parts: React.ReactNode[] = [];
+    let remaining = line;
+    let keyIndex = 0;
+
+    // **bold** işle
+    while (remaining.includes("**")) {
+      const startIdx = remaining.indexOf("**");
+      const endIdx = remaining.indexOf("**", startIdx + 2);
+
+      if (endIdx === -1) break;
+
+      // Önceki metin
+      if (startIdx > 0) {
+        parts.push(remaining.substring(0, startIdx));
+      }
+
+      // Bold metin
+      const boldText = remaining.substring(startIdx + 2, endIdx);
+      parts.push(
+        <strong
+          key={`bold-${lineIndex}-${keyIndex++}`}
+          className="font-semibold"
+        >
+          {boldText}
+        </strong>
+      );
+
+      remaining = remaining.substring(endIdx + 2);
+    }
+
+    // _italic_ işle (kalan metinde)
+    if (remaining.includes("_")) {
+      const tempParts: React.ReactNode[] = [];
+      let tempRemaining = remaining;
+
+      while (tempRemaining.includes("_")) {
+        const startIdx = tempRemaining.indexOf("_");
+        const endIdx = tempRemaining.indexOf("_", startIdx + 1);
+
+        if (endIdx === -1) break;
+
+        // Önceki metin
+        if (startIdx > 0) {
+          tempParts.push(tempRemaining.substring(0, startIdx));
+        }
+
+        // Italic metin
+        const italicText = tempRemaining.substring(startIdx + 1, endIdx);
+        tempParts.push(
+          <em
+            key={`italic-${lineIndex}-${keyIndex++}`}
+            className="italic text-gray-400"
+          >
+            {italicText}
+          </em>
+        );
+
+        tempRemaining = tempRemaining.substring(endIdx + 1);
+      }
+
+      if (tempRemaining) {
+        tempParts.push(tempRemaining);
+      }
+
+      if (tempParts.length > 0) {
+        parts.push(...tempParts);
+        remaining = "";
+      }
+    }
+
+    // Kalan metin
+    if (remaining) {
+      parts.push(remaining);
+    }
+
+    // Boş satırlar için br ekle
+    if (parts.length === 0 && line === "") {
+      return <br key={`br-${lineIndex}`} />;
+    }
+
+    return (
+      <span key={`line-${lineIndex}`}>
+        {parts}
+        {lineIndex < lines.length - 1 && <br />}
+      </span>
+    );
+  });
+}
+
 export default function ChatBot() {
   // Bot ismi - sabit Mira
   const botName = BOT_NAME;
@@ -202,7 +300,11 @@ export default function ChatBot() {
       });
 
       const data = await response.json();
-      await new Promise((resolve) => setTimeout(resolve, 500));
+
+      // 1-2 saniye bekleme - düşünüyormuş gibi doğal his
+      await new Promise((resolve) =>
+        setTimeout(resolve, 1200 + Math.random() * 800)
+      );
 
       setIsTyping(false);
 
@@ -334,9 +436,11 @@ export default function ChatBot() {
       });
 
       const data = await response.json();
-      
-      // Typing animasyonu için kısa bir bekleme
-      await new Promise((resolve) => setTimeout(resolve, 500));
+
+      // 1-2 saniye bekleme - düşünüyormuş gibi doğal his
+      await new Promise((resolve) =>
+        setTimeout(resolve, 1200 + Math.random() * 800)
+      );
       setIsTyping(false);
 
       let assistantContent = "";
@@ -504,9 +608,11 @@ export default function ChatBot() {
           </div>
 
           {/* Floating message bubble - 6 saniye sonra kaybolur */}
-          <div 
+          <div
             className={`absolute -top-2 -left-28 sm:-left-32 flex items-center gap-2 px-4 py-2.5 bg-white text-slate-800 text-sm font-medium rounded-2xl shadow-xl whitespace-nowrap border border-gold/20 transition-all duration-500 ${
-              showBubble && !isOpen ? "opacity-100 animate-bounce" : "opacity-0 scale-90 pointer-events-none"
+              showBubble && !isOpen
+                ? "opacity-100 animate-bounce"
+                : "opacity-0 scale-90 pointer-events-none"
             }`}
           >
             <span>Merhaba! 👋</span>
@@ -657,9 +763,9 @@ export default function ChatBot() {
                         : "bg-white/10 backdrop-blur-sm text-white rounded-2xl rounded-bl-sm shadow-md border border-white/10"
                     }`}
                   >
-                    <p className="text-sm leading-relaxed whitespace-pre-wrap">
-                      {message.content}
-                    </p>
+                    <div className="text-sm leading-relaxed">
+                      {parseMarkdown(message.content)}
+                    </div>
                   </div>
                   {message.role === "user" && (
                     <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-gold/20 to-amber-500/20 flex items-center justify-center flex-shrink-0 border border-gold/30">
@@ -668,26 +774,21 @@ export default function ChatBot() {
                   )}
                 </div>
 
-                {/* Recommended Products Links */}
+                {/* Recommended Products Links - Kompakt */}
                 {message.role === "assistant" &&
                   message.recommendedProducts &&
                   message.recommendedProducts.length > 0 && (
-                    <div className="ml-10 flex flex-col gap-2 max-w-[80%]">
+                    <div className="ml-10 flex flex-wrap gap-1.5 max-w-[85%]">
                       {message.recommendedProducts.map((product) => (
                         <Link
                           key={product.id}
                           href={`/parfum/${product.id}`}
-                          className="group px-4 py-2.5 bg-gradient-to-r from-gold/20 to-amber-500/20 hover:from-gold/30 hover:to-amber-500/30 rounded-lg border border-gold/30 hover:border-gold/50 transition-all duration-200 flex items-center justify-between gap-2"
+                          className="group px-2.5 py-1.5 bg-gold/15 hover:bg-gold/25 rounded-full border border-gold/30 hover:border-gold/50 transition-all duration-200 flex items-center gap-1.5"
                         >
-                          <div className="flex-1 min-w-0">
-                            <p className="text-sm font-medium text-gold truncate">
-                              {product.name}
-                            </p>
-                            <p className="text-xs text-gray-400 truncate">
-                              {product.brand}
-                            </p>
-                          </div>
-                          <ExternalLink className="w-4 h-4 text-gold/60 group-hover:text-gold flex-shrink-0 transition-colors" />
+                          <span className="text-xs font-medium text-gold truncate max-w-[120px]">
+                            {product.name}
+                          </span>
+                          <ExternalLink className="w-3 h-3 text-gold/60 group-hover:text-gold flex-shrink-0 transition-colors" />
                         </Link>
                       ))}
                     </div>
