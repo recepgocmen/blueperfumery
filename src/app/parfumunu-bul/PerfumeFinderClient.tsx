@@ -223,40 +223,52 @@ export default function PerfumeFinderClient({
     setIsLoading(true);
 
     try {
-      const analysisPrompt = `Kullanıcı profili:
-- Cinsiyet: ${finalAnswers.gender}
-- Kişilik: ${finalAnswers.personality}
-- Koku: ${finalAnswers.scentMemory}
-- Mevsim: ${finalAnswers.season}
-- Etki: ${finalAnswers.desiredImpression}
+      // Profil bilgilerini Türkçe'ye çevir
+      const genderText = finalAnswers.gender === "female" ? "kadın" : "erkek";
+      const personalityMap: Record<string, string> = {
+        energetic: "enerjik",
+        calm: "sakin",
+        mysterious: "gizemli",
+        passionate: "tutkulu",
+      };
+      const scentMap: Record<string, string> = {
+        seaside: "deniz kokuları",
+        forest: "orman kokuları",
+        warmth: "sıcak kokular",
+        coffee: "kahve notaları",
+      };
+      const seasonMap: Record<string, string> = {
+        spring: "ilkbahar",
+        summer: "yaz",
+        autumn: "sonbahar",
+        winter: "kış",
+      };
+      const impressionMap: Record<string, string> = {
+        elegance: "zarif",
+        confidence: "çekici",
+        warmth: "samimi",
+        unique: "benzersiz",
+      };
 
-Kısa, samimi Türkçe parfüm analizi (2-3 cümle).`;
+      const personalityText = personalityMap[finalAnswers.personality] || finalAnswers.personality;
+      const scentText = scentMap[finalAnswers.scentMemory] || finalAnswers.scentMemory;
+      const seasonText = seasonMap[finalAnswers.season] || finalAnswers.season;
+      const impressionText = impressionMap[finalAnswers.desiredImpression] || finalAnswers.desiredImpression;
 
-      const response = await fetch(
-        `${
-          process.env.NEXT_PUBLIC_API_URL ||
-          "https://blueperfumery-backend.vercel.app"
-        }/api/agent/chat`,
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ message: analysisPrompt }),
-        }
-      );
+      // Statik, güzel bir mesaj oluştur - API çağrısı yapmadan
+      const analysisMessages = [
+        `${personalityText.charAt(0).toUpperCase() + personalityText.slice(1)} ruhun ve ${scentText} sevgin, sana çok yakışacak parfümler buldum! ${seasonText.charAt(0).toUpperCase() + seasonText.slice(1)} için ${impressionText} bir iz bırakmak isteyenler için özel seçimlerim. 💫`,
+        `Senin ${personalityText} enerjin ve ${scentText} tutkun için mükemmel eşleşmeler buldum! Bu kokular ${impressionText} bir hava yaratacak. ✨`,
+        `${scentText.charAt(0).toUpperCase() + scentText.slice(1)} seven, ${personalityText} ruhlu biri için harika seçenekler var! Her biri ${impressionText} bir iz bırakmak için tasarlandı. 🌟`,
+      ];
 
-      if (response.ok) {
-        const data = await response.json();
-        setAiAnalysis(
-          data.data?.message || "Senin için harika parfümler buldum!"
-        );
-      } else {
-        setAiAnalysis("Sana özel önerilerim hazır! 💫");
-      }
+      const randomMessage = analysisMessages[Math.floor(Math.random() * analysisMessages.length)];
+      setAiAnalysis(randomMessage);
 
       const filteredProducts = filterProducts(products, finalAnswers);
       setRecommendations(filteredProducts.slice(0, 3));
     } catch (error) {
-      console.error("AI analysis error:", error);
+      console.error("Analysis error:", error);
       setAiAnalysis("Sana özel önerilerim hazır! 💫");
       const filteredProducts = filterProducts(products, finalAnswers);
       setRecommendations(filteredProducts.slice(0, 3));
