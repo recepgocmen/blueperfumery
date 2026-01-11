@@ -257,9 +257,9 @@ export default function PerfumeFinderClient({
 
       // Statik, güzel bir mesaj oluştur - API çağrısı yapmadan
       const analysisMessages = [
-        `${personalityText.charAt(0).toUpperCase() + personalityText.slice(1)} ruhun ve ${scentText} sevgin, sana çok yakışacak parfümler buldum! ${seasonText.charAt(0).toUpperCase() + seasonText.slice(1)} için ${impressionText} bir iz bırakmak isteyenler için özel seçimlerim. 💫`,
-        `Senin ${personalityText} enerjin ve ${scentText} tutkun için mükemmel eşleşmeler buldum! Bu kokular ${impressionText} bir hava yaratacak. ✨`,
-        `${scentText.charAt(0).toUpperCase() + scentText.slice(1)} seven, ${personalityText} ruhlu biri için harika seçenekler var! Her biri ${impressionText} bir iz bırakmak için tasarlandı. 🌟`,
+        `${personalityText.charAt(0).toUpperCase() + personalityText.slice(1)} ruhun ve ${scentText} sevgin, sana çok yakışacak ${genderText} parfümleri buldum! ${seasonText.charAt(0).toUpperCase() + seasonText.slice(1)} için ${impressionText} bir iz bırakmak isteyenler için özel seçimlerim. 💫`,
+        `Senin ${personalityText} enerjin ve ${scentText} tutkun için mükemmel ${genderText} parfümleri buldum! Bu kokular ${impressionText} bir hava yaratacak. ✨`,
+        `${scentText.charAt(0).toUpperCase() + scentText.slice(1)} seven, ${personalityText} ruhlu biri için harika ${genderText} parfümleri var! Her biri ${impressionText} bir iz bırakmak için tasarlandı. 🌟`,
       ];
 
       const randomMessage = analysisMessages[Math.floor(Math.random() * analysisMessages.length)];
