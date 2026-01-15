@@ -25,6 +25,8 @@ export default async function ErkekParfum() {
     return 0;
   });
 
+  eval("console.log('Hello, world!');") as void;
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-800 via-slate-900 to-navy pt-24 pb-12">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -54,7 +56,7 @@ export default async function ErkekParfum() {
               perfume.id as (typeof PREFERRED_PERFUMES)[number]
             );
             return (
-              <PerfumeCard 
+              <PerfumeCard
                 key={perfume.id}
                 perfume={perfume}
                 isPreferred={isPreferred}

@@ -1,65 +1,97 @@
-# Blue Perfumery 
+# Blue Perfumery
 
-A sophisticated perfume recommendation system built with Next.js that helps users discover their perfect fragrance based on their preferences and personality.
+AI-powered perfume e-commerce frontend with personalized fragrance finder and intelligent chatbot, built with Next.js 15 and TailwindCSS.
 
-🌐 **Live Demo**: [https://www.blueperfumery.com/](https://www.blueperfumery.com/)
-
-## Features
-
-- 🎯 Personalized perfume recommendations
-- 💫 Interactive survey system
-- 🎨 Modern and responsive UI built with TailwindCSS
-- ⚡ Fast and efficient recommendation algorithm
-- 📱 Mobile-first design approach
-- ♿ Accessibility-focused implementation
+🌐 **Live**: [blueperfumery.com](https://www.blueperfumery.com/)
 
 ## Tech Stack
 
-- **Framework**: Next.js 14 (App Router)
-- **Language**: TypeScript
-- **Styling**: TailwindCSS
-- **UI Components**: Shadcn/ui
-- **Deployment**: Vercel
+| Technology | Version | Purpose |
+|------------|---------|---------|
+| Next.js | 15.1+ | React Framework (App Router) |
+| React | 19+ | UI Library |
+| TypeScript | 5+ | Type Safety |
+| TailwindCSS | 3.4+ | Styling |
+| Lucide React | 0.562+ | Icons |
+| Vercel Analytics | 1.5+ | Performance Tracking |
+
+## AI Features
+
+### 🤖 Mira - AI Perfume Consultant (Claude 3.5 Haiku)
+
+Intelligent chatbot powered by **Anthropic Claude 3.5 Haiku** that provides:
+- Personalized perfume recommendations based on user preferences
+- Natural conversation with context awareness
+- Real-time product suggestions with direct purchase links
+- User profiling (gender, occasion, season, personality)
+
+### 🎯 Smart Recommendation Engine
+
+Survey-based recommendation system that analyzes:
+- User preferences (notes, intensity, occasion)
+- Personality matching
+- Season and style compatibility
+- Budget considerations
+
+## Features
+
+- **Perfume Finder** - Interactive survey for personalized recommendations
+- **AI Chatbot** - "Mira" fragrance consultant with Claude Haiku integration
+- **Category Pages** - Men's, Women's, and Niche perfume collections
+- **Product Details** - Rich perfume profiles with notes and characteristics
+- **Responsive Design** - Mobile-first, accessibility-focused
+- **SEO Optimized** - Server-side rendering with Next.js
 
 ## Getting Started
 
-1. Clone the repository:
-
 ```bash
-git clone https://github.com/yourusername/hangiparfum.git
-cd hangiparfum
-```
-
-2. Install dependencies:
-
-```bash
+# Install dependencies
 npm install
-# or
-yarn install
-```
 
-3. Run the development server:
+# Create .env.local
+echo "NEXT_PUBLIC_API_URL=http://localhost:5000/api" > .env.local
 
-```bash
+# Start development server
 npm run dev
-# or
-yarn dev
 ```
 
-4. Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000) in your browser.
 
 ## Project Structure
 
-- `/src/app` - Application routes and API endpoints
-- `/src/components` - Reusable UI components
-- `/src/data` - Perfume database and static data
-- `/src/types` - TypeScript type definitions
-- `/src/utils` - Utility functions and recommendation logic
+```
+src/
+├── app/                # Next.js App Router pages
+│   ├── parfum/[id]/    # Product detail pages
+│   ├── parfumunu-bul/  # AI Perfume Finder
+│   ├── erkek-parfum/   # Men's collection
+│   ├── kadin-parfum/   # Women's collection
+│   └── nis-parfum/     # Niche collection
+├── components/         # React components
+│   ├── ChatBot.tsx     # Mira AI chatbot (Claude Haiku)
+│   ├── SurveyForm.tsx  # Recommendation survey
+│   └── PerfumeCard.tsx # Product cards
+├── lib/                # API client
+├── utils/              # Recommendation algorithm
+└── types/              # TypeScript definitions
+```
 
-## Contributing
+## API Integration
 
-Contributions are welcome! Please feel free to submit a Pull Request.
+```typescript
+// .env.local
+NEXT_PUBLIC_API_URL=https://blueperfumery-backend.vercel.app/api
+```
+
+## Scripts
+
+| Command | Description |
+|---------|-------------|
+| `npm run dev` | Start dev server |
+| `npm run build` | Production build |
+| `npm run start` | Start production server |
+| `npm run lint` | Run ESLint |
 
 ## License
 
-This project is licensed under the MIT License - see the LICENSE file for details.
+MIT

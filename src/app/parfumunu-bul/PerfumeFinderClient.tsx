@@ -41,7 +41,11 @@ const conversationFlow = [
     miraMessage: "Öncelikle...",
     question: "Kime parfüm arıyorsun?",
     options: [
-      { value: "female", label: "Kadın 💄", icon: <Leaf className="w-4 h-4" /> },
+      {
+        value: "female",
+        label: "Kadın 💄",
+        icon: <Leaf className="w-4 h-4" />,
+      },
       { value: "male", label: "Erkek 🧔", icon: <Wind className="w-4 h-4" /> },
     ],
     field: "gender",
@@ -250,19 +254,30 @@ export default function PerfumeFinderClient({
         unique: "benzersiz",
       };
 
-      const personalityText = personalityMap[finalAnswers.personality] || finalAnswers.personality;
-      const scentText = scentMap[finalAnswers.scentMemory] || finalAnswers.scentMemory;
+      const personalityText =
+        personalityMap[finalAnswers.personality] || finalAnswers.personality;
+      const scentText =
+        scentMap[finalAnswers.scentMemory] || finalAnswers.scentMemory;
       const seasonText = seasonMap[finalAnswers.season] || finalAnswers.season;
-      const impressionText = impressionMap[finalAnswers.desiredImpression] || finalAnswers.desiredImpression;
+      const impressionText =
+        impressionMap[finalAnswers.desiredImpression] ||
+        finalAnswers.desiredImpression;
 
       // Statik, güzel bir mesaj oluştur - API çağrısı yapmadan
       const analysisMessages = [
-        `${personalityText.charAt(0).toUpperCase() + personalityText.slice(1)} ruhun ve ${scentText} sevgin, sana çok yakışacak ${genderText} parfümleri buldum! ${seasonText.charAt(0).toUpperCase() + seasonText.slice(1)} için ${impressionText} bir iz bırakmak isteyenler için özel seçimlerim. 💫`,
+        `${
+          personalityText.charAt(0).toUpperCase() + personalityText.slice(1)
+        } ruhun ve ${scentText} sevgin, sana çok yakışacak ${genderText} parfümleri buldum! ${
+          seasonText.charAt(0).toUpperCase() + seasonText.slice(1)
+        } için ${impressionText} bir iz bırakmak isteyenler için özel seçimlerim. 💫`,
         `Senin ${personalityText} enerjin ve ${scentText} tutkun için mükemmel ${genderText} parfümleri buldum! Bu kokular ${impressionText} bir hava yaratacak. ✨`,
-        `${scentText.charAt(0).toUpperCase() + scentText.slice(1)} seven, ${personalityText} ruhlu biri için harika ${genderText} parfümleri var! Her biri ${impressionText} bir iz bırakmak için tasarlandı. 🌟`,
+        `${
+          scentText.charAt(0).toUpperCase() + scentText.slice(1)
+        } seven, ${personalityText} ruhlu biri için harika ${genderText} parfümleri var! Her biri ${impressionText} bir iz bırakmak için tasarlandı. 🌟`,
       ];
 
-      const randomMessage = analysisMessages[Math.floor(Math.random() * analysisMessages.length)];
+      const randomMessage =
+        analysisMessages[Math.floor(Math.random() * analysisMessages.length)];
       setAiAnalysis(randomMessage);
 
       const filteredProducts = filterProducts(products, finalAnswers);
