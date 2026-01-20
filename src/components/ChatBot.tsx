@@ -10,12 +10,18 @@ interface RecommendedProduct {
   brand: string;
 }
 
+interface QuickOption {
+  text: string;
+  value: string;
+}
+
 interface Message {
   id: string;
   role: "user" | "assistant";
   content: string;
   timestamp: Date;
   recommendedProducts?: RecommendedProduct[];
+  options?: QuickOption[];
 }
 
 // Local development: http://localhost:3001/api
@@ -29,13 +35,21 @@ const API_BASE_URL =
 // Bot ismi - sabit
 const BOT_NAME = "Mira";
 
-// Samimi karşılama mesajları - profilleme odaklı
-const GREETING_MESSAGES = [
-  `Merhaba! 💫 Ben Mira, Blue Perfumery'nin koku danışmanı.\n\nSana özel bir imza koku bulmak için buradayım. Kendine mi arıyorsun, yoksa birine hediye mi?\n\n_(Yeni başladım, bazen takılabilirim 🌱)_`,
-  `Selam! ✨ Ben Mira.\n\nParfüm seçmek bazen zor olabiliyor, ama merak etme - birlikte senin kokunu bulacağız!\n\n_(Henüz her şeyi bilemiyorum ama elimden geleni yapacağım 🌱)_`,
-  `Hey! 🌟 Ben Mira, Blue Perfumery'den.\n\nSana yardımcı olmak için buradayım! Ne tür bir parfüm arıyorsun?\n\n_(Öğrenmeye devam ediyorum, anlayışın için teşekkürler 🌱)_`,
-  `Merhaba! 💎 Ben Mira.\n\nSenin için en uygun kokuyu bulmak istiyorum. Bana biraz kendinden bahseder misin?\n\n_(Hâlâ gelişiyorum, kusurlarım olabilir 🌱)_`,
-];
+// Samimi karşılama mesajı - seçeneklerle birlikte
+const GREETING_MESSAGE = {
+  content: `Merhaba! 💫 Ben Mira, Blue Perfumery'nin koku danışmanı.\n\nSana özel bir imza koku bulmak için buradayım!\n\n_(Yeni başladım, bazen takılabilirim 🌱)_`,
+  options: [
+    { text: "Kendim için arıyorum 🧴", value: "Kendim için parfüm arıyorum" },
+    {
+      text: "Hediye için arıyorum 🎁",
+      value: "Birine hediye için parfüm arıyorum",
+    },
+    {
+      text: "Sadece göz atıyorum 👀",
+      value: "Sadece göz atmak istiyorum, ne tarz parfümleriniz var?",
+    },
+  ],
+};
 
 // Unique ID oluştur
 function generateId(): string {
@@ -87,7 +101,7 @@ function parseMarkdown(text: string): React.ReactNode {
           className="font-semibold"
         >
           {boldText}
-        </strong>
+        </strong>,
       );
 
       remaining = remaining.substring(endIdx + 2);
@@ -117,7 +131,7 @@ function parseMarkdown(text: string): React.ReactNode {
             className="italic text-gray-400"
           >
             {italicText}
-          </em>
+          </em>,
         );
 
         tempRemaining = tempRemaining.substring(endIdx + 1);
@@ -188,7 +202,7 @@ export default function ChatBot() {
     async (
       message: string,
       role: "user" | "assistant",
-      recommendedProducts?: RecommendedProduct[]
+      recommendedProducts?: RecommendedProduct[],
     ) => {
       if (!sessionId || !visitorId) return;
 
@@ -208,15 +222,13 @@ export default function ChatBot() {
         console.error("Failed to save message:", error);
       }
     },
-    [sessionId, visitorId]
+    [sessionId, visitorId],
   );
 
   // Chat açılınca karşılama mesajı
   useEffect(() => {
     if (isOpen && !hasGreeted) {
       setIsTyping(true);
-      const randomGreeting =
-        GREETING_MESSAGES[Math.floor(Math.random() * GREETING_MESSAGES.length)];
 
       setTimeout(() => {
         setIsTyping(false);
@@ -224,14 +236,15 @@ export default function ChatBot() {
           {
             id: "welcome",
             role: "assistant",
-            content: randomGreeting,
+            content: GREETING_MESSAGE.content,
             timestamp: new Date(),
+            options: GREETING_MESSAGE.options,
           },
         ]);
         setHasGreeted(true);
       }, 1000);
     }
-  }, [isOpen, hasGreeted, botName]);
+  }, [isOpen, hasGreeted]);
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -303,17 +316,19 @@ export default function ChatBot() {
 
       // 1-2 saniye bekleme - düşünüyormuş gibi doğal his
       await new Promise((resolve) =>
-        setTimeout(resolve, 1200 + Math.random() * 800)
+        setTimeout(resolve, 1200 + Math.random() * 800),
       );
 
       setIsTyping(false);
 
       let assistantContent = "";
       let recommendedProducts: RecommendedProduct[] = [];
+      let options: QuickOption[] = [];
 
       if (response.ok && data.success && data.data?.message) {
         assistantContent = data.data.message;
         recommendedProducts = data.data.recommendedProducts || [];
+        options = data.data.options || [];
       } else if (data.error) {
         assistantContent = `Üzgünüm, bir sorun oluştu: ${data.error}`;
       } else if (data.code === "AI_SERVICE_UNAVAILABLE") {
@@ -342,6 +357,7 @@ export default function ChatBot() {
         timestamp: new Date(),
         recommendedProducts:
           recommendedProducts.length > 0 ? recommendedProducts : undefined,
+        options: options.length > 0 ? options : undefined,
       };
 
       setMessages((prev) => [...prev, assistantMessage]);
@@ -350,7 +366,7 @@ export default function ChatBot() {
       saveMessageToDb(
         assistantContent,
         "assistant",
-        recommendedProducts.length > 0 ? recommendedProducts : undefined
+        recommendedProducts.length > 0 ? recommendedProducts : undefined,
       );
     } catch {
       setIsTyping(false);
@@ -439,16 +455,18 @@ export default function ChatBot() {
 
       // 1-2 saniye bekleme - düşünüyormuş gibi doğal his
       await new Promise((resolve) =>
-        setTimeout(resolve, 1200 + Math.random() * 800)
+        setTimeout(resolve, 1200 + Math.random() * 800),
       );
       setIsTyping(false);
 
       let assistantContent = "";
       let recommendedProducts: RecommendedProduct[] = [];
+      let options: QuickOption[] = [];
 
       if (response.ok && data.success && data.data?.message) {
         assistantContent = data.data.message;
         recommendedProducts = data.data.recommendedProducts || [];
+        options = data.data.options || [];
       } else if (data.error) {
         assistantContent = `Üzgünüm, bir sorun oluştu: ${data.error}`;
       } else if (data.code === "AI_SERVICE_UNAVAILABLE") {
@@ -466,6 +484,7 @@ export default function ChatBot() {
         timestamp: new Date(),
         recommendedProducts:
           recommendedProducts.length > 0 ? recommendedProducts : undefined,
+        options: options.length > 0 ? options : undefined,
       };
 
       setMessages((prev) => [...prev, assistantMessage]);
@@ -475,7 +494,7 @@ export default function ChatBot() {
       saveMessageToDb(
         assistantContent,
         "assistant",
-        recommendedProducts.length > 0 ? recommendedProducts : undefined
+        recommendedProducts.length > 0 ? recommendedProducts : undefined,
       );
     } catch {
       setIsTyping(false);
@@ -603,36 +622,24 @@ export default function ChatBot() {
             {/* Rotating shine effect */}
             <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent animate-[spin_4s_linear_infinite] opacity-50"></div>
 
-            {/* Parfüm şişesi ikonu - daha büyük */}
-            <FlowerIcon className="w-9 h-9 sm:w-10 sm:h-10 text-gold drop-shadow-[0_2px_8px_rgba(212,175,55,0.5)] relative z-10" />
+            {/* Mira ikonu - kadın emoji */}
+            <span className="text-3xl sm:text-4xl drop-shadow-[0_2px_8px_rgba(212,175,55,0.5)] relative z-10">
+              👩
+            </span>
           </div>
 
           {/* Floating message bubble - 6 saniye sonra kaybolur */}
           <div
-            className={`absolute -top-2 -left-28 sm:-left-32 flex items-center gap-2 px-4 py-2.5 bg-white text-slate-800 text-sm font-medium rounded-2xl shadow-xl whitespace-nowrap border border-gold/20 transition-all duration-500 ${
+            className={`absolute -top-2 -left-36 sm:-left-44 flex items-center gap-2 px-4 py-2.5 bg-gradient-to-r from-gold to-amber-500 text-navy text-sm font-semibold rounded-2xl shadow-xl whitespace-nowrap border border-amber-300/50 transition-all duration-500 ${
               showBubble && !isOpen
                 ? "opacity-100 animate-bounce"
                 : "opacity-0 scale-90 pointer-events-none"
             }`}
           >
-            <span>Merhaba! 👋</span>
+            <span>✨ Kokunu bulalım!</span>
             {/* Konuşma balonu ok işareti */}
-            <div className="absolute -right-2 top-1/2 -translate-y-1/2 w-0 h-0 border-t-[8px] border-b-[8px] border-l-[10px] border-transparent border-l-white"></div>
+            <div className="absolute -right-2 top-1/2 -translate-y-1/2 w-0 h-0 border-t-[8px] border-b-[8px] border-l-[10px] border-transparent border-l-amber-500"></div>
           </div>
-
-          {/* Floating sparkles - daha belirgin */}
-          <div
-            className="absolute -top-3 left-1/2 w-2 h-2 bg-gold rounded-full animate-bounce shadow-lg"
-            style={{ animationDelay: "0s", animationDuration: "1.5s" }}
-          ></div>
-          <div
-            className="absolute top-1/2 -right-3 w-2 h-2 bg-amber-400 rounded-full animate-bounce shadow-lg"
-            style={{ animationDelay: "0.3s", animationDuration: "1.8s" }}
-          ></div>
-          <div
-            className="absolute -bottom-2 left-1/4 w-1.5 h-1.5 bg-gold rounded-full animate-bounce shadow-lg"
-            style={{ animationDelay: "0.6s", animationDuration: "2s" }}
-          ></div>
 
           {/* Hover tooltip - ek bilgi */}
           <div className="hidden sm:flex absolute bottom-full right-0 mb-4 items-center gap-2 px-4 py-2.5 bg-gradient-to-r from-navy via-slate-800 to-navy text-white text-sm rounded-xl shadow-2xl opacity-0 group-hover:opacity-100 transition-all duration-300 whitespace-nowrap border border-gold/40">
@@ -657,7 +664,7 @@ export default function ChatBot() {
           onClick={() => setIsOpen(false)}
         ></div>
 
-        <div className="relative w-full h-full sm:w-[400px] sm:h-[620px] sm:max-h-[85vh] bg-gradient-to-br from-slate-950 via-navy to-slate-900 sm:rounded-3xl shadow-2xl flex flex-col overflow-hidden border-0 sm:border sm:border-gold/40">
+        <div className="relative w-full h-full sm:w-[420px] sm:h-[750px] sm:max-h-[92vh] bg-gradient-to-br from-slate-950 via-navy to-slate-900 sm:rounded-3xl shadow-2xl flex flex-col overflow-hidden border-0 sm:border sm:border-gold/40">
           {/* Decorative top gold bar */}
           <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-gold/20 via-gold to-gold/20"></div>
 
@@ -699,8 +706,8 @@ export default function ChatBot() {
                     {/* Glass effect */}
                     <div className="absolute inset-0 bg-gradient-to-br from-white/10 via-transparent to-transparent"></div>
 
-                    {/* Parfüm şişesi ikonu */}
-                    <FlowerIcon className="w-7 h-7 text-gold relative z-10" />
+                    {/* Mira emojisi */}
+                    <span className="text-xl relative z-10">👩</span>
 
                     {/* Shine */}
                     <div className="absolute top-0 left-0 w-full h-1/2 bg-gradient-to-b from-white/20 to-transparent"></div>
@@ -752,7 +759,7 @@ export default function ChatBot() {
                     <div className="relative flex-shrink-0">
                       <div className="absolute inset-0 bg-gold/30 rounded-lg blur-sm"></div>
                       <div className="relative w-8 h-8 rounded-lg bg-gradient-to-br from-slate-800 to-navy flex items-center justify-center shadow-md border border-gold/40">
-                        <FlowerIcon className="w-5 h-5 text-gold" />
+                        <span className="text-sm">👩</span>
                       </div>
                     </div>
                   )}
@@ -793,6 +800,26 @@ export default function ChatBot() {
                       ))}
                     </div>
                   )}
+
+                {/* Quick Options - Seçenekli Cevaplar (ürün önerisi yoksa göster) */}
+                {message.role === "assistant" &&
+                  message.options &&
+                  message.options.length > 0 &&
+                  !message.recommendedProducts?.length &&
+                  message.id === messages[messages.length - 1]?.id && (
+                    <div className="ml-10 flex flex-wrap gap-1.5 max-w-[95%] mt-1">
+                      {message.options.map((option, idx) => (
+                        <button
+                          key={`option-${message.id}-${idx}`}
+                          onClick={() => handleSuggestionClick(option.value)}
+                          disabled={isLoading}
+                          className="px-3 py-2 bg-gradient-to-r from-slate-800/90 to-navy/90 hover:from-gold/25 hover:to-amber-500/25 text-gray-200 hover:text-gold text-xs rounded-lg transition-all duration-300 border border-gold/30 hover:border-gold/60 hover:scale-[1.02] active:scale-[0.98] shadow-sm hover:shadow-md hover:shadow-gold/10 disabled:opacity-50 disabled:cursor-not-allowed backdrop-blur-sm"
+                        >
+                          {option.text}
+                        </button>
+                      ))}
+                    </div>
+                  )}
               </div>
             ))}
 
@@ -802,7 +829,7 @@ export default function ChatBot() {
                 <div className="relative flex-shrink-0">
                   <div className="absolute inset-0 bg-gold/30 rounded-lg blur-sm"></div>
                   <div className="relative w-8 h-8 rounded-lg bg-gradient-to-br from-slate-800 to-navy flex items-center justify-center shadow-md border border-gold/40">
-                    <FlowerIcon className="w-5 h-5 text-gold animate-pulse" />
+                    <span className="text-sm animate-pulse">👩</span>
                   </div>
                 </div>
                 <div className="bg-gradient-to-r from-slate-800/80 to-navy/80 backdrop-blur-sm px-4 py-3 rounded-xl rounded-bl-none shadow-lg border border-gold/20">
