@@ -104,7 +104,7 @@ export default async function ParfumDetay({
                   perfume.image !== "/card-photos/1.png" &&
                   !perfume.image.includes("placeholder")
                     ? perfume.image
-                    : "https://framerusercontent.com/images/Kr4buJy50VrffvLOvJMs7f8tpI.png"
+                    : "/card-photos/blue-default.webp"
                 }
                 alt={perfume.name}
                 fill

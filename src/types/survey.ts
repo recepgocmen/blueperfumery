@@ -47,18 +47,12 @@ export type Impression =
 
 // Preferred perfumes that should have higher recommendation rate
 export const PREFERRED_PERFUMES = [
-  "nishane-hacivat",
-  "ysl-libre-woman",
-  "mancera-roses-vanille",
-  "terenzi-kirke",
-  "lveb",
-  "amouage-reflection-man",
-  "pdm-pegasus",
-  "ex-nihilo-fleur-narcotique",
-  "tf-bitter-peach",
-  "mfk-br540",
-  "tf-lost-cherry",
-  "nasomatto-black-afgano",
+  "burberry-her-seluz",
+  "goddess-burberry",
+  "mp-vanilla-powder",
+  "armani-swy-intensely",
+  "nishane-hacivat-seluz",
+  "fleur-narcotique-seluz",
 ] as const;
 
 export interface UserPreferences {

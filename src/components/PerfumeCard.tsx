@@ -6,7 +6,7 @@ import type { Product } from "@/lib/api";
 
 // Varsayılan parfüm resmi
 const DEFAULT_PERFUME_IMAGE =
-  "https://framerusercontent.com/images/Kr4buJy50VrffvLOvJMs7f8tpI.png";
+  "/card-photos/blue-default.webp";
 
 interface PerfumeCardProps {
   perfume: Product;

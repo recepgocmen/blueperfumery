@@ -40,8 +40,8 @@ const sliderContent = [
 
 // En Çok Tercih Edilenler - Ürün ID'leri
 const MOST_PREFERRED = {
-  female: ["burberry-her", "dior-jadore", "burberry-goddess"],
-  male: ["armani-stronger-with-you-seluz", "dior-sauvage-edp", "exnihilo-fleur-narcotique"],
+  female: ["burberry-her-seluz", "goddess-burberry", "mp-vanilla-powder"],
+  male: ["armani-swy-intensely", "nishane-hacivat-seluz", "fleur-narcotique-seluz"],
 };
 
 interface HomeClientProps {
