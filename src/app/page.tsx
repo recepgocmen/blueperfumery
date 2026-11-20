@@ -2,6 +2,8 @@ import Link from "next/link";
 import { getProducts, type Product } from "@/lib/api";
 import {
   featuredFirst,
+  forMen,
+  forWomen,
   formatPrice,
   pickByFamily,
   sharedCampaign,
@@ -44,7 +46,12 @@ const Home = async () => {
 
   return (
     <>
-      <ScentMenu picks={pickByFamily(products).slice(0, 6)} />
+      <ScentMenu
+        picks={{
+          female: pickByFamily(products.filter(forWomen)).slice(0, 6),
+          male: pickByFamily(products.filter(forMen)).slice(0, 6),
+        }}
+      />
 
       <section
         aria-labelledby="shelf-heading"
