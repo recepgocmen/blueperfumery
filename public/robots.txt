@@ -3,4 +3,4 @@ User-agent: *
 Allow: /
 
 # Sitemap location
-Sitemap: https://blueperfumery.com/sitemap.xml 
+Sitemap: https://blueperfumery.vercel.app/sitemap.xml

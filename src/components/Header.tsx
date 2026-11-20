@@ -1,184 +1,170 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { X } from "lucide-react";
 
-export default function Header() {
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [isScrolled, setIsScrolled] = useState(false);
+const NAV_LINKS = [
+  { href: "/kadin-parfum", label: "Kadın" },
+  { href: "/erkek-parfum", label: "Erkek" },
+  { href: "/nis-parfum", label: "Niş" },
+  { href: "/parfumunu-bul", label: "Parfümünü Bul" },
+  { href: "/hakkimizda", label: "Hakkımızda" },
+];
+
+const Wordmark = ({ onDark }: { onDark: boolean }) => (
+  <Link
+    href="/"
+    aria-label="Blue Perfumery ana sayfa"
+    className="flex min-h-11 flex-col justify-center leading-none"
+  >
+    <span
+      className={`font-display text-[1.75rem] font-medium tracking-[0.08em] ${onDark ? "text-gold" : "text-bordo"}`}
+    >
+      BLUE
+    </span>
+    <span className="mt-1 text-[0.625rem] font-medium tracking-[0.42em]">
+      PERFUMERY
+    </span>
+  </Link>
+);
+
+const Header = () => {
+  const pathname = usePathname();
+  const [pastHero, setPastHero] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
+  const menuButtonRef = useRef<HTMLButtonElement>(null);
+  const overlayRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    const handleScroll = () => {
-      setIsScrolled(window.scrollY > 50);
+    const update = () =>
+      setPastHero(window.scrollY > window.innerHeight * 0.8);
+    update();
+    window.addEventListener("scroll", update, { passive: true });
+    window.addEventListener("resize", update, { passive: true });
+    return () => {
+      window.removeEventListener("scroll", update);
+      window.removeEventListener("resize", update);
     };
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
   }, []);
+
+  useEffect(() => {
+    setMenuOpen(false);
+  }, [pathname]);
+
+  useEffect(() => {
+    if (!menuOpen) return;
+    const button = menuButtonRef.current;
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    overlayRef.current?.querySelector<HTMLElement>("a, button")?.focus();
+    const onKey = (event: KeyboardEvent) => {
+      if (event.key === "Escape") setMenuOpen(false);
+    };
+    window.addEventListener("keydown", onKey);
+    return () => {
+      document.body.style.overflow = previousOverflow;
+      window.removeEventListener("keydown", onKey);
+      button?.focus();
+    };
+  }, [menuOpen]);
+
+  const transparent = pathname === "/" && !pastHero;
+  const isActive = (href: string) =>
+    pathname === href || pathname.startsWith(`${href}/`);
 
   return (
     <header
-      className={`fixed w-full z-50 transition-all duration-500 ${
-        isScrolled
-          ? "bg-white/95 backdrop-blur-md shadow-sm py-3"
-          : "bg-transparent py-5"
+      className={`fixed inset-x-0 top-0 z-50 h-[4.5rem] transition-colors duration-300 ease-pour ${
+        transparent
+          ? "bg-gradient-to-b from-bordo-deep/85 to-transparent text-ivory"
+          : "border-b border-ink/10 bg-ivory text-ink"
       }`}
     >
-      <div className="max-w-7xl mx-auto px-6 lg:px-8">
-        <div className="flex justify-between items-center">
-          {/* Logo */}
-          <Link href="/" className="group">
-            <div className="flex flex-col items-start">
-              <span
-                className={`font-heading text-2xl font-semibold tracking-[0.2em] transition-colors duration-300 ${
-                  isScrolled ? "text-navy" : "text-white"
-                }`}
-              >
-                BLUE
-              </span>
-              <span
-                className={`font-heading text-sm font-light tracking-[0.15em] -mt-1 transition-colors duration-300 ${
-                  isScrolled ? "text-gold" : "text-gold-light"
-                }`}
-              >
-                PERFUMERY
-              </span>
-              <div
-                className={`h-[1px] w-0 group-hover:w-full transition-all duration-500 mt-1 ${
-                  isScrolled ? "bg-gold" : "bg-gold-light"
-                }`}
-              />
-            </div>
-          </Link>
+      <div className="mx-auto flex h-full max-w-[90rem] items-center justify-between gap-8 px-5 sm:px-10 lg:px-16">
+        <Wordmark onDark={transparent} />
 
-          {/* Desktop Navigation */}
-          <nav className="hidden md:flex items-center gap-8">
-            <Link
-              href="/erkek-parfum"
-              className={`text-sm font-medium tracking-wide transition-all duration-300 hover:text-gold relative group ${
-                isScrolled ? "text-gray-700" : "text-white/90"
-              }`}
-            >
-              Erkek
-              <span className="absolute -bottom-1 left-0 w-0 h-[1px] bg-gold group-hover:w-full transition-all duration-300" />
-            </Link>
-            <Link
-              href="/kadin-parfum"
-              className={`text-sm font-medium tracking-wide transition-all duration-300 hover:text-gold relative group ${
-                isScrolled ? "text-gray-700" : "text-white/90"
-              }`}
-            >
-              Kadın
-              <span className="absolute -bottom-1 left-0 w-0 h-[1px] bg-gold group-hover:w-full transition-all duration-300" />
-            </Link>
-            <Link
-              href="/nis-parfum"
-              className={`text-sm font-medium tracking-wide transition-all duration-300 hover:text-gold relative group ${
-                isScrolled ? "text-gray-700" : "text-white/90"
-              }`}
-            >
-              Niş Koleksiyon
-              <span className="absolute -bottom-1 left-0 w-0 h-[1px] bg-gold group-hover:w-full transition-all duration-300" />
-            </Link>
-            
-            <div className="w-[1px] h-5 bg-gray-300/50 mx-2" />
-
-            <Link
-              href="/parfumunu-bul"
-              className={`text-sm font-medium tracking-wide px-5 py-2.5 rounded-full transition-all duration-300 ${
-                isScrolled
-                  ? "bg-navy text-white hover:bg-navy-light"
-                  : "bg-white/10 text-white border border-white/30 hover:bg-white/20"
-              }`}
-            >
-              Parfümünü Bul
-            </Link>
-
-            <Link
-              href="/satin-al"
-              className="text-sm font-medium tracking-wide px-5 py-2.5 rounded-full bg-gold text-navy hover:bg-gold-light transition-all duration-300 btn-luxury"
-            >
-              Satın Al
-            </Link>
-          </nav>
-
-          {/* Mobile Menu Button */}
-          <button
-            onClick={() => setIsMenuOpen(!isMenuOpen)}
-            className={`md:hidden p-2 rounded-lg transition-colors duration-200 ${
-              isScrolled
-                ? "text-navy hover:bg-gray-100"
-                : "text-white hover:bg-white/10"
-            }`}
-            aria-label="Menu"
+        <nav aria-label="Ana menü" className="hidden items-center gap-9 lg:flex">
+          <ul className="flex items-center gap-7">
+            {NAV_LINKS.map(({ href, label }) => (
+              <li key={href}>
+                <Link
+                  href={href}
+                  aria-current={isActive(href) ? "page" : undefined}
+                  className="py-3 text-[0.9375rem] tracking-wide underline-offset-[0.5em] decoration-gold hover:underline aria-[current=page]:underline"
+                >
+                  {label}
+                </Link>
+              </li>
+            ))}
+          </ul>
+          <Link
+            href="/satin-al"
+            aria-current={isActive("/satin-al") ? "page" : undefined}
+            className={transparent ? "btn-line-ivory" : "btn-bordo"}
           >
-            <svg
-              className="w-6 h-6"
-              fill="none"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth="1.5"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              {isMenuOpen ? (
-                <path d="M6 18L18 6M6 6l12 12" />
-              ) : (
-                <path d="M4 6h16M4 12h16M4 18h16" />
-              )}
-            </svg>
-          </button>
-        </div>
+            Koleksiyon
+          </Link>
+        </nav>
 
-        {/* Mobile Navigation */}
-        <div
-          className={`md:hidden absolute left-0 right-0 top-full bg-white shadow-xl transition-all duration-300 transform ${
-            isMenuOpen
-              ? "translate-y-0 opacity-100"
-              : "-translate-y-4 opacity-0 pointer-events-none"
-          }`}
+        <button
+          ref={menuButtonRef}
+          type="button"
+          onClick={() => setMenuOpen(true)}
+          aria-expanded={menuOpen}
+          aria-controls="mobile-menu"
+          className="min-h-11 px-1 text-[0.9375rem] font-medium tracking-[0.2em] lg:hidden"
         >
-          <div className="px-6 py-6 space-y-1">
-            <Link
-              href="/erkek-parfum"
-              className="block text-gray-700 hover:text-gold px-4 py-3 text-sm font-medium tracking-wide border-b border-gray-100"
-              onClick={() => setIsMenuOpen(false)}
-            >
-              Erkek Parfümleri
-            </Link>
-            <Link
-              href="/kadin-parfum"
-              className="block text-gray-700 hover:text-gold px-4 py-3 text-sm font-medium tracking-wide border-b border-gray-100"
-              onClick={() => setIsMenuOpen(false)}
-            >
-              Kadın Parfümleri
-            </Link>
-            <Link
-              href="/nis-parfum"
-              className="block text-gray-700 hover:text-gold px-4 py-3 text-sm font-medium tracking-wide border-b border-gray-100"
-              onClick={() => setIsMenuOpen(false)}
-            >
-              Niş Koleksiyon
-            </Link>
-
-            <div className="pt-4 space-y-3">
-              <Link
-                href="/parfumunu-bul"
-                className="block bg-navy text-white px-4 py-3 rounded-lg text-sm font-medium tracking-wide text-center"
-                onClick={() => setIsMenuOpen(false)}
-              >
-                Parfümünü Bul
-              </Link>
-              <Link
-                href="/satin-al"
-                className="block bg-gold text-navy px-4 py-3 rounded-lg text-sm font-medium tracking-wide text-center"
-                onClick={() => setIsMenuOpen(false)}
-              >
-                Satın Al
-              </Link>
-            </div>
-          </div>
-        </div>
+          MENÜ
+        </button>
       </div>
+
+      {menuOpen && (
+        <div
+          id="mobile-menu"
+          ref={overlayRef}
+          role="dialog"
+          aria-modal="true"
+          aria-label="Menü"
+          className="fixed inset-0 z-50 flex animate-fade flex-col overflow-y-auto bg-bordo-deep px-5 pb-10 text-ivory sm:px-10 lg:hidden"
+        >
+          <div className="flex h-[4.5rem] shrink-0 items-center justify-between">
+            <Wordmark onDark />
+            <button
+              type="button"
+              onClick={() => setMenuOpen(false)}
+              className="flex min-h-11 items-center gap-2 px-1 text-[0.9375rem] font-medium tracking-[0.2em]"
+            >
+              KAPAT
+              <X aria-hidden="true" strokeWidth={1.5} className="size-5" />
+            </button>
+          </div>
+          <nav aria-label="Mobil menü" className="mt-auto">
+            <ul className="flex flex-col gap-1">
+              {[...NAV_LINKS, { href: "/satin-al", label: "Koleksiyon" }].map(
+                ({ href, label }) => (
+                  <li key={href}>
+                    <Link
+                      href={href}
+                      onClick={() => setMenuOpen(false)}
+                      aria-current={isActive(href) ? "page" : undefined}
+                      className="block py-1 font-display text-[clamp(2.25rem,10vw,3.5rem)] italic leading-[1.1] text-ivory hover:text-gold aria-[current=page]:text-gold"
+                    >
+                      {label}
+                    </Link>
+                  </li>
+                ),
+              )}
+            </ul>
+          </nav>
+          <p className="mt-10 text-[0.6875rem] tracking-[0.42em] text-bordo-mute">
+            MADE WITH LOVE
+          </p>
+        </div>
+      )}
     </header>
   );
-}
+};
+
+export default Header;

@@ -3,7 +3,7 @@
  * Server-side safe API calls using Next.js fetch with caching
  */
 
-const API_BASE_URL =
+export const API_BASE_URL =
   process.env.NEXT_PUBLIC_API_URL ||
   "https://blueperfumery-backend.vercel.app/api";
 
@@ -137,43 +137,14 @@ export async function getProductById(id: string): Promise<Product> {
 }
 
 /**
- * Fetch products by gender (for category pages)
+ * Fetch every active product; an unreachable API yields an empty shelf
  */
-export async function getProductsByGender(
-  gender: "male" | "female" | "unisex",
-  limit: number = 100
-): Promise<Product[]> {
+export async function getActiveProducts(): Promise<Product[]> {
   try {
-    const response = await getProducts({
-      gender,
-      status: "active",
-      limit,
-    });
-
+    const response = await getProducts({ status: "active", limit: 100 });
     return response.data;
   } catch (error) {
-    console.error(`Error fetching ${gender} products:`, error);
-    return [];
-  }
-}
-
-/**
- * Fetch products by category
- */
-export async function getProductsByCategory(
-  category: string,
-  limit: number = 100
-): Promise<Product[]> {
-  try {
-    const response = await getProducts({
-      category,
-      status: "active",
-      limit,
-    });
-
-    return response.data;
-  } catch (error) {
-    console.error(`Error fetching ${category} products:`, error);
+    console.error("Error fetching active products:", error);
     return [];
   }
 }

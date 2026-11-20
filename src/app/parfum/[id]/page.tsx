@@ -1,233 +1,212 @@
-import { getProductById } from "@/lib/api";
-import { PREFERRED_PERFUMES } from "@/types/survey";
-import Image from "next/image";
-import Link from "next/link";
+import type { Metadata } from "next";
 import { notFound } from "next/navigation";
+import { getProductById, getProducts, type Product } from "@/lib/api";
+import {
+  SITE_URL,
+  audienceLabel,
+  buyUrl,
+  capitalize,
+  productImage,
+  similarTo,
+} from "@/lib/catalog";
+import AskMiraButton from "@/components/AskMiraButton";
+import Price from "@/components/Price";
+import ProductImage from "@/components/ProductImage";
+import ProductTile from "@/components/ProductTile";
 
-export async function generateMetadata({
-  params,
-}: {
+type Props = {
   params: Promise<{ id: string }>;
-}) {
-  const { id } = await params;
+};
 
+const findActiveProduct = async (id: string) => {
   try {
-    const perfume = await getProductById(id);
-    return {
-      title: `${perfume.name} | Blue Perfumery`,
-      description: perfume.description,
-    };
+    const product = await getProductById(id);
+    return product.status === "active" ? product : null;
   } catch {
-    return {
-      title: "Ürün Bulunamadı | Blue Perfumery",
-    };
+    return null;
   }
-}
+};
 
-export default async function ParfumDetay({
+const getActiveProducts = async () => {
+  try {
+    const response = await getProducts({ status: "active", limit: 100 });
+    return response.data;
+  } catch {
+    return [];
+  }
+};
+
+const absoluteImage = (product: Product) => {
+  const src = productImage(product);
+  return src.startsWith("/") ? `${SITE_URL}${src}` : src;
+};
+
+export const generateMetadata = async ({
   params,
-}: {
-  params: Promise<{ id: string }>;
-}) {
+}: Props): Promise<Metadata> => {
   const { id } = await params;
+  const product = await findActiveProduct(id);
+  if (!product) return { title: "Ürün bulunamadı | Blue Perfumery" };
 
-  let perfume;
-  try {
-    perfume = await getProductById(id);
-  } catch {
-    notFound();
-  }
+  return {
+    title: `${product.name} | Blue Perfumery`,
+    description: product.description,
+    openGraph: {
+      title: `${product.name} | Blue Perfumery`,
+      description: product.description,
+      url: `${SITE_URL}/parfum/${product.id}`,
+      images: [{ url: absoluteImage(product), alt: product.name }],
+    },
+  };
+};
 
-  const isPreferred = PREFERRED_PERFUMES.includes(
-    id as (typeof PREFERRED_PERFUMES)[number]
-  );
+const ProductPage = async ({ params }: Props) => {
+  const { id } = await params;
+  const product = await findActiveProduct(id);
+  if (!product) notFound();
 
-  // Parfüm kategorisine göre renk teması belirle
-  const getColorTheme = () => {
-    if (
-      perfume.brand.includes("Artisanal") ||
-      perfume.brand.includes("Exclusive")
-    ) {
-      return {
-        gradient: "from-amber-900/80 via-slate-900 to-navy",
-        border: "border-gold",
-        badge: "bg-gold text-navy",
-        tag: "bg-gold/10 text-gold",
-        button: {
-          outline: "border-gold text-gold hover:bg-gold/10",
-          primary:
-            "from-gold to-gold-light hover:from-gold-light hover:to-gold text-navy",
-        },
-      };
-    } else if (perfume.gender === "female") {
-      return {
-        gradient: "from-purple-900 via-slate-900 to-navy",
-        border: "border-gold",
-        badge: "bg-gold text-navy",
-        tag: "bg-purple-500/20 text-purple-300",
-        button: {
-          outline: "border-gold text-gold hover:bg-gold/10",
-          primary:
-            "from-gold to-gold-light hover:from-gold-light hover:to-gold text-navy",
-        },
-      };
-    } else {
-      return {
-        gradient: "from-slate-800 via-slate-900 to-navy",
-        border: "border-gold",
-        badge: "bg-gold text-navy",
-        tag: "bg-blue-500/20 text-blue-300",
-        button: {
-          outline: "border-gold text-gold hover:bg-gold/10",
-          primary:
-            "from-gold to-gold-light hover:from-gold-light hover:to-gold text-navy",
-        },
-      };
-    }
+  const similar = similarTo(product, await getActiveProducts());
+  const soldOut = product.stock === 0;
+  const lowStock = product.stock > 0 && product.stock <= 5;
+
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "Product",
+    name: product.name,
+    description: product.description,
+    image: absoluteImage(product),
+    brand: { "@type": "Brand", name: "Blue Perfumery" },
+    offers: {
+      "@type": "Offer",
+      price: product.price,
+      priceCurrency: "TRY",
+      availability: soldOut
+        ? "https://schema.org/OutOfStock"
+        : "https://schema.org/InStock",
+      url: buyUrl(product),
+    },
   };
 
-  const theme = getColorTheme();
-
   return (
-    <div
-      className={`min-h-screen bg-gradient-to-br ${theme.gradient} pt-24 pb-12`}
-    >
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="bg-white rounded-2xl shadow-xl overflow-hidden">
-          <div className="grid grid-cols-1 md:grid-cols-2">
-            {/* Sol taraf - Görsel */}
-            <div className="relative h-[500px] md:h-full">
-              <Image
-                src={
-                  perfume.image &&
-                  perfume.image.trim() !== "" &&
-                  perfume.image !== "/card-photos/1.png" &&
-                  !perfume.image.includes("placeholder")
-                    ? perfume.image
-                    : "/card-photos/blue-default.webp"
-                }
-                alt={perfume.name}
-                fill
-                className="object-contain p-4 bg-gradient-to-br from-slate-100 to-gray-50"
+    <div className="px-5 pb-24 pt-28 sm:px-10 lg:px-16 lg:pt-36">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(jsonLd).replace(/</g, "\\u003c"),
+        }}
+      />
+      <div className="mx-auto max-w-[90rem]">
+        <article className="grid gap-10 lg:grid-cols-[minmax(0,5fr)_minmax(0,6fr)] lg:gap-16 xl:gap-24">
+          <div className="lg:sticky lg:top-28 lg:self-start">
+            <div className="relative aspect-[4/5] w-full animate-fade bg-sand lg:max-h-[calc(100svh-9rem)]">
+              <ProductImage
+                product={product}
+                priority
+                sizes="(min-width: 1024px) 45vw, 100vw"
               />
-              {isPreferred && (
-                <div
-                  className={`absolute top-4 right-4 ${theme.badge} text-white px-3 py-1 rounded-full text-sm font-medium`}
-                >
-                  Öne Çıkan
-                </div>
-              )}
-              {perfume.stock <= 5 && (
-                <div className="absolute top-4 left-4 bg-red-600 text-white px-3 py-1 rounded-full text-sm font-medium">
-                  Son {perfume.stock} Adet!
-                </div>
-              )}
-            </div>
-
-            {/* Sağ taraf - Detaylar */}
-            <div className="p-8">
-              <div className="mb-6">
-                <h1 className="text-3xl font-bold text-gray-900 mb-2">
-                  {perfume.name}
-                </h1>
-                <p className="text-lg text-gray-600">{perfume.brand}</p>
-              </div>
-
-              <div className="mb-6">
-                <h2 className="text-xl font-semibold text-gray-900 mb-3">
-                  Parfüm Hakkında
-                </h2>
-                <p className="text-gray-600">{perfume.description}</p>
-              </div>
-
-              <div className="mb-6">
-                <h2 className="text-xl font-semibold text-gray-900 mb-3">
-                  Özellikler
-                </h2>
-                <div className="flex flex-wrap gap-2">
-                  {perfume.characteristics.map((char, index) => (
-                    <span
-                      key={index}
-                      className={`px-3 py-1 ${theme.tag} text-sm rounded-full`}
-                    >
-                      {char}
-                    </span>
-                  ))}
-                </div>
-              </div>
-
-              <div className="mb-6">
-                <h2 className="text-xl font-semibold text-gray-900 mb-3">
-                  Notalar
-                </h2>
-                <div className="flex flex-wrap gap-2">
-                  {perfume.notes.map((note, index) => (
-                    <span
-                      key={index}
-                      className="px-3 py-1 bg-gray-100 text-gray-700 text-sm rounded-full"
-                    >
-                      {note}
-                    </span>
-                  ))}
-                </div>
-              </div>
-
-              <div className="mb-6">
-                <h2 className="text-xl font-semibold text-gray-900 mb-3">
-                  Detaylar
-                </h2>
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <p className="text-sm text-gray-500">Cinsiyet</p>
-                    <p className="font-medium text-gray-900">
-                      {perfume.gender === "male"
-                        ? "Erkek"
-                        : perfume.gender === "female"
-                        ? "Kadın"
-                        : "Unisex"}
-                    </p>
-                  </div>
-                  <div>
-                    <p className="text-sm text-gray-500">Yaş Aralığı</p>
-                    <p className="font-medium text-gray-900">
-                      {perfume.ageRange.min} - {perfume.ageRange.max}
-                    </p>
-                  </div>
-                  <div>
-                    <p className="text-sm text-gray-500">Hacim</p>
-                    <p className="font-medium text-gray-900">{perfume.ml} ml</p>
-                  </div>
-                  <div>
-                    <p className="text-sm text-gray-500">Stok</p>
-                    <p className="font-medium text-gray-900">
-                      {perfume.stock > 10
-                        ? "Stokta"
-                        : `Son ${perfume.stock} adet`}
-                    </p>
-                  </div>
-                </div>
-              </div>
-
-              <div className="mb-6">
-                <span className="text-4xl font-bold text-gray-900">
-                  ₺{perfume.price}
-                </span>
-              </div>
-
-              <div className="flex gap-4">
-                <Link
-                  href={"/satin-al"}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className={`flex-1 bg-gradient-to-r ${theme.button.primary} text-white px-6 py-3 rounded-lg text-lg font-medium text-center transition-all duration-300 shadow-md hover:shadow-lg`}
-                >
-                  Satın Al
-                </Link>
-              </div>
             </div>
           </div>
-        </div>
+
+          <div className="lg:pt-6">
+            <h1 className="text-5xl leading-[1.04] sm:text-6xl lg:text-7xl">
+              {product.name}
+            </h1>
+            <p className="mt-4 text-ink-soft">
+              {audienceLabel(product)} · {product.ml} ml
+            </p>
+            <p className="mt-8 max-w-[65ch] text-lg">{product.description}</p>
+
+            <div className="mt-10 flex items-baseline justify-between gap-6 border-t border-gold pt-6">
+              <p className="font-display text-4xl">
+                <Price product={product} />
+              </p>
+              {lowStock && (
+                <p className="text-bordo">Son {product.stock} adet</p>
+              )}
+            </div>
+
+            <div className="mt-8 flex flex-col gap-3 sm:flex-row">
+              {soldOut ? (
+                <button
+                  type="button"
+                  disabled
+                  className="btn cursor-not-allowed border border-ink/30 text-ink-soft"
+                >
+                  Tükendi
+                </button>
+              ) : (
+                <a
+                  href={buyUrl(product)}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="btn-bordo"
+                >
+                  Shopier&apos;da satın al
+                </a>
+              )}
+              <AskMiraButton
+                question={`${product.name} nasıl bir koku, kime yakışır?`}
+                className="btn-line"
+              >
+                Mira&apos;ya sor
+              </AskMiraButton>
+            </div>
+
+            {product.notes.length > 0 && (
+              <section className="mt-16" aria-labelledby="notalar">
+                <h2 id="notalar" className="text-2xl">
+                  Notalar
+                </h2>
+                <ul className="mt-5 font-display text-3xl leading-[1.4] sm:text-4xl">
+                  {product.notes.map((note, index) => (
+                    <li key={note} className="inline">
+                      {index > 0 && " "}
+                      <span className="whitespace-nowrap">
+                        {index > 0 && (
+                          <span
+                            aria-hidden="true"
+                            className="mr-3 inline-block h-px w-5 bg-gold align-middle sm:mr-4 sm:w-8"
+                          />
+                        )}
+                        {capitalize(note)}
+                      </span>
+                    </li>
+                  ))}
+                </ul>
+              </section>
+            )}
+
+            {product.characteristics.length > 0 && (
+              <section className="mt-12" aria-labelledby="karakter">
+                <h2 id="karakter" className="text-2xl">
+                  Karakter
+                </h2>
+                <p className="mt-3 text-ink-soft">
+                  {product.characteristics.map(capitalize).join(" · ")}
+                </p>
+              </section>
+            )}
+          </div>
+        </article>
+
+        {similar.length > 0 && (
+          <section
+            className="mt-24 border-t border-gold pt-12 lg:mt-32"
+            aria-labelledby="benzer"
+          >
+            <h2 id="benzer" className="text-4xl sm:text-5xl">
+              Benzer kokular
+            </h2>
+            <div className="mt-10 grid grid-cols-2 gap-x-5 gap-y-14 sm:grid-cols-3 sm:gap-x-8">
+              {similar.map((item) => (
+                <ProductTile key={item.id} product={item} />
+              ))}
+            </div>
+          </section>
+        )}
       </div>
     </div>
   );
-}
+};
+
+export default ProductPage;

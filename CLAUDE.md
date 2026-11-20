@@ -16,24 +16,21 @@ This is a Next.js 15 perfume recommendation system using App Router. The applica
 
 ### Key Technical Decisions
 - **Framework**: Next.js 15 with App Router (not Pages Router)
-- **Styling**: TailwindCSS only - no separate CSS files
-- **State Management**: React Context API
+- **Styling**: TailwindCSS only (tokens in `tailwind.config.ts`, base layer in `globals.css`)
 - **Type Safety**: TypeScript with strict typing
 - **Deployment**: Vercel with analytics integration
 
 ### Core Business Logic
-The recommendation algorithm (`src/utils/recommendations.ts`) uses:
-1. User survey responses mapped to perfume characteristics
-2. Note matching with emoji associations
-3. Preferred perfume boosting for specific IDs (10, 11, 12, 29, 39, 61, 89, 91, 93, 94, 95)
-4. Scoring system that prioritizes preferred perfumes
+- The catalog lives in MongoDB and is read through the API (`src/lib/api.ts`); nothing about products is hardcoded here.
+- `src/lib/catalog.ts`: scent families, featured ids, price/campaign helpers, photo resolution (`/perfumes/<id>.webp`, falling back to the shared bottle), `askMira()`.
+- `src/lib/quiz.ts`: questions and the pure scoring for "Parfümünü Bul" (`quiz.check.ts` is its self-check).
+- Mira (`src/components/ChatBot.tsx`) only renders what `POST /chat` returns; the server owns grounding and history.
 
 ### Project Structure
-- `/src/app/` - Page routes following Next.js App Router conventions
-- `/src/components/` - Reusable components (Header, SurveyForm, ResultScreen)
-- `/src/data/perfumes.ts` - Perfume database with 95+ entries
-- `/src/types/` - TypeScript interfaces for Perfume and Survey types
-- Dynamic routes: `/parfum/[id]` for individual perfume pages
+- `/src/app/` - routes: home, `/satin-al`, `/kadin-parfum`, `/erkek-parfum`, `/nis-parfum`, `/parfum/[id]`, `/parfumunu-bul`, `/hakkimizda`
+- `/src/components/` - Header, Footer, ScentMenu (home hero), HomeShelf, ProductTile, ProductImage, Price, MiraAsk, ChatBot
+- `/public/perfumes/` - one product photo per product id
+- `PRODUCT.md`, `DESIGN.md`, `.impeccable/` - product context and the design system; read them before changing UI
 
 ### Development Patterns
 From .cursorrules:

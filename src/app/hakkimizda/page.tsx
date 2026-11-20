@@ -1,208 +1,180 @@
 import Link from "next/link";
-import {
-  Sparkles,
-  Heart,
-  Leaf,
-  Crown,
-  Mail,
-  Clock,
-  ArrowRight,
-} from "lucide-react";
+import { getActiveProducts, type Product } from "@/lib/api";
+import { featuredFirst, formatPrice } from "@/lib/catalog";
+import ProductImage from "@/components/ProductImage";
+
+export const revalidate = 60;
 
 export const metadata = {
   title: "Hakkımızda | Blue Perfumery",
   description:
-    "Blue Perfumery hakkında bilgi edinin. Lüks ve kişiselleştirilmiş parfüm deneyimi sunan markamızı tanıyın.",
+    "Blue Perfumery hakkında. Tanınmış kokuların kendi yorumlarıyla kişiselleştirilmiş bir parfüm deneyimi sunan markamızı tanı.",
 };
 
-export default function AboutPage() {
-  const values = [
+const oneSizeOnePrice = (products: Product[]) => {
+  const sizes = new Set(products.map((product) => product.ml));
+  const prices = new Set(products.map((product) => product.price));
+  if (!products.length)
+    return "Bütün şişeler aynı boyda ve aynı fiyatta; seçerken bütçeyi değil kokuyu düşünürsün.";
+  if (sizes.size > 1 || prices.size > 1) return null;
+  return `Bütün şişeler ${products[0].ml} ml ve aynı fiyatta, ${formatPrice(products[0].price)}; seçerken bütçeyi değil kokuyu düşünürsün.`;
+};
+
+const values = (products: Product[]) => {
+  const sizeAndPrice = oneSizeOnePrice(products);
+  return [
     {
-      icon: <Crown className="w-6 h-6" />,
-      title: "Kalite",
+      term: "Koku önce",
       description:
-        "En yüksek kalitede ürünleri sunmak ve sizlere premium bir deneyim yaşatmak.",
+        "Şişeni marka adına göre değil, notalarına ve karakterine göre seçersin.",
     },
     {
-      icon: <Sparkles className="w-6 h-6" />,
-      title: "Kişiselleştirme",
+      term: "Açıklık",
       description:
-        "Her müşterimizin benzersiz olduğuna inanıyor ve buna uygun özel çözümler sunuyoruz.",
+        "Her şişe, adı belli bir kokunun Blue Perfumery yorumudur ve hangisi olduğunu açıkça yazarız.",
     },
+    ...(sizeAndPrice
+      ? [{ term: "Tek boy, tek fiyat", description: sizeAndPrice }]
+      : []),
     {
-      icon: <Heart className="w-6 h-6" />,
-      title: "Zarafet",
-      description: "Her detayda zarafeti ve inceliği ön planda tutuyoruz.",
-    },
-    {
-      icon: <Leaf className="w-6 h-6" />,
-      title: "Sürdürülebilirlik",
+      term: "Kişiye göre",
       description:
-        "Doğaya saygılı ve sürdürülebilir uygulamaları destekliyoruz.",
+        "Beş soruluk test ve Mira rafı sana göre daraltır; Mira yalnızca rafta olanı önerir.",
     },
   ];
+};
+
+const HOURS = [
+  { days: "Pazartesi – Cuma", time: "10:00 – 19:00" },
+  { days: "Cumartesi", time: "10:00 – 18:00" },
+  { days: "Pazar", time: "Kapalı" },
+];
+
+const AboutPage = async () => {
+  const products = await getActiveProducts();
+  const [cover] = featuredFirst(products);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-800 via-slate-900 to-navy pt-24 pb-12">
-      <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Header */}
-        <div className="text-center mb-16">
-          <div className="flex items-center justify-center gap-3 mb-4">
-            <div className="w-12 h-[1px] bg-gold" />
-            <span className="text-gold text-sm font-medium tracking-[0.15em] uppercase">
-              Hakkımızda
-            </span>
-            <div className="w-12 h-[1px] bg-gold" />
+    <div>
+      <section className="relative bg-bordo px-5 pb-20 pt-28 text-ivory sm:px-10 lg:px-16 lg:pb-28 lg:pt-36">
+        {cover && (
+          <div className="absolute inset-y-0 right-0 hidden w-[38%] overflow-hidden bg-bordo-deep lg:block">
+            <ProductImage product={cover} priority sizes="38vw" />
           </div>
-          <h1 className="text-3xl sm:text-4xl lg:text-5xl font-heading font-semibold text-white mb-6">
-            Merhaba, Biz Blue Perfumery
+        )}
+        <div className="relative mx-auto max-w-[90rem] lg:pr-[40%]">
+          <h1 className="max-w-[14ch] text-5xl leading-[1.02] sm:text-7xl lg:text-8xl">
+            Merhaba, biz Blue Perfumery.
           </h1>
-          <p className="text-xl text-gray-300 max-w-3xl mx-auto">
-            Sizlere özel, lüks ve kişiselleştirilmiş parfüm deneyimleri sunmak
+          <div className="mt-10 h-px w-24 bg-gold" />
+          <p className="mt-8 max-w-[40ch] text-xl sm:text-2xl">
+            Sana özel, lüks ve kişiselleştirilmiş bir parfüm deneyimi sunmak
             için buradayız.
           </p>
         </div>
+      </section>
 
-        {/* Mission Section */}
-        <div className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl overflow-hidden mb-12">
-          <div className="md:flex">
-            <div className="md:w-1/2 bg-gradient-to-br from-gold/20 to-amber-600/10 p-10 lg:p-12">
-              <div className="inline-flex items-center gap-2 bg-gold/10 rounded-full px-3 py-1 mb-6">
-                <Sparkles className="w-4 h-4 text-gold" />
-                <span className="text-gold text-sm font-medium">
-                  Misyonumuz
-                </span>
-              </div>
-              <p className="text-white/90 text-lg leading-relaxed mb-4">
+      <div className="px-5 sm:px-10 lg:px-16">
+        <div className="mx-auto max-w-[90rem]">
+          <section
+            className="py-20 lg:grid lg:grid-cols-[minmax(0,1fr)_minmax(0,2fr)] lg:gap-16 lg:py-28"
+            aria-labelledby="misyon"
+          >
+            <h2 id="misyon" className="text-4xl sm:text-5xl">
+              Misyonumuz
+            </h2>
+            <div className="mt-8 max-w-[68ch] space-y-5 text-lg lg:mt-0">
+              <p className="font-display text-2xl leading-snug sm:text-3xl">
                 Blue Perfumery olarak, her bireyin kendine özgü kokusunu
                 keşfetmesine yardımcı olmayı amaçlıyoruz.
               </p>
-              <p className="text-white/70 leading-relaxed">
-                Kişiliğinizi, yaşam tarzınızı ve tercihlerinizi yansıtan, sizin
-                için özel olarak seçilmiş kokularla hayatınıza değer katıyoruz.
-                Dünyanın en prestijli parfüm evlerinden titizlikle seçilmiş özel
-                koleksiyonumuzla, her anınızı unutulmaz kılmanız için
-                yanınızdayız.
+              <p>
+                Kişiliğini, yaşam tarzını ve tercihlerini yansıtan, senin için
+                seçilmiş kokularla hayatına değer katıyoruz. Koleksiyonumuzdaki
+                her parfüm, tanınmış bir kokunun Blue Perfumery yorumudur; hangi
+                kokudan ilham aldığımızı açıkça söyleriz.
               </p>
             </div>
-            <div className="md:w-1/2 p-10 lg:p-12">
-              <h2 className="text-2xl font-heading font-semibold text-white mb-8">
-                Değerlerimiz
-              </h2>
-              <div className="space-y-6">
-                {values.map((value, index) => (
-                  <div key={index} className="flex items-start gap-4">
-                    <div className="w-10 h-10 rounded-full bg-gold/10 flex items-center justify-center text-gold flex-shrink-0">
-                      {value.icon}
-                    </div>
-                    <div>
-                      <h3 className="font-heading font-semibold text-white mb-1">
-                        {value.title}
-                      </h3>
-                      <p className="text-gray-400 text-sm">
-                        {value.description}
-                      </p>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
-        </div>
+          </section>
 
-        {/* Contact Section */}
-        <div className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl overflow-hidden mb-12">
-          <div className="p-10 lg:p-12">
-            <div className="text-center mb-10">
-              <h2 className="text-2xl font-heading font-semibold text-white mb-2">
-                Bize Ulaşın
-              </h2>
-              <p className="text-gray-400">
-                Sorularınız veya özel talepleriniz için bizimle iletişime
-                geçebilirsiniz.
-              </p>
-            </div>
-
-            <div className="grid md:grid-cols-2 gap-8">
-              <div className="space-y-6">
-                <div className="flex items-start gap-4">
-                  <div className="w-10 h-10 rounded-full bg-gold/10 flex items-center justify-center text-gold flex-shrink-0">
-                    <Mail className="w-5 h-5" />
-                  </div>
-                  <div>
-                    <h3 className="font-medium text-white mb-1">E-posta</h3>
-                    <a
-                      href="mailto:blueperfumerie@gmail.com"
-                      className="text-gold hover:underline"
-                    >
-                      blueperfumerie@gmail.com
-                    </a>
-                  </div>
+          <section
+            className="border-t border-gold py-20 lg:grid lg:grid-cols-[minmax(0,1fr)_minmax(0,2fr)] lg:gap-16 lg:py-28"
+            aria-labelledby="degerler"
+          >
+            <h2 id="degerler" className="text-4xl sm:text-5xl">
+              Değerlerimiz
+            </h2>
+            <dl className="mt-8 divide-y divide-gold/60 border-y border-gold/60 lg:mt-0">
+              {values(products).map((value) => (
+                <div
+                  key={value.term}
+                  className="py-6 sm:grid sm:grid-cols-[minmax(0,2fr)_minmax(0,3fr)] sm:items-baseline sm:gap-10"
+                >
+                  <dt className="font-display text-3xl sm:text-4xl">
+                    {value.term}
+                  </dt>
+                  <dd className="mt-2 max-w-[60ch] text-ink-soft sm:mt-0">
+                    {value.description}
+                  </dd>
                 </div>
-
-                <div className="flex items-start gap-4">
-                  <div className="w-10 h-10 rounded-full bg-gold/10 flex items-center justify-center text-gold flex-shrink-0">
-                    <Clock className="w-5 h-5" />
-                  </div>
-                  <div>
-                    <h3 className="font-medium text-white mb-1">
-                      Çalışma Saatleri
-                    </h3>
-                    <p className="text-gray-400 text-sm">
-                      Pazartesi - Cuma: 10:00 - 19:00
-                      <br />
-                      Cumartesi: 10:00 - 18:00
-                      <br />
-                      Pazar: Kapalı
-                    </p>
-                  </div>
-                </div>
-              </div>
-
-              <div className="flex flex-col justify-center">
-                <div className="bg-gradient-to-br from-gold/10 to-amber-600/5 rounded-xl p-6 border border-gold/20">
-                  <h3 className="font-heading font-semibold text-white mb-2">
-                    Parfümünüzü Bulmakta Zorlanıyor musunuz?
-                  </h3>
-                  <p className="text-gray-400 text-sm mb-4">
-                    AI destekli kişilik testimizi deneyin ve size özel parfüm
-                    önerileri alın.
-                  </p>
-                  <Link
-                    href="/parfumunu-bul"
-                    className="inline-flex items-center gap-2 bg-gold text-navy px-5 py-2.5 rounded-full font-medium hover:bg-gold-light transition-all duration-300"
-                  >
-                    Teste Başla
-                    <ArrowRight className="w-4 h-4" />
-                  </Link>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* CTA Section */}
-        <div className="text-center">
-          <p className="text-gray-400 mb-6">
-            Koleksiyonumuzu keşfetmeye hazır mısınız?
-          </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Link
-              href="/satin-al"
-              className="inline-flex items-center justify-center gap-2 px-8 py-3 bg-gold text-navy font-semibold rounded-full hover:bg-gold-light transition-all duration-300"
-            >
-              Koleksiyonu Keşfet
-              <ArrowRight className="w-4 h-4" />
-            </Link>
-            <Link
-              href="/"
-              className="inline-flex items-center justify-center gap-2 px-8 py-3 border border-white/20 text-white font-medium rounded-full hover:bg-white/5 hover:border-white/40 transition-all duration-300"
-            >
-              Ana Sayfaya Dön
-            </Link>
-          </div>
+              ))}
+            </dl>
+          </section>
         </div>
       </div>
+
+      <section
+        className="bg-sand px-5 py-20 sm:px-10 lg:px-16 lg:py-28"
+        aria-labelledby="iletisim"
+      >
+        <div className="mx-auto grid max-w-[90rem] gap-16 lg:grid-cols-2">
+          <div>
+            <h2 id="iletisim" className="text-4xl sm:text-5xl">
+              Bize ulaş
+            </h2>
+            <p className="mt-4 max-w-[48ch] text-ink-soft">
+              Soruların veya özel taleplerin için bize yazabilirsin.
+            </p>
+            <a
+              href="mailto:blueperfumerie@gmail.com"
+              className="link mt-8 inline-block break-all font-display text-2xl sm:text-3xl"
+            >
+              blueperfumerie@gmail.com
+            </a>
+            <h3 className="mt-10 text-2xl">Çalışma saatleri</h3>
+            <dl className="mt-4 max-w-sm">
+              {HOURS.map((row) => (
+                <div
+                  key={row.days}
+                  className="flex justify-between gap-6 border-b border-ink/15 py-2"
+                >
+                  <dt>{row.days}</dt>
+                  <dd className="tabular-nums text-ink-soft">{row.time}</dd>
+                </div>
+              ))}
+            </dl>
+          </div>
+
+          <div className="lg:border-l lg:border-gold lg:pl-16">
+            <h2 className="text-3xl sm:text-4xl">
+              Parfümünü bulmakta zorlanıyor musun?
+            </h2>
+            <p className="mt-4 max-w-[48ch] text-ink-soft">
+              Beş soruluk testi dene, sana uyan şişeleri gör.
+            </p>
+            <div className="mt-8 flex flex-col gap-3 sm:flex-row">
+              <Link href="/parfumunu-bul" className="btn-bordo">
+                Teste başla
+              </Link>
+              <Link href="/satin-al" className="btn-line">
+                Koleksiyonu incele
+              </Link>
+            </div>
+          </div>
+        </div>
+      </section>
     </div>
   );
-}
+};
+
+export default AboutPage;

@@ -2,62 +2,50 @@ import type { Config } from "tailwindcss";
 
 export default {
   content: [
-    "./src/pages/**/*.{js,ts,jsx,tsx,mdx}",
     "./src/components/**/*.{js,ts,jsx,tsx,mdx}",
     "./src/app/**/*.{js,ts,jsx,tsx,mdx}",
   ],
   theme: {
     extend: {
       colors: {
-        background: "var(--background)",
-        foreground: "var(--foreground)",
-        navy: {
-          DEFAULT: "#0f172a",
-          light: "#1e3a5f",
-          dark: "#020617",
+        bordo: {
+          DEFAULT: "#561726",
+          deep: "#3b0f1a",
+          mute: "#b07f88",
         },
-        gold: {
-          DEFAULT: "#c9a227",
-          light: "#d4af37",
-          dark: "#a68a1f",
+        ivory: "#f6efe6",
+        sand: "#eadfcf",
+        gold: "#c9a45c",
+        ink: {
+          DEFAULT: "#2a1418",
+          soft: "#6b4a50",
         },
       },
       fontFamily: {
-        heading: ["var(--font-raleway)", "system-ui", "sans-serif"],
-        body: ["var(--font-montserrat)", "system-ui", "sans-serif"],
-        sans: ["var(--font-montserrat)", "system-ui", "sans-serif"],
+        display: ["var(--font-bodoni)", "Didot", "Bodoni MT", "serif"],
+        sans: ["var(--font-jost)", "Futura", "system-ui", "sans-serif"],
       },
-      transitionDuration: {
-        "1500": "1500ms",
-      },
-      animation: {
-        "fade-in": "fade-in 0.6s ease-out forwards",
-        "fade-in-up": "fade-in-up 0.8s ease-out forwards",
-        "slide-in-right": "slide-in-right 0.6s ease-out forwards",
-        float: "float 3s ease-in-out infinite",
-        shimmer: "shimmer 2s infinite",
+      transitionTimingFunction: {
+        pour: "cubic-bezier(0.16, 1, 0.3, 1)",
       },
       keyframes: {
-        "fade-in": {
-          "0%": { opacity: "0", transform: "translateY(20px)" },
-          "100%": { opacity: "1", transform: "translateY(0)" },
+        pour: {
+          from: { clipPath: "inset(100% 0 0 0)" },
+          to: { clipPath: "inset(0 0 0 0)" },
         },
-        "fade-in-up": {
-          "0%": { opacity: "0", transform: "translateY(40px)" },
-          "100%": { opacity: "1", transform: "translateY(0)" },
+        fade: {
+          from: { opacity: "0" },
+          to: { opacity: "1" },
         },
-        "slide-in-right": {
-          "0%": { opacity: "0", transform: "translateX(20px)" },
-          "100%": { opacity: "1", transform: "translateX(0)" },
+        rise: {
+          from: { opacity: "0", transform: "translateY(12px)" },
+          to: { opacity: "1", transform: "translateY(0)" },
         },
-        float: {
-          "0%, 100%": { transform: "translateY(0)" },
-          "50%": { transform: "translateY(-10px)" },
-        },
-        shimmer: {
-          "0%": { backgroundPosition: "-200% 0" },
-          "100%": { backgroundPosition: "200% 0" },
-        },
+      },
+      animation: {
+        pour: "pour 700ms cubic-bezier(0.16, 1, 0.3, 1) both",
+        fade: "fade 300ms cubic-bezier(0.16, 1, 0.3, 1) both",
+        rise: "rise 500ms cubic-bezier(0.16, 1, 0.3, 1) both",
       },
     },
   },

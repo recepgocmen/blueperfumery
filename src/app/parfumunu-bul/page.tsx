@@ -1,27 +1,25 @@
+import type { Metadata } from "next";
 import { getProducts, type Product } from "@/lib/api";
-import PerfumeFinderClient from "./PerfumeFinderClient";
+import QuizClient from "./QuizClient";
 
-export const metadata = {
+export const revalidate = 60;
+
+export const metadata: Metadata = {
   title: "Parfümünü Bul | Blue Perfumery",
   description:
-    "Kişiliğine ve yaşam tarzına uygun en iyi parfümü bulmak için birkaç basit soruyu yanıtla.",
+    "Beş kısa soruyu cevapla, koku ailesine, anına ve sevdiğin notalara göre sana en yakın Blue Perfumery şişesini gör.",
 };
 
-export default async function PerfumeFinder() {
-  // Fetch all active products from API (Server Component)
+const ParfumunuBulPage = async () => {
   let products: Product[] = [];
-
   try {
-    const response = await getProducts({
-      status: "active",
-      limit: 100,
-    });
+    const response = await getProducts({ status: "active", limit: 100 });
     products = response.data;
   } catch (error) {
-    console.error("Error fetching products for survey:", error);
-    products = []; // Fallback to empty array
+    console.error("Error fetching products for quiz:", error);
   }
 
-  // Pass products to Client Component
-  return <PerfumeFinderClient products={products} />;
-}
+  return <QuizClient products={products} />;
+};
+
+export default ParfumunuBulPage;
