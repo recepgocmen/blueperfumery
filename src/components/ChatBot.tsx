@@ -5,7 +5,7 @@ import type { CSSProperties, FormEvent, KeyboardEvent } from "react";
 import Link from "next/link";
 import { ArrowUp, MessageCircle, X } from "lucide-react";
 import { API_BASE_URL } from "@/lib/api";
-import { SHOP_URL } from "@/lib/catalog";
+import { buyUrl } from "@/lib/catalog";
 import Price from "./Price";
 import ProductImage from "./ProductImage";
 
@@ -17,7 +17,6 @@ type ChatProduct = {
   ml: number;
   image?: string;
   notes: string[];
-  shopierLink?: string;
 };
 
 type Message = {
@@ -122,7 +121,7 @@ const ProductRow = ({ product }: { product: ChatProduct }) => (
           İncele
         </Link>
         <a
-          href={product.shopierLink || SHOP_URL}
+          href={buyUrl(product)}
           target="_blank"
           rel="noopener noreferrer"
           className="link inline-flex min-h-11 items-center"

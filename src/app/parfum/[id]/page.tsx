@@ -83,7 +83,7 @@ const ProductPage = async ({ params }: Props) => {
       availability: soldOut
         ? "https://schema.org/OutOfStock"
         : "https://schema.org/InStock",
-      url: buyUrl(product),
+      url: `${SITE_URL}/parfum/${product.id}`,
     },
   };
 
@@ -141,7 +141,7 @@ const ProductPage = async ({ params }: Props) => {
                   rel="noopener noreferrer"
                   className="btn-bordo"
                 >
-                  Shopier&apos;da satın al
+                  WhatsApp&apos;tan sipariş ver
                 </a>
               )}
               <AskMiraButton

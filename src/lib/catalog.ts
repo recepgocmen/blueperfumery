@@ -1,6 +1,6 @@
 import type { Product } from "./api";
 
-export const SHOP_URL = "https://www.shopier.com/blueperfumery";
+const WHATSAPP_NUMBER = "905432787386";
 export const SITE_URL = "https://blueperfumery.vercel.app";
 export const DEFAULT_IMAGE = "/perfumes/default.webp";
 const LEGACY_DEFAULT_IMAGE = "/card-photos/blue-default.webp";
@@ -50,7 +50,11 @@ export const sharedCampaign = (products: Product[]) => {
     : null;
 };
 
-export const buyUrl = (product: Product) => product.shopierLink || SHOP_URL;
+// Orders go through WhatsApp with the bottle already written into the message.
+export const buyUrl = (product: Pick<Product, "name" | "ml" | "price">) => {
+  const message = `Merhaba, ${product.name} (${product.ml} ml, ${formatPrice(product.price)}) sipariş vermek istiyorum.`;
+  return `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(message)}`;
+};
 
 // A product without its own picture in the database uses the photo shipped
 // with the site under /perfumes/<id>.webp; ProductImage falls back to the
@@ -97,19 +101,31 @@ const featuredRank = (product: Product) => {
 export const featuredFirst = (products: Product[]) =>
   [...products].sort((a, b) => featuredRank(a) - featuredRank(b));
 
-// One distinct bottle per scent family, for the home page scent menu.
-export const pickByFamily = (products: Product[]) => {
-  const used = new Set<string>();
-  return FAMILIES.flatMap((family) => {
-    const product = featuredFirst(products).find(
-      (candidate) =>
-        candidate.characteristics.includes(family) && !used.has(candidate.id),
-    );
-    if (!product) return [];
-    used.add(product.id);
-    return [{ family, product }];
+// The home page hero: the order and tab label are hand-picked per audience.
+const HERO_PICKS = {
+  female: [
+    ["idole-lancome", "ferah"],
+    ["armani-my-way", "çiçeksi"],
+    ["mp-vanilla-powder", "vanilyalı"],
+    ["burberry-her-seluz", "meyveli"],
+    ["goddess-burberry", "gurme"],
+    ["jpg-scandal-woman", "tatlı"],
+  ],
+  male: [
+    ["armani-swy-intensely", "sıcak"],
+    ["dior-sauvage-elixir", "baharatlı"],
+    ["fleur-narcotique-seluz", "ferah"],
+    ["exnihilo-blue-talisman", "meyveli"],
+    ["boss-bottled", "odunsu"],
+    ["god-of-fire-mg", "enerjik"],
+  ],
+} as const;
+
+export const heroPicks = (products: Product[], gender: keyof typeof HERO_PICKS) =>
+  HERO_PICKS[gender].flatMap(([id, family]) => {
+    const product = products.find((candidate) => candidate.id === id);
+    return product ? [{ family, product }] : [];
   });
-};
 
 export const similarTo = (product: Product, products: Product[], count = 3) =>
   products

@@ -2,10 +2,8 @@ import Link from "next/link";
 import { getProducts, type Product } from "@/lib/api";
 import {
   featuredFirst,
-  forMen,
-  forWomen,
   formatPrice,
-  pickByFamily,
+  heroPicks,
   sharedCampaign,
 } from "@/lib/catalog";
 import ScentMenu from "@/components/ScentMenu";
@@ -48,8 +46,8 @@ const Home = async () => {
     <>
       <ScentMenu
         picks={{
-          female: pickByFamily(products.filter(forWomen)).slice(0, 6),
-          male: pickByFamily(products.filter(forMen)).slice(0, 6),
+          female: heroPicks(products, "female"),
+          male: heroPicks(products, "male"),
         }}
       />
 
@@ -62,7 +60,7 @@ const Home = async () => {
         </h2>
         {campaign && (
           <p className="mt-4 text-lg text-bordo">
-            Kampanya: bütün şişeler {formatPrice(campaign.originalPrice)}{" "}
+            Kampanya: tüm parfümler {formatPrice(campaign.originalPrice)}{" "}
             yerine {formatPrice(campaign.price)}.
           </p>
         )}
@@ -79,7 +77,7 @@ const Home = async () => {
         <div className="mx-auto max-w-[90rem] px-5 pb-20 pt-28 sm:px-10 lg:px-16 lg:pb-28 lg:pt-40">
           <p className="max-w-[24ch] font-display text-[clamp(2rem,5vw,4rem)] leading-[1.12] tracking-[-0.015em]">
             Sevdiğin kokuların <em>Blue Perfumery</em> yorumu.
-            {offerLine(products)} Ödemeyi Shopier üzerinden yaparsın.
+            {offerLine(products)} Siparişini WhatsApp&apos;tan verirsin.
           </p>
           <Link
             href="/hakkimizda"
