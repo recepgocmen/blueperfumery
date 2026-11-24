@@ -8,7 +8,7 @@ export const revalidate = 60;
 export const metadata = {
   title: "Hakkımızda | Blue Parfüm",
   description:
-    "Blue Parfüm hakkında. Tanınmış kokuların kendi yorumlarıyla kişiselleştirilmiş bir parfüm deneyimi sunan markamızı tanı.",
+    "Blue Parfüm hakkında: tanınmış kokuların kendi yorumlarını hazırlıyoruz. Seçimi notalara göre yaparsın, siparişini WhatsApp'tan verirsin.",
 };
 
 const oneSizeOnePrice = (products: Product[]) => {
@@ -68,8 +68,8 @@ const AboutPage = async () => {
           </h1>
           <div className="mt-10 h-px w-24 origin-left animate-rule bg-gold [animation-delay:400ms]" />
           <p className="mt-8 max-w-[40ch] text-xl sm:text-2xl">
-            Sana özel, lüks ve kişiselleştirilmiş bir parfüm deneyimi sunmak
-            için buradayız.
+            Tanınmış kokuların kendi yorumlarını hazırlıyoruz. Notalarına bakıp
+            seçersin, siparişini WhatsApp&apos;tan verirsin.
           </p>
         </div>
       </section>
@@ -89,9 +89,7 @@ const AboutPage = async () => {
                 keşfetmesine yardımcı olmayı amaçlıyoruz.
               </p>
               <p>
-                Kişiliğini, yaşam tarzını ve tercihlerini yansıtan, senin için
-                seçilmiş kokularla hayatına değer katıyoruz. Koleksiyonumuzdaki
-                her parfüm, tanınmış bir kokunun Blue Parfüm yorumudur; hangi
+                Koleksiyonumuzdaki her parfüm, tanınmış bir kokunun Blue Parfüm yorumudur; hangi
                 kokudan ilham aldığımızı açıkça söyleriz.
               </p>
             </div>
@@ -135,12 +133,22 @@ const AboutPage = async () => {
             <p className="mt-4 max-w-[48ch] text-ink-soft">
               Soruların veya özel taleplerin için bize yazabilirsin.
             </p>
-            <a
-              href="mailto:blueperfumerie@gmail.com"
-              className="link mt-8 inline-block break-all font-display text-2xl sm:text-3xl"
-            >
-              blueperfumerie@gmail.com
-            </a>
+            <div className="mt-8 flex flex-col items-start gap-4">
+              <a
+                href="https://wa.me/905432787386"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="link inline-block font-display text-2xl tabular-nums sm:text-3xl"
+              >
+                WhatsApp sipariş · 0 543 278 73 86
+              </a>
+              <a
+                href="mailto:blueperfumerie@gmail.com"
+                className="link inline-block break-all font-display text-2xl sm:text-3xl"
+              >
+                blueperfumerie@gmail.com
+              </a>
+            </div>
             <h3 className="mt-10 text-2xl">Çalışma saatleri</h3>
             <dl className="mt-4 max-w-sm">
               {HOURS.map((row) => (

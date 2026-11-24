@@ -55,6 +55,14 @@ const Footer = () => (
 
     <div className="mx-auto flex max-w-[90rem] flex-col gap-3 border-t border-ivory/15 px-5 py-6 text-base text-ivory/80 sm:flex-row sm:items-center sm:justify-between sm:px-10 lg:px-16">
       <a
+        href="https://wa.me/905432787386"
+        target="_blank"
+        rel="noopener noreferrer"
+        className="link inline-flex min-h-11 items-center self-start tabular-nums text-ivory"
+      >
+        WhatsApp: 0 543 278 73 86
+      </a>
+      <a
         href="mailto:blueperfumerie@gmail.com"
         className="link inline-flex min-h-11 items-center self-start text-ivory"
       >
@@ -69,7 +77,7 @@ const Footer = () => (
         Facebook
       </a>
       <a
-        href="https://www.instagram.com/blueperfumerytr/"
+        href="https://www.instagram.com/blueperfumery/"
         target="_blank"
         rel="noopener noreferrer"
         className="link inline-flex min-h-11 items-center self-start text-ivory"
