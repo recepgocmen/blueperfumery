@@ -143,10 +143,10 @@ const AboutPage = async () => {
                 WhatsApp sipariş · 0 543 278 73 86
               </a>
               <a
-                href="mailto:blueperfumerie@gmail.com"
+                href="mailto:info@blueparfumeri.com"
                 className="link inline-block break-all font-display text-2xl sm:text-3xl"
               >
-                blueperfumerie@gmail.com
+                info@blueparfumeri.com
               </a>
             </div>
             <h3 className="mt-10 text-2xl">Çalışma saatleri</h3>

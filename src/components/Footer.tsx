@@ -63,10 +63,10 @@ const Footer = () => (
         WhatsApp: 0 543 278 73 86
       </a>
       <a
-        href="mailto:blueperfumerie@gmail.com"
+        href="mailto:info@blueparfumeri.com"
         className="link inline-flex min-h-11 items-center self-start text-ivory"
       >
-        blueperfumerie@gmail.com
+        info@blueparfumeri.com
       </a>
       <a
         href="https://www.facebook.com/blueparfumeri"

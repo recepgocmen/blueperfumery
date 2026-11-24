@@ -44,7 +44,7 @@ Her ürün, adı açıkça belirtilen bir orijinal kokunun Blue Parfümeri yorum
 - Canlı katalog: ürün sayısı veritabanından gelir ve değişir (23 Kasım 2026 itibarıyla 20 aktif ürün), hepsi 50 ml; kampanyada ₺1.250 yerine ₺950 (`originalPrice` / `price`).
 - Ürün fotoğrafları: `public/perfumes/<id>.webp`, her ürün için bir tane; ortak yedek `public/perfumes/default.webp`.
 - Referans şişe fotoğrafı: `public/card-photos/blue-default.webp` (yalnızca görsel üretiminde referans; sitede gösterilmez).
-- İletişim: blueperfumerie@gmail.com. Çalışma saatleri Hakkımızda sayfasında yazılı.
+- İletişim: info@blueparfumeri.com. Çalışma saatleri Hakkımızda sayfasında yazılı.
 - Yok: müşteri yorumu, satış rakamı, basın, sertifika. Bunlar üretilmez.
 
 ## Product Principles
