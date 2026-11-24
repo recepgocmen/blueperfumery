@@ -23,6 +23,7 @@ const ProductImage = ({ product, sizes, priority, className }: Props) => {
       alt={`${product.name} parfüm şişesi`}
       fill
       sizes={sizes}
+      quality={90}
       priority={priority}
       unoptimized={!src.startsWith("/")}
       onError={() => setFailed(wanted)}

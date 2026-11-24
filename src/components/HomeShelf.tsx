@@ -41,7 +41,7 @@ const HomeShelf = ({ products }: { products: Product[] }) => {
 
   return (
     <>
-      <div className="mt-6 flex flex-wrap gap-x-7 gap-y-1">
+      <div className="mt-6 flex flex-wrap gap-x-4 gap-y-1 sm:gap-x-7">
         {FILTERS.map(({ key, label, match }) => (
           <button
             key={key}

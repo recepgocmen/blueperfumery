@@ -12,11 +12,11 @@ Türkiye'de, tanınmış tasarım ve niş parfümlerin kokusunu seven ama orijin
 
 ## Product Purpose
 
-Blue Perfumery, bilinen parfümlerin kendi yorumlarını 50 ml şişelerde satar. Site, ziyaretçinin kokuyu koklayamadan doğru şişeyi seçmesini sağlar: koleksiyona göz atma, "Parfümünü Bul" testi ve Mira adlı yapay zeka danışmanı. Başarı: ziyaretçinin bir şişe için WhatsApp'tan sipariş mesajı başlatması.
+Blue Parfüm, bilinen parfümlerin kendi yorumlarını 50 ml şişelerde satar. Site, ziyaretçinin kokuyu koklayamadan doğru şişeyi seçmesini sağlar: koleksiyona göz atma, "Parfümünü Bul" testi ve Mira adlı yapay zeka danışmanı. Başarı: ziyaretçinin bir şişe için WhatsApp'tan sipariş mesajı başlatması.
 
 ## Positioning
 
-Her ürün, adı açıkça belirtilen bir orijinal kokunun Blue Perfumery yorumudur; tek boy (50 ml), tek fiyat seviyesi. Seçim markaya göre değil kokuya göre yapılır: notalar, karakter ve kullanım anı.
+Her ürün, adı açıkça belirtilen bir orijinal kokunun Blue Parfüm yorumudur; tek boy (50 ml), tek fiyat seviyesi. Seçim markaya göre değil kokuya göre yapılır: notalar, karakter ve kullanım anı.
 
 ## Operating Context
 
@@ -33,7 +33,7 @@ Her ürün, adı açıkça belirtilen bir orijinal kokunun Blue Perfumery yorumu
 
 ## Brand Commitments
 
-- Ad: Blue Perfumery. Şişe: kare, parlak sarı altın kapak; kare parlament mavisi etiket. Etiket dıştan içe: mavi üstüne mavi çatlak/damask dokulu kenar, tek ince yaldız çerçeve çizgisi, düz mavi zemin üzerinde yaldızlı sarı (varak baskı) "BL / UE" yazısı ve altında ortalı "EAU DE PARFUM", "MADE WITH L♥VE" (O harfi küçük dolu bir kalp), "50 ML" satırları. Etiketi sahibi bordodan maviye çevirdi; marka adı "Blue" olduğu için site de buna göre kuruluyor.
+- Ad: Blue Parfüm (Kasım 2026'da "Blue Perfumery" adından değişti; alan adı, API adresi ve sosyal medya kullanıcı adları eski adı taşır). Şişe: kare, parlak sarı altın kapak; kare parlament mavisi etiket. Etiket dıştan içe: mavi üstüne mavi çatlak/damask dokulu kenar, tek ince yaldız çerçeve çizgisi, düz mavi zemin üzerinde yaldızlı sarı (varak baskı) "BL / UE" yazısı ve altında ortalı "EAU DE PARFUM", "MADE WITH L♥VE" (O harfi küçük dolu bir kalp), "50 ML" satırları. Etiketi sahibi bordodan maviye çevirdi; marka adı "Blue" olduğu için site de buna göre kuruluyor.
 - Danışmanın adı Mira.
 - Sahibinin seçtiği görsel yön: "parlament mavisi + yaldız". Lüks butik; derin kraliyet mavisi alanlar, fildişi okuma zemini, altın yalnızca metal (varak) olarak, serif başlıklar, büyük ürün fotoğrafları. Renk tonları sahibinin etiket fotoğraflarından örneklendi (Kasım 2026) ve `tailwind.config.ts` içinden tek yerden ayarlanır.
 - Ürün fotoğrafları (`public/perfumes/`) yeni mavi etiketle yenilendi (Kasım 2026); bordo etiketli önceki set `.impeccable/photos-bordo-label/` içinde yedekli. Fotoğraf adresleri `src/lib/catalog.ts` içindeki `PHOTO_VERSION` ile sürümlenir; fotoğraflar yeniden değişirse bu sayı artırılır.

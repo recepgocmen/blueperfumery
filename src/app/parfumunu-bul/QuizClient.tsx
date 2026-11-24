@@ -429,7 +429,7 @@ const QuizClient = ({ products }: { products: Product[] }) => {
                   type="button"
                   disabled={continueDisabled}
                   onClick={() => goTo(step + 1)}
-                  className="btn-brand disabled:cursor-not-allowed disabled:opacity-40"
+                  className="btn-brand disabled:cursor-not-allowed disabled:bg-transparent disabled:text-ink-soft disabled:outline-dashed disabled:outline-1 disabled:-outline-offset-1 disabled:outline-ink-soft/60"
                 >
                   {continueLabel}
                 </button>

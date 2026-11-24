@@ -162,6 +162,7 @@ const ScentMenu = ({ picks }: Props) => {
                     product={pick}
                     priority={index === 0}
                     sizes="(min-width: 1024px) 42vw, 100vw"
+                    className="object-bottom lg:object-center"
                   />
                 </div>
               ))}
@@ -177,8 +178,11 @@ const ScentMenu = ({ picks }: Props) => {
               className="min-w-0 flex-1"
             >
               <span key={product.id} className={`block ${changed ? "animate-rise" : ""}`}>
-                <span className="block truncate font-display text-lg uppercase tracking-[0.06em] text-gold">
+                <span lang="en" className="block truncate font-display text-lg uppercase tracking-[0.06em] text-gold">
                   {product.name}
+                </span>
+                <span className="line-clamp-2 text-sm text-ivory">
+                  {dotted(product.notes.slice(0, 3).map(capitalize))}
                 </span>
                 <Price product={product} className="text-sm text-ivory/80" />
               </span>
@@ -205,7 +209,7 @@ const ScentMenu = ({ picks }: Props) => {
             style={{ "--keyline-delay": changed ? "0ms" : "300ms" } as CSSProperties}
           />
           <div key={product.id} className="[&>*]:animate-rise">
-            <p style={{ animationDelay: lineDelay(0) }} className="font-display text-[1.625rem] font-medium uppercase leading-tight tracking-[0.06em] text-gold">
+            <p lang="en" style={{ animationDelay: lineDelay(0) }} className="font-display text-[1.625rem] font-medium uppercase leading-tight tracking-[0.06em] text-gold">
               {product.name}
             </p>
             <p className="mt-3 text-ivory" style={{ animationDelay: lineDelay(1) }}>

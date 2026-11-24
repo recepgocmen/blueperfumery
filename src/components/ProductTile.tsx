@@ -19,7 +19,7 @@ const ProductTile = ({ product, priority }: Props) => {
   const note = stockNote(product.stock);
 
   return (
-    <article data-reveal="tile" className="group flex flex-col">
+    <article data-reveal="tile" className="group flex h-full flex-col">
       <Link href={`/parfum/${product.id}`} className="block">
         <div className="relative aspect-[4/5] overflow-hidden bg-sand">
           <ProductImage
@@ -52,7 +52,7 @@ const ProductTile = ({ product, priority }: Props) => {
       <p className="text-base text-ink-soft">
         {audienceLabel(product)} · {product.ml} ml
       </p>
-      <div className="mt-2 flex items-baseline justify-between gap-3">
+      <div className="mt-auto flex items-baseline justify-between gap-3 pt-2">
         <Price product={product} />
         <a
           href={buyUrl(product)}

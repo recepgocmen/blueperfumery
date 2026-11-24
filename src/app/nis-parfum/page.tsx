@@ -5,7 +5,7 @@ import CollectionPage from "@/components/CollectionPage";
 export const metadata = {
   title: "Niş Parfümler | Blue Parfüm",
   description:
-    "Blue Parfüm'ün niş parfüm koleksiyonu. Benzersiz ve ayırt edici kokularla fark yarat.",
+    "Blue Parfüm niş parfümleri: tanınmış niş kokuların yorumları.",
 };
 
 const NisParfum = async () => {
@@ -14,7 +14,7 @@ const NisParfum = async () => {
   return (
     <CollectionPage
       title="Niş parfümler"
-      intro="Benzersiz ve ayırt edici kokularla fark yarat."
+      intro="Niş parfümlerin Blue Parfüm yorumları. Notalarına bakıp seç."
       products={products}
     />
   );

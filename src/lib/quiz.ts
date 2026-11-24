@@ -88,8 +88,8 @@ export const TRAILS: Trait<Trail>[] = [
   },
   {
     value: "lasting",
-    label: "Fark edilir, kalıcı",
-    reason: "fark edilir, kalıcı bir iz bırakıyor",
+    label: "Fark edilir, yoğun",
+    reason: "yoğun, fark edilir bir yapısı var",
     traits: ["kalıcı", "yoğun", "güçlü", "bağımlılık yapıcı", "lüks", "sıcak"],
   },
 ];

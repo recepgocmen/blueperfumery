@@ -175,13 +175,13 @@ const ProductPage = async ({ params }: Props) => {
                             animationDelay: `calc(200ms + var(--stagger) * ${index})`,
                           }}
                         >
-                          {index > 0 && (
+                          {capitalize(note)}
+                          {index < product.notes.length - 1 && (
                             <span
                               aria-hidden="true"
-                              className="mr-3 inline-block h-px w-5 bg-gold-ink align-middle sm:mr-4 sm:w-8"
+                              className="ml-3 inline-block h-px w-5 bg-gold-ink align-middle sm:ml-4 sm:w-8"
                             />
                           )}
-                          {capitalize(note)}
                         </span>
                       </li>
                     ))}

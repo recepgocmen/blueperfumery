@@ -320,7 +320,7 @@ const ChatBot = () => {
         onClick={() => (open ? close() : setOpen(true))}
         aria-expanded={open}
         aria-controls="mira-panel"
-        className={`fixed bottom-[calc(1rem+env(safe-area-inset-bottom))] right-4 z-40 inline-flex h-14 items-center gap-2.5 border border-gold bg-brand px-5 text-ivory transition-colors duration-200 hover:bg-brand-deep sm:bottom-[calc(1.5rem+env(safe-area-inset-bottom))] sm:right-6 ${
+        className={`fixed bottom-[calc(1rem+env(safe-area-inset-bottom))] right-4 z-40 inline-flex h-12 items-center gap-2 border border-gold bg-brand px-4 text-ivory sm:h-14 sm:gap-2.5 sm:px-5 transition-colors duration-200 hover:bg-brand-deep sm:bottom-[calc(1.5rem+env(safe-area-inset-bottom))] sm:right-6 ${
           open ? "invisible" : ""
         }`}
       >
@@ -329,7 +329,7 @@ const ChatBot = () => {
           strokeWidth={1.5}
           className="size-5 text-gold"
         />
-        <span className="font-display text-xl italic">Mira</span>
+        <span className="font-display text-lg italic sm:text-xl">Mira</span>
       </button>
 
       {open && (

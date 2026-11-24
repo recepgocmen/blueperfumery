@@ -4,7 +4,7 @@ const WHATSAPP_NUMBER = "905432787386";
 export const SITE_URL = "https://blueperfumery.vercel.app";
 // Bump when the photographs in public/perfumes are replaced: the version is part of
 // every photo URL, so browsers and the image optimizer cannot serve an old variant.
-const PHOTO_VERSION = "5";
+const PHOTO_VERSION = "7";
 const photo = (name: string) => `/perfumes/${name}.webp?v=${PHOTO_VERSION}`;
 const DEFAULT_PATH = "/perfumes/default.webp";
 export const DEFAULT_IMAGE = photo("default");
@@ -27,7 +27,12 @@ export const FAMILIES = [
   "ferah",
   "baharatlı",
   "tatlı",
+  "gurme",
+  "sıcak",
+  "oryantal",
 ] as const;
+
+type Family = (typeof FAMILIES)[number];
 
 // Lists like notes keep each separator on the line of the word before it,
 // so a wrapped line never starts with "·".
@@ -110,7 +115,8 @@ export const featuredFirst = (products: Product[]) =>
   [...products].sort((a, b) => featuredRank(a) - featuredRank(b));
 
 // The home page hero: the order and tab label are hand-picked per audience.
-const HERO_PICKS = {
+// Labels are FAMILIES, so each one is also a working /satin-al?koku= filter.
+const HERO_PICKS: Record<"female" | "male", [string, Family][]> = {
   female: [
     ["idole-lancome", "ferah"],
     ["armani-my-way", "çiçeksi"],
@@ -125,9 +131,9 @@ const HERO_PICKS = {
     ["fleur-narcotique-seluz", "ferah"],
     ["exnihilo-blue-talisman", "meyveli"],
     ["boss-bottled", "odunsu"],
-    ["god-of-fire-mg", "enerjik"],
+    ["god-of-fire-mg", "oryantal"],
   ],
-} as const;
+};
 
 export const heroPicks = (products: Product[], gender: keyof typeof HERO_PICKS) =>
   HERO_PICKS[gender].flatMap(([id, family]) => {

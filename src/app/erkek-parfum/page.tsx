@@ -5,7 +5,7 @@ import CollectionPage from "@/components/CollectionPage";
 export const metadata = {
   title: "Erkek Parfümleri | Blue Parfüm",
   description:
-    "Blue Parfüm'ün erkek parfüm koleksiyonu. Maskülen ve sofistike kokularla karakterini tamamla.",
+    "Blue Parfüm erkek parfümleri: erkeklere yönelik ve unisex şişeler; her biri bilinen bir kokunun yorumu.",
 };
 
 const ErkekParfum = async () => {
@@ -14,7 +14,7 @@ const ErkekParfum = async () => {
   return (
     <CollectionPage
       title="Erkek parfümleri"
-      intro="Maskülen ve sofistike kokularla karakterini tamamla."
+      intro="Erkeklere yönelik ve unisex şişeler. Her biri bilinen bir kokunun Blue Parfüm yorumu; notalarına bakıp seç."
       products={products}
     />
   );

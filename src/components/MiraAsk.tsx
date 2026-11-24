@@ -6,7 +6,7 @@ import { askMira } from "@/lib/catalog";
 
 const EXAMPLES = [
   "Yaz için ferah bir şey önerir misin?",
-  "Akşam yemeği için kalıcı bir koku arıyorum",
+  "Gece için yoğun bir koku arıyorum",
   "Vanilyalı ama çok tatlı olmayan hangisi?",
 ];
 
@@ -43,8 +43,8 @@ const MiraAsk = () => {
             type="text"
             value={question}
             onChange={(event) => setQuestion(event.target.value)}
-            placeholder="Ofise uygun, ağır olmayan bir koku arıyorum"
-            className="min-h-14 flex-1 rounded-none border-0 border-b border-ink/40 bg-transparent px-0 text-lg text-ink transition-colors duration-300 placeholder:text-ink-soft focus:border-brand sm:text-xl"
+            placeholder="Ofis için hafif bir koku"
+            className="min-h-14 flex-1 rounded-none border-0 border-b border-ink/60 bg-transparent px-0 text-lg text-ink transition-colors duration-300 placeholder:text-ink-soft focus:border-brand sm:text-xl"
           />
           <button type="submit" className="btn-brand min-h-14 shrink-0">
             Mira&apos;ya sor
