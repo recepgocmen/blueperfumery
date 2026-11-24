@@ -1,5 +1,5 @@
 /**
- * API Client for Blue Perfumery Backend
+ * API Client for Blue Parfümeri Backend
  * Server-side safe API calls using Next.js fetch with caching
  */
 

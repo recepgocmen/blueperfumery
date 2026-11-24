@@ -47,13 +47,13 @@ export const generateMetadata = async ({
 }: Props): Promise<Metadata> => {
   const { id } = await params;
   const product = await findActiveProduct(id);
-  if (!product) return { title: "Ürün bulunamadı | Blue Parfüm" };
+  if (!product) return { title: "Ürün bulunamadı | Blue Parfümeri" };
 
   return {
-    title: `${product.name} | Blue Parfüm`,
+    title: `${product.name} | Blue Parfümeri`,
     description: product.description,
     openGraph: {
-      title: `${product.name} | Blue Parfüm`,
+      title: `${product.name} | Blue Parfümeri`,
       description: product.description,
       url: `${SITE_URL}/parfum/${product.id}`,
       images: [{ url: absoluteImage(product), alt: product.name }],
@@ -76,7 +76,7 @@ const ProductPage = async ({ params }: Props) => {
     name: product.name,
     description: product.description,
     image: absoluteImage(product),
-    brand: { "@type": "Brand", name: "Blue Parfüm" },
+    brand: { "@type": "Brand", name: "Blue Parfümeri" },
     offers: {
       "@type": "Offer",
       price: product.price,

@@ -1,7 +1,7 @@
 import type { Product } from "./api";
 
 const WHATSAPP_NUMBER = "905432787386";
-export const SITE_URL = "https://blueperfumery.vercel.app";
+export const SITE_URL = "https://blueparfumeri.com";
 // Bump when the photographs in public/perfumes are replaced: the version is part of
 // every photo URL, so browsers and the image optimizer cannot serve an old variant.
 const PHOTO_VERSION = "7";

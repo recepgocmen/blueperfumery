@@ -20,17 +20,17 @@ const jost = Jost({
   subsets: ["latin", "latin-ext"],
 });
 
-const title = "Blue Parfüm | Sevdiğin kokuların 50 ml yorumları";
+const title = "Blue Parfümeri | Sevdiğin kokuların 50 ml yorumları";
 const description =
-  "Bilinen parfümlerin Blue Parfüm yorumları, 50 ml şişelerde. Kokuya göre seç, beş soruluk testle sana uyanı bul ya da danışmanımız Mira'ya sor.";
+  "Bilinen parfümlerin Blue Parfümeri yorumları, 50 ml şişelerde. Kokuya göre seç, beş soruluk testle sana uyanı bul ya da danışmanımız Mira'ya sor.";
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   title,
   description,
   keywords:
-    "parfüm, blue parfüm, parfüm yorumu, 50 ml parfüm, niş parfüm, kadın parfüm, erkek parfüm, parfüm testi, parfüm önerisi",
-  authors: [{ name: "Blue Parfüm" }],
+    "parfüm, blue parfümeri, parfüm yorumu, 50 ml parfüm, niş parfüm, kadın parfüm, erkek parfüm, parfüm testi, parfüm önerisi",
+  authors: [{ name: "Blue Parfümeri" }],
   icons: {
     icon: "/icon.png",
     apple: "/apple-icon.png",
@@ -39,13 +39,13 @@ export const metadata: Metadata = {
     title,
     description,
     url: SITE_URL,
-    siteName: "Blue Parfüm",
+    siteName: "Blue Parfümeri",
     images: [
       {
         url: "/og.png",
         width: 1200,
         height: 630,
-        alt: "Blue Parfüm",
+        alt: "Blue Parfümeri",
       },
     ],
     locale: "tr_TR",

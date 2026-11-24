@@ -49,7 +49,7 @@ const Home = async () => {
           </p>
         )}
         <p className="mt-2 max-w-[60ch] text-ink-soft">
-          Her şişe, adı açıkça yazılı bilinen bir kokunun Blue Parfüm yorumu.
+          Her şişe, adı açıkça yazılı bilinen bir kokunun Blue Parfümeri yorumu.
         </p>
         <HomeShelf products={featuredFirst(products)} />
       </section>

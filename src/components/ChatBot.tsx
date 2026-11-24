@@ -345,7 +345,7 @@ const ChatBot = () => {
             <div className="pt-1">
               <h2 className="text-2xl leading-none">Mira</h2>
               <p className="mt-1.5 text-sm text-ivory/85">
-                Blue Parfüm koku danışmanı
+                Blue Parfümeri koku danışmanı
               </p>
             </div>
             <div className="flex items-center">
@@ -379,7 +379,7 @@ const ChatBot = () => {
             {messages.length === 0 && !pending && (
               <div>
                 <p className="max-w-[34ch]">
-                  Merhaba, ben Mira. Sana yalnızca Blue Parfüm&apos;ün
+                  Merhaba, ben Mira. Sana yalnızca Blue Parfümeri&apos;nin
                   rafındaki parfümlerden öneri yaparım; ne aradığını anlat.
                 </p>
                 <div className="mt-5 flex flex-wrap gap-2">

@@ -3,9 +3,9 @@ import { isNiche } from "@/lib/catalog";
 import CollectionPage from "@/components/CollectionPage";
 
 export const metadata = {
-  title: "Niş Parfümler | Blue Parfüm",
+  title: "Niş Parfümler | Blue Parfümeri",
   description:
-    "Blue Parfüm niş parfümleri: tanınmış niş kokuların yorumları.",
+    "Blue Parfümeri niş parfümleri: tanınmış niş kokuların yorumları.",
 };
 
 const NisParfum = async () => {
@@ -14,7 +14,7 @@ const NisParfum = async () => {
   return (
     <CollectionPage
       title="Niş parfümler"
-      intro="Niş parfümlerin Blue Parfüm yorumları. Notalarına bakıp seç."
+      intro="Niş parfümlerin Blue Parfümeri yorumları. Notalarına bakıp seç."
       products={products}
     />
   );

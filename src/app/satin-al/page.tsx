@@ -5,9 +5,9 @@ import ProductTile from "@/components/ProductTile";
 import ShopClient from "./ShopClient";
 
 export const metadata = {
-  title: "Koleksiyon | Blue Parfüm",
+  title: "Koleksiyon | Blue Parfümeri",
   description:
-    "Blue Parfüm koleksiyonunun tamamı. Kokuya, karaktere ve notalara göre filtrele, sana uyan şişeyi seç.",
+    "Blue Parfümeri koleksiyonunun tamamı. Kokuya, karaktere ve notalara göre filtrele, sana uyan şişeyi seç.",
 };
 
 const getActiveProducts = async (): Promise<Product[]> => {

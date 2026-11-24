@@ -5,9 +5,9 @@ import QuizClient from "./QuizClient";
 export const revalidate = 60;
 
 export const metadata: Metadata = {
-  title: "Parfümünü Bul | Blue Parfüm",
+  title: "Parfümünü Bul | Blue Parfümeri",
   description:
-    "Beş kısa soruyu cevapla, koku ailesine, anına ve sevdiğin notalara göre sana en yakın Blue Parfüm şişesini gör.",
+    "Beş kısa soruyu cevapla, koku ailesine, anına ve sevdiğin notalara göre sana en yakın Blue Parfümeri şişesini gör.",
 };
 
 const ParfumunuBulPage = async () => {

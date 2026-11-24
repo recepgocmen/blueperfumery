@@ -15,14 +15,14 @@ const Footer = () => (
       <div>
         <Link
           href="/"
-          aria-label="Blue Parfüm ana sayfa"
+          aria-label="Blue Parfümeri ana sayfa"
           className="inline-flex min-h-11 flex-col justify-center leading-none"
         >
           <span className="foil font-display text-[1.75rem] font-medium tracking-[0.08em]">
             BLUE
           </span>
           <span className="mt-1 text-[0.625rem] font-medium tracking-[0.42em]">
-            PARFÜM
+            PARFÜMERİ
           </span>
         </Link>
         <p
@@ -69,7 +69,7 @@ const Footer = () => (
         blueperfumerie@gmail.com
       </a>
       <a
-        href="https://www.facebook.com/blueperfumerytr"
+        href="https://www.facebook.com/blueparfumeri"
         target="_blank"
         rel="noopener noreferrer"
         className="link inline-flex min-h-11 items-center self-start text-ivory"
@@ -77,14 +77,14 @@ const Footer = () => (
         Facebook
       </a>
       <a
-        href="https://www.instagram.com/blueperfumery/"
+        href="https://www.instagram.com/blueparfumeri/"
         target="_blank"
         rel="noopener noreferrer"
         className="link inline-flex min-h-11 items-center self-start text-ivory"
       >
         Instagram
       </a>
-      <p className="pr-28">© {new Date().getFullYear()} Blue Parfüm</p>
+      <p className="pr-28">© {new Date().getFullYear()} Blue Parfümeri</p>
     </div>
   </footer>
 );

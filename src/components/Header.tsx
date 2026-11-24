@@ -16,7 +16,7 @@ const NAV_LINKS = [
 const Wordmark = ({ onDark }: { onDark: boolean }) => (
   <Link
     href="/"
-    aria-label="Blue Parfüm ana sayfa"
+    aria-label="Blue Parfümeri ana sayfa"
     className="flex min-h-11 flex-col justify-center leading-none"
   >
     <span
@@ -25,7 +25,7 @@ const Wordmark = ({ onDark }: { onDark: boolean }) => (
       BLUE
     </span>
     <span className="mt-1 text-[0.625rem] font-medium tracking-[0.42em]">
-      PARFÜM
+      PARFÜMERİ
     </span>
   </Link>
 );

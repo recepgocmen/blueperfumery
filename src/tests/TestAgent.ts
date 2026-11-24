@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /**
- * Frontend Test Agent - Blue Perfumery
+ * Frontend Test Agent - Blue Parfümeri
  *
  * ⚠️ DEVRE DIŞI BIRAKILDI
  *

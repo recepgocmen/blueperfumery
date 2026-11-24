@@ -6,9 +6,9 @@ import ProductImage from "@/components/ProductImage";
 export const revalidate = 60;
 
 export const metadata = {
-  title: "Hakkımızda | Blue Parfüm",
+  title: "Hakkımızda | Blue Parfümeri",
   description:
-    "Blue Parfüm hakkında: tanınmış kokuların kendi yorumlarını hazırlıyoruz. Seçimi notalara göre yaparsın, siparişini WhatsApp'tan verirsin.",
+    "Blue Parfümeri hakkında: tanınmış kokuların kendi yorumlarını hazırlıyoruz. Seçimi notalara göre yaparsın, siparişini WhatsApp'tan verirsin.",
 };
 
 const oneSizeOnePrice = (products: Product[]) => {
@@ -31,7 +31,7 @@ const values = (products: Product[]) => {
     {
       term: "Açıklık",
       description:
-        "Her şişe, adı belli bir kokunun Blue Parfüm yorumudur ve hangisi olduğunu açıkça yazarız.",
+        "Her şişe, adı belli bir kokunun Blue Parfümeri yorumudur ve hangisi olduğunu açıkça yazarız.",
     },
     ...(sizeAndPrice
       ? [{ term: "Tek boy, tek fiyat", description: sizeAndPrice }]
@@ -64,7 +64,7 @@ const AboutPage = async () => {
         )}
         <div className="relative mx-auto max-w-[90rem] lg:pr-[40%]">
           <h1 className="max-w-[14ch] text-5xl leading-[1.02] sm:text-7xl lg:text-8xl">
-            Merhaba, biz Blue Parfüm.
+            Merhaba, biz Blue Parfümeri.
           </h1>
           <div className="mt-10 h-px w-24 origin-left animate-rule bg-gold [animation-delay:400ms]" />
           <p className="mt-8 max-w-[40ch] text-xl sm:text-2xl">
@@ -85,11 +85,11 @@ const AboutPage = async () => {
             </h2>
             <div className="mt-8 max-w-[68ch] space-y-5 text-lg lg:mt-0">
               <p className="font-display text-2xl leading-snug sm:text-3xl">
-                Blue Parfüm olarak, her bireyin kendine özgü kokusunu
+                Blue Parfümeri olarak, her bireyin kendine özgü kokusunu
                 keşfetmesine yardımcı olmayı amaçlıyoruz.
               </p>
               <p>
-                Koleksiyonumuzdaki her parfüm, tanınmış bir kokunun Blue Parfüm yorumudur; hangi
+                Koleksiyonumuzdaki her parfüm, tanınmış bir kokunun Blue Parfümeri yorumudur; hangi
                 kokudan ilham aldığımızı açıkça söyleriz.
               </p>
             </div>

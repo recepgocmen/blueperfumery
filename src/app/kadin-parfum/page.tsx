@@ -3,9 +3,9 @@ import { forWomen } from "@/lib/catalog";
 import CollectionPage from "@/components/CollectionPage";
 
 export const metadata = {
-  title: "Kadın Parfümleri | Blue Parfüm",
+  title: "Kadın Parfümleri | Blue Parfümeri",
   description:
-    "Blue Parfüm kadın parfümleri: kadınlara yönelik ve unisex şişeler; her biri bilinen bir kokunun yorumu.",
+    "Blue Parfümeri kadın parfümleri: kadınlara yönelik ve unisex şişeler; her biri bilinen bir kokunun yorumu.",
 };
 
 const KadinParfum = async () => {
@@ -14,7 +14,7 @@ const KadinParfum = async () => {
   return (
     <CollectionPage
       title="Kadın parfümleri"
-      intro="Kadınlara yönelik ve unisex şişeler. Her biri bilinen bir kokunun Blue Parfüm yorumu; notalarına bakıp seç."
+      intro="Kadınlara yönelik ve unisex şişeler. Her biri bilinen bir kokunun Blue Parfümeri yorumu; notalarına bakıp seç."
       products={products}
     />
   );

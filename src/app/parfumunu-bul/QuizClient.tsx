@@ -75,13 +75,13 @@ const moveFocus = (event: KeyboardEvent<HTMLUListElement>) => {
 };
 
 // No id: ProductImage resolves it to the shared, unbranded bottle photo.
-const PLAIN_BOTTLE = { id: "", name: "Blue Parfüm" };
+const PLAIN_BOTTLE = { id: "", name: "Blue Parfümeri" };
 
 const panelView = (started: boolean, leader?: Ranked): View => {
   if (!started)
     return {
       product: PLAIN_BOTTLE,
-      title: "Blue Parfüm",
+      title: "Blue Parfümeri",
       text: "Cevapladıkça şişen belirecek.",
     };
   if (!leader)
