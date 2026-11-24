@@ -2,7 +2,12 @@ import type { Product } from "./api";
 
 const WHATSAPP_NUMBER = "905432787386";
 export const SITE_URL = "https://blueperfumery.vercel.app";
-export const DEFAULT_IMAGE = "/perfumes/default.webp";
+// Bump when the photographs in public/perfumes are replaced: the version is part of
+// every photo URL, so browsers and the image optimizer cannot serve an old variant.
+const PHOTO_VERSION = "5";
+const photo = (name: string) => `/perfumes/${name}.webp?v=${PHOTO_VERSION}`;
+const DEFAULT_PATH = "/perfumes/default.webp";
+export const DEFAULT_IMAGE = photo("default");
 const LEGACY_DEFAULT_IMAGE = "/card-photos/blue-default.webp";
 
 export const FEATURED_IDS = [
@@ -23,6 +28,10 @@ export const FAMILIES = [
   "baharatlı",
   "tatlı",
 ] as const;
+
+// Lists like notes keep each separator on the line of the word before it,
+// so a wrapped line never starts with "·".
+export const dotted = (items: string[]) => items.join("\u00a0· ");
 
 export const capitalize = (text: string) =>
   text.charAt(0).toLocaleUpperCase("tr-TR") + text.slice(1);
@@ -62,9 +71,8 @@ export const buyUrl = (product: Pick<Product, "name" | "ml" | "price">) => {
 export const productImage = (product: Pick<Product, "id" | "image">) => {
   const src = product.image?.trim();
   const shared =
-    !src || src.endsWith(DEFAULT_IMAGE) || src.endsWith(LEGACY_DEFAULT_IMAGE);
-  if (shared)
-    return product.id ? `/perfumes/${product.id}.webp` : DEFAULT_IMAGE;
+    !src || src.endsWith(DEFAULT_PATH) || src.endsWith(LEGACY_DEFAULT_IMAGE);
+  if (shared) return product.id ? photo(product.id) : DEFAULT_IMAGE;
   if (src.startsWith("/")) return src;
   try {
     const url = new URL(src);

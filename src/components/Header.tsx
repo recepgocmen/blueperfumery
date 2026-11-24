@@ -16,16 +16,16 @@ const NAV_LINKS = [
 const Wordmark = ({ onDark }: { onDark: boolean }) => (
   <Link
     href="/"
-    aria-label="Blue Perfumery ana sayfa"
+    aria-label="Blue Parfüm ana sayfa"
     className="flex min-h-11 flex-col justify-center leading-none"
   >
     <span
-      className={`font-display text-[1.75rem] font-medium tracking-[0.08em] ${onDark ? "text-gold" : "text-bordo"}`}
+      className={`font-display text-[1.75rem] font-medium tracking-[0.08em] ${onDark ? "foil animate-sheen" : "text-brand"}`}
     >
       BLUE
     </span>
     <span className="mt-1 text-[0.625rem] font-medium tracking-[0.42em]">
-      PERFUMERY
+      PARFÜM
     </span>
   </Link>
 );
@@ -38,8 +38,12 @@ const Header = () => {
   const overlayRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    const update = () =>
-      setPastHero(window.scrollY > window.innerHeight * 0.8);
+    // The bar turns solid when the hero's bottom edge reaches it, not before.
+    const update = () => {
+      const hero = document.querySelector("main > section");
+      const bottom = hero?.getBoundingClientRect().bottom ?? 0;
+      setPastHero(bottom <= 72);
+    };
     update();
     window.addEventListener("scroll", update, { passive: true });
     window.addEventListener("resize", update, { passive: true });
@@ -47,7 +51,7 @@ const Header = () => {
       window.removeEventListener("scroll", update);
       window.removeEventListener("resize", update);
     };
-  }, []);
+  }, [pathname]);
 
   useEffect(() => {
     setMenuOpen(false);
@@ -76,10 +80,10 @@ const Header = () => {
 
   return (
     <header
-      className={`fixed inset-x-0 top-0 z-50 h-[4.5rem] transition-colors duration-300 ease-pour ${
+      className={`fixed inset-x-0 top-0 z-50 h-[4.5rem] ${
         transparent
-          ? "bg-gradient-to-b from-bordo-deep/85 to-transparent text-ivory"
-          : "border-b border-ink/10 bg-ivory text-ink"
+          ? "hero-scrim text-ivory"
+          : "border-b border-ink/10 bg-ground text-ink"
       }`}
     >
       <div className="mx-auto flex h-full max-w-[90rem] items-center justify-between gap-8 px-5 sm:px-10 lg:px-16">
@@ -92,7 +96,7 @@ const Header = () => {
                 <Link
                   href={href}
                   aria-current={isActive(href) ? "page" : undefined}
-                  className="py-3 text-[0.9375rem] tracking-wide underline-offset-[0.5em] decoration-gold hover:underline aria-[current=page]:underline"
+                  className={`py-3 text-[0.9375rem] tracking-wide underline-offset-[0.5em] hover:underline aria-[current=page]:underline ${transparent ? "decoration-gold" : "decoration-brand"}`}
                 >
                   {label}
                 </Link>
@@ -102,7 +106,7 @@ const Header = () => {
           <Link
             href="/satin-al"
             aria-current={isActive("/satin-al") ? "page" : undefined}
-            className={transparent ? "btn-line-ivory" : "btn-bordo"}
+            className={transparent ? "btn-line-ivory" : "btn-brand"}
           >
             Koleksiyon
           </Link>
@@ -127,7 +131,7 @@ const Header = () => {
           role="dialog"
           aria-modal="true"
           aria-label="Menü"
-          className="fixed inset-0 z-50 flex animate-fade flex-col overflow-y-auto bg-bordo-deep px-5 pb-10 text-ivory sm:px-10 lg:hidden"
+          className="fixed inset-0 z-50 flex animate-fade flex-col overflow-y-auto bg-brand-deep px-5 pb-10 text-ivory sm:px-10 lg:hidden"
         >
           <div className="flex h-[4.5rem] shrink-0 items-center justify-between">
             <Wordmark onDark />
@@ -158,8 +162,15 @@ const Header = () => {
               )}
             </ul>
           </nav>
-          <p className="mt-10 text-[0.6875rem] tracking-[0.42em] text-bordo-mute">
-            MADE WITH LOVE
+          <p
+            aria-hidden="true"
+            className="mt-10 flex items-center text-[0.6875rem] tracking-[0.42em] text-brand-mute"
+          >
+            MADE WITH L
+            <svg viewBox="0 0 24 22" className="mr-[0.42em] h-[0.8em] w-[0.9em] fill-current">
+              <path d="M12 21.6 10.3 20C4.2 14.5 0 10.8 0 6.4 0 2.8 2.8 0 6.4 0c2 0 4 .9 5.6 2.4C13.6.9 15.6 0 17.6 0 21.2 0 24 2.8 24 6.4c0 4.4-4.2 8.1-10.3 13.6L12 21.6Z" />
+            </svg>
+            VE
           </p>
         </div>
       )}

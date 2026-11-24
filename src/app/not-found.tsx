@@ -6,13 +6,13 @@ const NotFound = () => (
       <h1 className="max-w-[16ch] text-5xl leading-[1.02] sm:text-7xl lg:text-8xl">
         Bu sayfa rafta yok.
       </h1>
-      <div className="mt-10 h-px w-24 bg-gold" />
+      <div className="mt-10 h-px w-24 origin-left animate-rule bg-gold-ink [animation-delay:300ms]" />
       <p className="mt-8 max-w-[52ch] text-lg text-ink-soft">
         Aradığın sayfa kaldırılmış ya da adresi değişmiş olabilir. Koleksiyona
         göz at ya da sana uyan kokuyu birlikte bulalım.
       </p>
       <div className="mt-10 flex flex-col gap-3 sm:flex-row">
-        <Link href="/satin-al" className="btn-bordo">
+        <Link href="/satin-al" className="btn-brand">
           Koleksiyona göz at
         </Link>
         <Link href="/parfumunu-bul" className="btn-line">

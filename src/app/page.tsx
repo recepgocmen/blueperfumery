@@ -1,6 +1,6 @@
-import Link from "next/link";
 import { getProducts, type Product } from "@/lib/api";
 import {
+  FAMILIES,
   featuredFirst,
   formatPrice,
   heroPicks,
@@ -9,6 +9,7 @@ import {
 import ScentMenu from "@/components/ScentMenu";
 import HomeShelf from "@/components/HomeShelf";
 import MiraAsk from "@/components/MiraAsk";
+import FamilyGallery, { type FamilyCard } from "@/components/FamilyGallery";
 
 export const revalidate = 60;
 
@@ -21,21 +22,28 @@ const loadProducts = async (): Promise<Product[]> => {
   }
 };
 
-const offerLine = (products: Product[]) => {
-  if (products.length === 0) return "";
-  const campaign = sharedCampaign(products);
-  if (campaign)
-    return ` Her şişe ${products[0].ml} ml; kampanyada ${formatPrice(campaign.originalPrice)} yerine ${formatPrice(campaign.price)}.`;
-  const sizes = new Set(products.map((product) => product.ml));
-  const prices = products.map((product) => product.price);
-  const lowest = Math.min(...prices);
-  const sameSize = sizes.size === 1;
-  const samePrice = new Set(prices).size === 1;
-  if (sameSize && samePrice)
-    return ` Her şişe ${products[0].ml} ml, her şişe ${formatPrice(lowest)}.`;
-  if (sameSize)
-    return ` Her şişe ${products[0].ml} ml, en uygunu ${formatPrice(lowest)}.`;
-  return ` En uygun şişe ${formatPrice(lowest)}.`;
+// One tall photograph per scent family, each from a different bottle in that family.
+const familyCards = (products: Product[]): FamilyCard[] => {
+  const used = new Set<string>();
+  const ordered = featuredFirst(products);
+  return FAMILIES.flatMap((family) => {
+    const members = ordered.filter((product) =>
+      product.characteristics.includes(family),
+    );
+    const cover =
+      members.find((product) => !used.has(product.id)) ?? members[0];
+    if (!cover) return [];
+    used.add(cover.id);
+    const tally = new Map<string, number>();
+    members.forEach((product) =>
+      product.notes.forEach((note) => tally.set(note, (tally.get(note) ?? 0) + 1)),
+    );
+    const notes = [...tally.entries()]
+      .sort((x, y) => y[1] - x[1])
+      .slice(0, 3)
+      .map(([note]) => note);
+    return [{ family, count: members.length, notes, cover }];
+  });
 };
 
 const Home = async () => {
@@ -52,14 +60,15 @@ const Home = async () => {
       />
 
       <section
+        id="raftakiler"
         aria-labelledby="shelf-heading"
-        className="mx-auto max-w-[90rem] px-5 pb-24 pt-24 sm:px-10 lg:px-16 lg:pb-32 lg:pt-36"
+        className="mx-auto max-w-[90rem] scroll-mt-20 px-5 pb-24 pt-24 sm:px-10 lg:px-16 lg:pb-32 lg:pt-36"
       >
-        <h2 id="shelf-heading" className="text-[2.5rem] leading-none lg:text-[3.5rem]">
+        <h2 id="shelf-heading" data-reveal="heading" className="text-[2.5rem] leading-none lg:text-[3.5rem]">
           Raftakiler
         </h2>
         {campaign && (
-          <p className="mt-4 text-lg text-bordo">
+          <p className="mt-4 text-lg text-brand">
             Kampanya: tüm parfümler {formatPrice(campaign.originalPrice)}{" "}
             yerine {formatPrice(campaign.price)}.
           </p>
@@ -73,20 +82,7 @@ const Home = async () => {
         </div>
       </section>
 
-      <section className="bg-bordo text-ivory">
-        <div className="mx-auto max-w-[90rem] px-5 pb-20 pt-28 sm:px-10 lg:px-16 lg:pb-28 lg:pt-40">
-          <p className="max-w-[24ch] font-display text-[clamp(2rem,5vw,4rem)] leading-[1.12] tracking-[-0.015em]">
-            Sevdiğin kokuların <em>Blue Perfumery</em> yorumu.
-            {offerLine(products)} Siparişini WhatsApp&apos;tan verirsin.
-          </p>
-          <Link
-            href="/hakkimizda"
-            className="link mt-10 inline-flex min-h-11 items-center text-ivory"
-          >
-            Biz kimiz
-          </Link>
-        </div>
-      </section>
+      {products.length > 0 && <FamilyGallery cards={familyCards(products)} />}
     </>
   );
 };

@@ -8,25 +8,40 @@ export default {
   theme: {
     extend: {
       colors: {
-        bordo: {
-          DEFAULT: "#561726",
-          deep: "#3b0f1a",
-          mute: "#b07f88",
+        // Sampled from the owner's printed label photos (Nov 2026); re-tune here.
+        brand: {
+          DEFAULT: "#152468",
+          deep: "#0e1747",
+          mute: "#919dd6",
         },
-        ivory: "#f6efe6",
-        sand: "#eadfcf",
-        gold: "#c9a45c",
+        // Warm neutrals, in the gold's family: paper (text on blue, ivory buttons,
+        // the floating Mira sheet), ground (page base), sand (alternating bands).
+        ivory: "#f9f4e8",
+        ground: "#f3ecdc",
+        sand: "#e8dcc0",
+        gold: {
+          DEFAULT: "#e2cd7c",
+          light: "#f3e6b4",
+          deep: "#c2a54a",
+          ink: "#8a7226",
+        },
         ink: {
-          DEFAULT: "#2a1418",
-          soft: "#6b4a50",
+          DEFAULT: "#1c2550",
+          soft: "#485278",
         },
       },
       fontFamily: {
-        display: ["var(--font-bodoni)", "Didot", "Bodoni MT", "serif"],
+        display: ["var(--font-display)", "Bodoni MT", "Didot", "serif"],
         sans: ["var(--font-jost)", "Futura", "system-ui", "sans-serif"],
       },
+      // Motion tokens: tune here and in the :root variables in globals.css.
       transitionTimingFunction: {
-        pour: "cubic-bezier(0.16, 1, 0.3, 1)",
+        pour: "var(--ease-settle)",
+      },
+      transitionDuration: {
+        quick: "var(--dur-quick)",
+        enter: "var(--dur-enter)",
+        slow: "var(--dur-slow)",
       },
       keyframes: {
         pour: {
@@ -41,11 +56,41 @@ export default {
           from: { opacity: "0", transform: "translateY(12px)" },
           to: { opacity: "1", transform: "translateY(0)" },
         },
+        settle: {
+          from: { transform: "scale(1.06)" },
+          to: { transform: "scale(1)" },
+        },
+        drift: {
+          from: { transform: "scale(1) translate3d(0, 0, 0)" },
+          to: { transform: "scale(1.045) translate3d(-1%, -0.6%, 0)" },
+        },
+        sheen: {
+          from: { backgroundPosition: "100% 0" },
+          to: { backgroundPosition: "0% 0" },
+        },
+        rule: {
+          from: { transform: "scaleX(0)" },
+          to: { transform: "scaleX(1)" },
+        },
+        lift: {
+          from: { transform: "translateY(24px)" },
+          to: { transform: "translateY(0)" },
+        },
+        glint: {
+          "0%, 100%": { opacity: "0.25" },
+          "40%": { opacity: "1" },
+        },
       },
       animation: {
-        pour: "pour 700ms cubic-bezier(0.16, 1, 0.3, 1) both",
-        fade: "fade 300ms cubic-bezier(0.16, 1, 0.3, 1) both",
-        rise: "rise 500ms cubic-bezier(0.16, 1, 0.3, 1) both",
+        pour: "pour var(--dur-slow) var(--ease-settle) both",
+        fade: "fade var(--dur-quick) var(--ease-settle) both",
+        rise: "rise var(--dur-enter) var(--ease-settle) both",
+        settle: "settle 1400ms var(--ease-settle) both",
+        drift: "drift var(--dur-drift) ease-in-out 1400ms infinite alternate",
+        sheen: "sheen 1600ms var(--ease-settle) 300ms",
+        rule: "rule var(--dur-enter) var(--ease-settle) both",
+        glint: "glint 1200ms ease-in-out infinite",
+        lift: "lift 450ms var(--ease-settle) both",
       },
     },
   },

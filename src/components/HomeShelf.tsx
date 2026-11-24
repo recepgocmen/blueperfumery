@@ -17,6 +17,7 @@ const FILTERS = [
 
 const HomeShelf = ({ products }: { products: Product[] }) => {
   const [filterKey, setFilterKey] = useState("all");
+  const [switched, setSwitched] = useState(false);
 
   if (products.length === 0) {
     return (
@@ -32,6 +33,12 @@ const HomeShelf = ({ products }: { products: Product[] }) => {
   const filter = FILTERS.find(({ key }) => key === filterKey) ?? FILTERS[0];
   const shown = products.filter(filter.match);
 
+  const selectFilter = (key: string) => {
+    if (key === filterKey) return;
+    setSwitched(true);
+    setFilterKey(key);
+  };
+
   return (
     <>
       <div className="mt-6 flex flex-wrap gap-x-7 gap-y-1">
@@ -40,8 +47,8 @@ const HomeShelf = ({ products }: { products: Product[] }) => {
             key={key}
             type="button"
             aria-pressed={key === filterKey}
-            onClick={() => setFilterKey(key)}
-            className="min-h-11 text-[1.0625rem] text-ink-soft decoration-gold underline-offset-[0.4em] hover:text-ink aria-pressed:text-ink aria-pressed:underline"
+            onClick={() => selectFilter(key)}
+            className="min-h-11 text-[1.0625rem] text-ink-soft decoration-brand underline-offset-[0.4em] transition-colors duration-200 hover:text-ink aria-pressed:text-brand aria-pressed:underline"
           >
             {label}{" "}
             <span className="tabular-nums">
@@ -51,6 +58,12 @@ const HomeShelf = ({ products }: { products: Product[] }) => {
         ))}
       </div>
 
+      <span
+        aria-hidden="true"
+        data-reveal="rule"
+        className="mt-2 block h-px w-full bg-gold-ink/30"
+      />
+
       {shown.length === 0 ? (
         <p className="mt-10 text-ink-soft">
           Bu rafta şu an şişe yok.{" "}
@@ -59,9 +72,20 @@ const HomeShelf = ({ products }: { products: Product[] }) => {
           </Link>
         </p>
       ) : (
-        <ul className="mt-10 grid grid-cols-2 gap-x-4 gap-y-12 sm:grid-cols-3 sm:gap-x-6 lg:grid-cols-4 lg:gap-x-8 lg:gap-y-16">
-          {shown.slice(0, SHELF_SIZE).map((product) => (
-            <li key={product.id}>
+        <ul
+          key={filterKey}
+          className="mt-10 grid grid-cols-2 gap-x-4 gap-y-12 sm:grid-cols-3 sm:gap-x-6 lg:grid-cols-4 lg:gap-x-8 lg:gap-y-16"
+        >
+          {shown.slice(0, SHELF_SIZE).map((product, index) => (
+            <li
+              key={product.id}
+              className={switched ? "animate-rise" : undefined}
+              style={
+                switched
+                  ? { animationDelay: `calc(var(--stagger) * ${index})` }
+                  : undefined
+              }
+            >
               <ProductTile product={product} />
             </li>
           ))}

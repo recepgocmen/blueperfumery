@@ -24,7 +24,7 @@ const MiraAsk = () => {
   return (
     <div className="grid gap-12 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] lg:gap-20">
       <div>
-        <h2 className="max-w-[16ch] text-[2.25rem] leading-[1.1] lg:text-[3.25rem]">
+        <h2 data-reveal="heading" className="max-w-[16ch] text-[2.25rem] leading-[1.1] lg:text-[3.25rem]">
           Karar veremedin mi? <em>Mira&apos;ya sor.</em>
         </h2>
         <p className="mt-5 max-w-[48ch] text-ink-soft">
@@ -33,7 +33,7 @@ const MiraAsk = () => {
         </p>
       </div>
 
-      <div className="lg:pt-3">
+      <div data-reveal="tile" className="lg:pt-3">
         <form onSubmit={submit} className="flex flex-col gap-3 sm:flex-row">
           <label htmlFor="mira-question" className="sr-only">
             Mira&apos;ya sorunu yaz
@@ -44,9 +44,9 @@ const MiraAsk = () => {
             value={question}
             onChange={(event) => setQuestion(event.target.value)}
             placeholder="Ofise uygun, ağır olmayan bir koku arıyorum"
-            className="min-h-14 flex-1 rounded-none border-0 border-b border-ink/40 bg-transparent px-0 text-lg text-ink placeholder:text-ink-soft focus:border-bordo sm:text-xl"
+            className="min-h-14 flex-1 rounded-none border-0 border-b border-ink/40 bg-transparent px-0 text-lg text-ink transition-colors duration-300 placeholder:text-ink-soft focus:border-brand sm:text-xl"
           />
-          <button type="submit" className="btn-bordo min-h-14 shrink-0">
+          <button type="submit" className="btn-brand min-h-14 shrink-0">
             Mira&apos;ya sor
           </button>
         </form>
@@ -57,7 +57,7 @@ const MiraAsk = () => {
               <button
                 type="button"
                 onClick={() => askMira(example)}
-                className="min-h-11 text-left text-ink decoration-gold underline-offset-[0.3em] hover:underline"
+                className="link min-h-11 text-left text-ink transition-transform duration-300 ease-pour hover:translate-x-1"
               >
                 &ldquo;{example}&rdquo;
               </button>

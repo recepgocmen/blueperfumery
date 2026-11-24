@@ -5,7 +5,7 @@ import type { CSSProperties, FormEvent, KeyboardEvent } from "react";
 import Link from "next/link";
 import { ArrowUp, MessageCircle, X } from "lucide-react";
 import { API_BASE_URL } from "@/lib/api";
-import { buyUrl } from "@/lib/catalog";
+import { buyUrl, dotted } from "@/lib/catalog";
 import Price from "./Price";
 import ProductImage from "./ProductImage";
 
@@ -107,10 +107,10 @@ const ProductRow = ({ product }: { product: ChatProduct }) => (
     </div>
     <div className="min-w-0 flex-1">
       <p className="font-display text-lg leading-tight">{product.name}</p>
-      <p className="mt-0.5 text-sm text-ink-soft">
-        {product.notes.slice(0, 3).join(" · ")}
+      <p className="mt-0.5 text-[0.9375rem] text-ink-soft">
+        {dotted(product.notes.slice(0, 3))}
       </p>
-      <p className="text-sm tabular-nums">
+      <p className="text-[0.9375rem] tabular-nums">
         <Price product={product} /> · {product.ml} ml
       </p>
       <div className="flex gap-5 text-sm">
@@ -140,7 +140,7 @@ const Typing = () => (
       {[0, 200, 400].map((delay) => (
         <span
           key={delay}
-          className="size-1 animate-pulse bg-ink-soft"
+          className="size-1.5 animate-glint bg-gold-ink"
           style={{ animationDelay: `${delay}ms` }}
         />
       ))}
@@ -275,7 +275,19 @@ const ChatBot = () => {
 
   useEffect(() => {
     const thread = threadRef.current;
-    if (thread && stickRef.current) thread.scrollTop = thread.scrollHeight;
+    if (!thread || !stickRef.current) return;
+    // A new reply opens at its first line; anything else keeps the thread at the bottom.
+    const last = messages.at(-1);
+    const reply =
+      last?.role === "mira" && !pending
+        ? thread.querySelector<HTMLElement>(`[data-reply="${last.id}"]`)
+        : null;
+    thread.scrollTop = reply
+      ? reply.getBoundingClientRect().top -
+        thread.getBoundingClientRect().top +
+        thread.scrollTop -
+        20
+      : thread.scrollHeight;
   }, [messages, pending, failure, open]);
 
   useEffect(() => {
@@ -308,7 +320,7 @@ const ChatBot = () => {
         onClick={() => (open ? close() : setOpen(true))}
         aria-expanded={open}
         aria-controls="mira-panel"
-        className={`fixed bottom-[calc(1rem+env(safe-area-inset-bottom))] right-4 z-40 inline-flex h-14 items-center gap-2.5 bg-bordo px-5 text-ivory transition-colors duration-200 hover:bg-bordo-deep sm:bottom-[calc(1.5rem+env(safe-area-inset-bottom))] sm:right-6 ${
+        className={`fixed bottom-[calc(1rem+env(safe-area-inset-bottom))] right-4 z-40 inline-flex h-14 items-center gap-2.5 border border-gold bg-brand px-5 text-ivory transition-colors duration-200 hover:bg-brand-deep sm:bottom-[calc(1.5rem+env(safe-area-inset-bottom))] sm:right-6 ${
           open ? "invisible" : ""
         }`}
       >
@@ -327,13 +339,13 @@ const ChatBot = () => {
           aria-label="Mira ile sohbet"
           onKeyDown={(event) => event.key === "Escape" && close()}
           style={viewportStyle}
-          className="fixed left-0 right-0 top-[var(--mira-top,0px)] z-[60] flex h-[var(--mira-h,100dvh)] animate-fade flex-col bg-ivory text-ink sm:bottom-[calc(1.5rem+env(safe-area-inset-bottom))] sm:shadow-[0_24px_56px_-16px_rgba(42,11,19,0.45),0_6px_16px_-8px_rgba(42,11,19,0.3)] sm:left-auto sm:right-6 sm:top-auto sm:h-[min(40rem,calc(100dvh-3rem))] sm:w-[26rem]"
+          className="fixed left-0 right-0 top-[var(--mira-top,0px)] z-[60] flex h-[var(--mira-h,100dvh)] animate-lift flex-col bg-ivory text-ink sm:bottom-[calc(1.5rem+env(safe-area-inset-bottom))] sm:shadow-float sm:left-auto sm:right-6 sm:top-auto sm:h-[min(40rem,calc(100dvh-3rem))] sm:w-[26rem]"
         >
-          <header className="flex items-start justify-between gap-4 bg-bordo py-3 pl-5 pr-2 text-ivory">
+          <header className="flex items-start justify-between gap-4 bg-brand py-3 pl-5 pr-2 text-ivory">
             <div className="pt-1">
               <h2 className="text-2xl leading-none">Mira</h2>
               <p className="mt-1.5 text-sm text-ivory/85">
-                Blue Perfumery koku danışmanı
+                Blue Parfüm koku danışmanı
               </p>
             </div>
             <div className="flex items-center">
@@ -362,12 +374,12 @@ const ChatBot = () => {
             onScroll={onThreadScroll}
             role="log"
             aria-live="polite"
-            className="flex-1 space-y-6 overflow-y-auto overscroll-contain px-5 py-5 text-[0.9375rem] leading-relaxed"
+            className="flex-1 space-y-6 overflow-y-auto overscroll-contain px-5 py-5 text-base leading-relaxed"
           >
             {messages.length === 0 && !pending && (
               <div>
                 <p className="max-w-[34ch]">
-                  Merhaba, ben Mira. Sana yalnızca Blue Perfumery&apos;nin
+                  Merhaba, ben Mira. Sana yalnızca Blue Parfüm&apos;ün
                   rafındaki parfümlerden öneri yaparım; ne aradığını anlat.
                 </p>
                 <div className="mt-5 flex flex-wrap gap-2">
@@ -389,12 +401,12 @@ const ChatBot = () => {
               message.role === "user" ? (
                 <p
                   key={message.id}
-                  className="ml-auto w-fit max-w-[85%] whitespace-pre-line break-words bg-bordo px-4 py-2.5 text-ivory"
+                  className="ml-auto w-fit max-w-[85%] animate-rise whitespace-pre-line break-words bg-brand px-4 py-2.5 text-ivory"
                 >
                   {message.text}
                 </p>
               ) : (
-                <div key={message.id}>
+                <div key={message.id} data-reply={message.id} className="animate-rise">
                   <p className="whitespace-pre-line break-words">
                     {message.text}
                   </p>
@@ -461,7 +473,7 @@ const ChatBot = () => {
                 type="submit"
                 disabled={!draft.trim() || pending}
                 aria-label="Gönder"
-                className="inline-flex size-11 shrink-0 items-center justify-center bg-bordo text-ivory transition-colors duration-200 hover:bg-bordo-deep disabled:cursor-not-allowed disabled:opacity-40"
+                className="inline-flex size-11 shrink-0 items-center justify-center bg-brand text-ivory transition-colors duration-200 hover:bg-brand-deep disabled:cursor-not-allowed disabled:opacity-40"
               >
                 <ArrowUp
                   aria-hidden="true"

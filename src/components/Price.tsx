@@ -11,7 +11,7 @@ const Price = ({ product, className }: Props) => (
     {hasCampaign(product) && (
       <>
         <span className="sr-only">Eski fiyat </span>
-        <s className="mr-[0.4em] opacity-70">
+        <s className="price-was mr-[0.4em]">
           {formatPrice(product.originalPrice)}
         </s>
         <span className="sr-only">Kampanya fiyatı </span>

@@ -104,7 +104,7 @@ const ShopClient = ({ products }: Props) => {
   return (
     <>
       <div
-        className="mt-12 border-b border-gold"
+        className="mt-12 border-b border-gold-ink"
         role="group"
         aria-label="Kime göre"
       >
@@ -119,7 +119,7 @@ const ShopClient = ({ products }: Props) => {
                   onClick={() => update({ tur: item.key })}
                   className={`flex min-h-12 items-baseline gap-1.5 whitespace-nowrap border-b-2 pb-2 font-display text-2xl transition-colors sm:text-3xl ${
                     active
-                      ? "border-bordo text-ink"
+                      ? "border-brand text-ink"
                       : "border-transparent text-ink-soft hover:text-ink"
                   }`}
                 >
@@ -147,7 +147,7 @@ const ShopClient = ({ products }: Props) => {
                     onClick={() => toggleFamily(family)}
                     className={`min-h-11 border px-4 text-[0.9375rem] transition-colors ${
                       active
-                        ? "border-bordo bg-bordo text-ivory"
+                        ? "border-brand bg-brand text-ivory"
                         : "border-ink/25 hover:border-ink"
                     }`}
                   >

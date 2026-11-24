@@ -5,9 +5,9 @@ import ProductTile from "@/components/ProductTile";
 import ShopClient from "./ShopClient";
 
 export const metadata = {
-  title: "Koleksiyon | Blue Perfumery",
+  title: "Koleksiyon | Blue Parfüm",
   description:
-    "Blue Perfumery koleksiyonunun tamamı. Kokuya, karaktere ve notalara göre filtrele, sana uyan şişeyi seç.",
+    "Blue Parfüm koleksiyonunun tamamı. Kokuya, karaktere ve notalara göre filtrele, sana uyan şişeyi seç.",
 };
 
 const getActiveProducts = async (): Promise<Product[]> => {
@@ -23,9 +23,9 @@ const ShopPage = async () => {
   const products = await getActiveProducts();
 
   return (
-    <div className="px-5 pb-24 pt-28 sm:px-10 lg:px-16 lg:pt-36">
-      <div className="mx-auto max-w-[90rem]">
-        <header>
+    <>
+      <header className="bg-sand px-5 pb-12 pt-28 sm:px-10 lg:px-16 lg:pb-16 lg:pt-36">
+        <div className="mx-auto max-w-[90rem]">
           <h1 className="text-5xl leading-[1.02] sm:text-7xl lg:text-8xl">
             Koleksiyon
           </h1>
@@ -33,8 +33,9 @@ const ShopPage = async () => {
             Bütün şişeler burada. Kokuya göre daralt, notalarına bak, sana
             yakışanı seç.
           </p>
-        </header>
-
+        </div>
+      </header>
+      <div className="mx-auto max-w-[90rem] px-5 pb-24 sm:px-10 lg:px-16">
         <Suspense
           fallback={
             <div className="mt-12 grid grid-cols-2 gap-x-5 gap-y-14 sm:grid-cols-3 sm:gap-x-8 lg:grid-cols-4">
@@ -51,7 +52,7 @@ const ShopPage = async () => {
           <ShopClient products={products} />
         </Suspense>
       </div>
-    </div>
+    </>
   );
 };
 

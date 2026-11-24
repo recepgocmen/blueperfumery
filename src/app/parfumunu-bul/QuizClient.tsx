@@ -38,7 +38,7 @@ import ProductImage from "@/components/ProductImage";
 import Price from "@/components/Price";
 import ProductTile from "@/components/ProductTile";
 
-const ADVANCE_DELAY = 350;
+const ADVANCE_DELAY = 500;
 const NAV_KEYS = [
   "ArrowDown",
   "ArrowUp",
@@ -75,13 +75,13 @@ const moveFocus = (event: KeyboardEvent<HTMLUListElement>) => {
 };
 
 // No id: ProductImage resolves it to the shared, unbranded bottle photo.
-const PLAIN_BOTTLE = { id: "", name: "Blue Perfumery" };
+const PLAIN_BOTTLE = { id: "", name: "Blue Parfüm" };
 
 const panelView = (started: boolean, leader?: Ranked): View => {
   if (!started)
     return {
       product: PLAIN_BOTTLE,
-      title: "Blue Perfumery",
+      title: "Blue Parfüm",
       text: "Cevapladıkça şişen belirecek.",
     };
   if (!leader)
@@ -132,16 +132,16 @@ const OptionMenu = ({
             aria-checked={multi ? undefined : selected}
             aria-pressed={multi ? selected : undefined}
             onClick={() => onPick(option.value)}
-            className={`flex min-h-14 w-full items-center gap-4 px-4 py-2 text-left font-display text-2xl leading-tight transition-colors duration-150 focus-visible:[outline-offset:-2px] lg:text-[1.75rem] ${
+            className={`relative isolate flex min-h-14 w-full items-center gap-4 px-4 py-2 text-left font-display text-2xl leading-tight transition-[background-color] duration-200 before:absolute before:inset-0 before:-z-10 before:origin-left before:bg-brand before:transition-transform before:duration-[450ms] before:ease-pour focus-visible:[outline-offset:-2px] lg:text-[1.75rem] ${
               selected
-                ? "bg-bordo text-ivory active:bg-bordo-deep"
-                : "text-ink active:bg-sand [@media(hover:hover)]:hover:bg-sand"
+                ? "text-ivory before:scale-x-100"
+                : "text-ink before:scale-x-0 active:bg-sand [@media(hover:hover)]:hover:bg-sand"
             }`}
           >
             <span
               aria-hidden
               className={`flex size-5 shrink-0 items-center justify-center border transition-colors duration-150 ${
-                selected ? "border-ivory bg-bordo" : "border-ink"
+                selected ? "border-ivory bg-brand" : "border-ink"
               }`}
             >
               {selected && (
@@ -156,67 +156,101 @@ const OptionMenu = ({
   </ul>
 );
 
-const LivePanel = ({ view }: { view: View }) => (
-  <aside
-    aria-label="Şu an en yakın"
-    className="hidden bg-bordo text-ivory lg:sticky lg:top-36 lg:flex lg:h-[calc(100svh-9rem)] lg:flex-col lg:self-start"
-  >
-    <div className="relative min-h-0 flex-1 overflow-hidden bg-bordo-deep">
-      {view.product && (
-        <div key={view.product.id} className="absolute inset-0 animate-pour">
-          <ProductImage
-            product={view.product}
-            sizes="(min-width: 1280px) 32rem, 26rem"
-          />
+type Shot = View["product"];
+
+// Keeps the previous photograph mounted under the one that pours in, so a change never blanks to navy.
+const useLayers = (product: Shot) => {
+  const [current, setCurrent] = useState<Shot>(product);
+  const [previous, setPrevious] = useState<Shot>(undefined);
+  if (product?.id !== current?.id) {
+    setPrevious(current);
+    setCurrent(product);
+  }
+  return {
+    current,
+    previous: previous?.id === current?.id ? undefined : previous,
+  };
+};
+
+const LivePanel = ({ view }: { view: View }) => {
+  const { current, previous } = useLayers(view.product);
+  return (
+    <aside
+      aria-label="Şu an en yakın"
+      className="hidden bg-brand text-ivory lg:sticky lg:top-36 lg:flex lg:h-[calc(100svh-9rem)] lg:flex-col lg:self-start"
+    >
+      <div className="relative min-h-0 flex-1 overflow-hidden bg-brand-deep">
+        {previous && (
+          <div key={`under-${previous.id}`} className="absolute inset-0">
+            <ProductImage
+              product={previous}
+              sizes="(min-width: 1280px) 32rem, 26rem"
+            />
+          </div>
+        )}
+        {current && (
+          <div key={current.id} className="absolute inset-0 animate-pour">
+            <ProductImage
+              product={current}
+              sizes="(min-width: 1280px) 32rem, 26rem"
+            />
+          </div>
+        )}
+      </div>
+      <div aria-live="polite" className="px-10 pb-10 pt-8">
+        <p
+          key={view.title}
+          className="animate-rise font-display text-4xl leading-tight"
+        >
+          {view.title}
+        </p>
+        <p
+          key={view.text}
+          className="mt-3 max-w-[65ch] animate-rise text-ivory/80"
+        >
+          {view.text}
+        </p>
+      </div>
+    </aside>
+  );
+};
+
+const LiveStrip = ({ view }: { view: View }) => {
+  const { current, previous } = useLayers(view.product);
+  return (
+    <aside
+      aria-label="Şu an en yakın"
+      className="sticky top-[4.5rem] z-10 -mx-5 mt-6 flex min-h-24 items-center gap-4 bg-brand px-5 py-3 text-ivory sm:-mx-10 sm:px-10 lg:hidden"
+    >
+      {current && (
+        <div className="relative h-[4.5rem] w-14 shrink-0 overflow-hidden bg-brand-deep">
+          {previous && (
+            <div key={`under-${previous.id}`} className="absolute inset-0">
+              <ProductImage product={previous} sizes="56px" />
+            </div>
+          )}
+          <div key={current.id} className="absolute inset-0 animate-pour">
+            <ProductImage product={current} sizes="56px" />
+          </div>
         </div>
       )}
-    </div>
-    <div aria-live="polite" className="px-10 pb-10 pt-8">
-      <p
-        key={view.title}
-        className="animate-rise font-display text-4xl leading-tight"
-      >
-        {view.title}
-      </p>
-      <p
-        key={view.text}
-        className="mt-3 max-w-[65ch] animate-rise text-ivory/80"
-      >
-        {view.text}
-      </p>
-    </div>
-  </aside>
-);
-
-const LiveStrip = ({ view }: { view: View }) => (
-  <aside
-    aria-label="Şu an en yakın"
-    className="sticky top-[4.5rem] z-10 -mx-5 mt-6 flex min-h-24 items-center gap-4 bg-bordo px-5 py-3 text-ivory sm:-mx-10 sm:px-10 lg:hidden"
-  >
-    {view.product && (
-      <div
-        key={view.product.id}
-        className="relative h-[4.5rem] w-14 shrink-0 animate-pour overflow-hidden bg-bordo-deep"
-      >
-        <ProductImage product={view.product} sizes="56px" />
+      <div aria-live="polite" className="min-w-0">
+        <p
+          key={view.title}
+          className="animate-rise truncate font-display text-xl"
+        >
+          {view.title}
+        </p>
+        <p
+          key={view.text}
+          className="animate-rise truncate text-sm text-ivory/80"
+        >
+          {view.text}
+        </p>
       </div>
-    )}
-    <div aria-live="polite" className="min-w-0">
-      <p
-        key={view.title}
-        className="animate-rise truncate font-display text-xl"
-      >
-        {view.title}
-      </p>
-      <p
-        key={view.text}
-        className="animate-rise truncate text-sm text-ivory/80"
-      >
-        {view.text}
-      </p>
-    </div>
-  </aside>
-);
+    </aside>
+  );
+};
 
 const QuizClient = ({ products }: { products: Product[] }) => {
   const [step, setStep] = useState(0);
@@ -273,7 +307,7 @@ const QuizClient = ({ products }: { products: Product[] }) => {
           Şu an gösterebileceğimiz bir şişe yok. Koleksiyona oradan göz
           atabilirsin.
         </p>
-        <Link href="/satin-al" className="btn-bordo mt-8">
+        <Link href="/satin-al" className="btn-brand mt-8">
           Koleksiyona git
         </Link>
       </div>
@@ -343,7 +377,7 @@ const QuizClient = ({ products }: { products: Product[] }) => {
               <button
                 type="button"
                 onClick={() => goTo(step - 1)}
-                className="-ml-1 inline-flex min-h-11 items-center gap-2 px-1 text-ink-soft transition-colors hover:text-bordo"
+                className="-ml-1 inline-flex min-h-11 items-center gap-2 px-1 text-ink-soft transition-colors hover:text-brand"
               >
                 <ArrowLeft size={18} strokeWidth={1.5} aria-hidden />
                 Geri
@@ -358,8 +392,10 @@ const QuizClient = ({ products }: { products: Product[] }) => {
           </div>
           <div aria-hidden className="mt-2 h-px bg-ink/15">
             <div
-              className="h-0.5 -translate-y-px bg-gold transition-[width] duration-700 ease-pour"
-              style={{ width: `${((step + 1) / QUESTION_COUNT) * 100}%` }}
+              className="h-0.5 origin-left bg-gold-ink transition-transform duration-slow ease-pour"
+              style={{
+                transform: `translateY(-1px) scaleX(${(step + 1) / QUESTION_COUNT})`,
+              }}
             />
           </div>
 
@@ -388,12 +424,12 @@ const QuizClient = ({ products }: { products: Product[] }) => {
               columns={question.columns}
             />
             {question.multi && (
-              <div className="sticky bottom-0 z-10 -mx-5 mt-6 bg-ivory px-5 pb-[max(1rem,env(safe-area-inset-bottom))] pt-4 sm:-mx-10 sm:px-10 lg:mx-0 lg:px-0">
+              <div className="sticky bottom-0 z-10 -mx-5 mt-6 bg-ground px-5 pb-[max(1rem,env(safe-area-inset-bottom))] pt-4 sm:-mx-10 sm:px-10 lg:mx-0 lg:px-0">
                 <button
                   type="button"
                   disabled={continueDisabled}
                   onClick={() => goTo(step + 1)}
-                  className="btn-bordo disabled:cursor-not-allowed disabled:opacity-40"
+                  className="btn-brand disabled:cursor-not-allowed disabled:opacity-40"
                 >
                   {continueLabel}
                 </button>
@@ -483,7 +519,7 @@ const QuizResult = ({ ranked, headingRef, onRestart }: ResultProps) => {
                 href={buyUrl(product)}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="btn-bordo"
+                className="btn-brand"
               >
                 Satın al
                 <ArrowUpRight size={18} strokeWidth={1.5} aria-hidden />
@@ -508,7 +544,11 @@ const QuizResult = ({ ranked, headingRef, onRestart }: ResultProps) => {
 
         {runnersUp.length > 0 && (
           <section aria-labelledby="quiz-runners-up" className="mt-20 lg:mt-28">
-            <h2 id="quiz-runners-up" className="text-3xl sm:text-4xl">
+            <h2
+              id="quiz-runners-up"
+              data-reveal="heading"
+              className="text-3xl sm:text-4xl"
+            >
               {runnersUp.length > 1
                 ? "Sana yakın iki şişe daha"
                 : "Sana yakın bir şişe daha"}

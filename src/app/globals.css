@@ -3,25 +3,42 @@
 @tailwind utilities;
 
 @layer base {
+  :root {
+    --ease-settle: cubic-bezier(0.16, 1, 0.3, 1);
+    --dur-quick: 300ms;
+    --dur-enter: 800ms;
+    --dur-slow: 1000ms;
+    --dur-drift: 16s;
+    --stagger: 70ms;
+  }
+
   html {
     scroll-behavior: smooth;
-    scrollbar-color: #561726 #eadfcf;
+    scrollbar-color: theme(colors.brand.DEFAULT) theme(colors.sand);
   }
 
   body {
-    @apply bg-ivory font-sans text-ink antialiased;
+    @apply bg-ground font-sans text-ink antialiased;
     font-size: 1.0625rem;
+    font-weight: 500;
     line-height: 1.6;
-    caret-color: #561726;
+    caret-color: theme(colors.brand.DEFAULT);
   }
 
   h1,
   h2,
   h3 {
     @apply font-display;
-    font-weight: 500;
+    word-spacing: 0.08em;
+    font-weight: 600;
+    color: theme(colors.brand.deep);
     letter-spacing: -0.015em;
     text-wrap: balance;
+  }
+
+  :is(.bg-brand, .bg-brand-deep, .text-ivory) :is(h1, h2, h3),
+  :is(h1, h2, h3):is(.text-ivory, .text-gold) {
+    color: inherit;
   }
 
   p {
@@ -29,23 +46,29 @@
   }
 
   ::selection {
-    background: #561726;
-    color: #f6efe6;
+    background: theme(colors.brand.DEFAULT);
+    color: theme(colors.ivory);
   }
 
   :focus-visible {
-    outline: 2px solid #561726;
+    outline: 2px solid theme(colors.brand.DEFAULT);
     outline-offset: 3px;
   }
 
-  /* Gold reads on bordo only; on ivory and sand the ring is bordo. */
-  .bg-bordo:focus-visible,
-  .bg-bordo-deep:focus-visible,
+  /* Gold reads on brand only; on ivory and sand the ring is brand. */
   .text-ivory:focus-visible,
-  .bg-bordo :focus-visible,
-  .bg-bordo-deep :focus-visible,
+  .bg-brand :focus-visible,
+  .bg-brand-deep :focus-visible,
   .text-ivory :focus-visible {
-    outline-color: #c9a45c;
+    outline-color: theme(colors.gold.DEFAULT);
+  }
+
+  /* A blue control can sit on ivory, so its gold ring goes inside the fill. */
+  .bg-brand:focus-visible,
+  .bg-brand-deep:focus-visible,
+  .btn-brand:focus-visible {
+    outline-color: theme(colors.gold.DEFAULT);
+    outline-offset: -5px;
   }
 
   a {
@@ -61,20 +84,47 @@
     *::before,
     *::after {
       animation-duration: 1ms !important;
+      animation-delay: 0ms !important;
       transition-duration: 1ms !important;
+      transition-delay: 0ms !important;
+    }
+    /* Loops would strobe at 1ms; they stop instead. */
+    .animate-drift,
+    .animate-glint,
+    .animate-cue {
+      animation: none !important;
     }
   }
 }
 
 @layer components {
   .btn {
-    @apply inline-flex min-h-12 items-center justify-center gap-2 px-6 text-base font-medium tracking-wide transition-colors duration-200;
+    @apply inline-flex min-h-12 items-center justify-center gap-2 px-6 text-base font-semibold tracking-wide transition-[color,background-color,transform] duration-200 active:scale-[0.98];
   }
-  .btn-bordo {
-    @apply btn bg-bordo text-ivory hover:bg-bordo-deep;
+  .btn-brand {
+    @apply btn relative isolate overflow-hidden bg-brand text-ivory hover:bg-brand-deep;
+  }
+  /* A gilt glint crosses the button once on hover. */
+  .btn-brand::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background: linear-gradient(
+      105deg,
+      transparent 35%,
+      theme(colors.gold.light / 28%) 50%,
+      transparent 65%
+    );
+    transform: translateX(-100%);
+    pointer-events: none;
+  }
+  .btn-brand:hover::after {
+    transform: translateX(100%);
+    transition: transform var(--dur-slow) var(--ease-settle);
   }
   .btn-ivory {
-    @apply btn bg-ivory text-bordo-deep hover:bg-sand;
+    @apply btn bg-ivory text-brand-deep hover:bg-sand;
   }
   .btn-line {
     @apply btn border border-current hover:bg-ink/5;
@@ -82,7 +132,221 @@
   .btn-line-ivory {
     @apply btn border border-ivory/60 text-ivory hover:bg-ivory/10;
   }
+  /* Gold underline at rest; on hover a current-colour line draws over it from the left. */
   .link {
-    @apply underline decoration-gold hover:decoration-current;
+    --rest: theme(colors.gold.ink);
+    padding-bottom: 0.125em;
+    background-image: linear-gradient(currentColor, currentColor),
+      linear-gradient(var(--rest), var(--rest));
+    background-repeat: no-repeat;
+    background-position: 0 100%, 0 100%;
+    background-size: 0% 1px, 100% 1px;
+    -webkit-box-decoration-break: clone;
+    box-decoration-break: clone;
+    transition: background-size var(--dur-enter) var(--ease-settle);
+  }
+  .link:hover,
+  .link:focus-visible {
+    background-size: 100% 1px, 100% 1px;
+  }
+  .link.text-ivory {
+    --rest: theme(colors.gold.DEFAULT);
+  }
+  /* Libre Bodoni sets its word spaces tight; open them wherever the display face runs. */
+  .font-display {
+    word-spacing: 0.08em;
+  }
+
+  /* The struck campaign price keeps its own colour so it holds 4.5:1 on every ground. */
+  .price-was {
+    color: theme(colors.ink.soft);
+  }
+  :is(.bg-brand, .bg-brand-deep, .text-ivory) .price-was {
+    color: theme(colors.ivory / 80%);
+  }
+
+  /* Tall tap-target links: keep the line under the text, not at the box edge. */
+  .link:is(.inline-flex, .flex, [class*="min-h-"]) {
+    background-position: 0 calc(50% + 0.8em), 0 calc(50% + 0.8em);
+  }
+
+  /* Foil-stamped "BLUE": a narrow band of gold tones, flat gold where clip is unsupported. */
+  .foil {
+    color: theme(colors.gold.DEFAULT);
+  }
+  @supports ((-webkit-background-clip: text) or (background-clip: text)) {
+    .foil {
+      background-image: linear-gradient(
+        105deg,
+        theme(colors.gold.deep) 0%,
+        theme(colors.gold.DEFAULT) 28%,
+        theme(colors.gold.light) 46%,
+        theme(colors.gold.DEFAULT) 62%,
+        theme(colors.gold.deep) 100%
+      );
+      background-size: 240% 100%;
+      background-position: 0% 0;
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      transition: background-position 1400ms cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    a:hover > .foil {
+      background-position: 100% 0;
+    }
+  }
+
+  /* The label's frame: a tone-on-tone crackle margin, then one gold keyline. */
+  .keyline {
+    --band: 0.75rem;
+    --crackle: theme(colors.brand.DEFAULT);
+    position: relative;
+  }
+  .keyline::before,
+  .keyline::after {
+    content: "";
+    position: absolute;
+    pointer-events: none;
+  }
+  /* A gold keyline traced edge by edge: top, right, bottom, left. */
+  .trace {
+    --line: theme(colors.gold.DEFAULT);
+    background-image: linear-gradient(var(--line), var(--line)),
+      linear-gradient(var(--line), var(--line)),
+      linear-gradient(var(--line), var(--line)),
+      linear-gradient(var(--line), var(--line));
+    background-repeat: no-repeat;
+    background-position: left top, right top, right bottom, left bottom;
+    background-size: 100% 1px, 1px 100%, 100% 1px, 1px 100%;
+  }
+  @keyframes trace {
+    0% {
+      background-size: 0 1px, 1px 0, 0 1px, 1px 0;
+    }
+    25% {
+      background-size: 100% 1px, 1px 0, 0 1px, 1px 0;
+    }
+    50% {
+      background-size: 100% 1px, 1px 100%, 0 1px, 1px 0;
+    }
+    75% {
+      background-size: 100% 1px, 1px 100%, 100% 1px, 1px 0;
+    }
+    100% {
+      background-size: 100% 1px, 1px 100%, 100% 1px, 1px 100%;
+    }
+  }
+  .keyline::before {
+    inset: var(--band);
+    @apply trace;
+    animation: trace var(--dur-slow) linear var(--keyline-delay, 0ms) both;
+  }
+  .keyline::after {
+    inset: 0;
+    padding: var(--band);
+    background-color: var(--crackle);
+    -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 28 28'%3E%3Cpath d='M0 9L6 7L11 12L17 8L23 11L28 9M6 7L4 0M17 8L19 0M23 11L22 19M11 12L9 20L2 18L0 22M9 20L16 23L22 19L28 22M16 23L19 28M2 18L4 28' fill='none' stroke='black' stroke-width='1.6'/%3E%3C/svg%3E"),
+      linear-gradient(black 0 0), linear-gradient(black 0 0);
+    mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 28 28'%3E%3Cpath d='M0 9L6 7L11 12L17 8L23 11L28 9M6 7L4 0M17 8L19 0M23 11L22 19M11 12L9 20L2 18L0 22M9 20L16 23L22 19L28 22M16 23L19 28M2 18L4 28' fill='none' stroke='black' stroke-width='1.6'/%3E%3C/svg%3E"),
+      linear-gradient(black 0 0), linear-gradient(black 0 0);
+    -webkit-mask-clip: border-box, content-box, border-box;
+    mask-clip: border-box, content-box, border-box;
+    -webkit-mask-composite: source-in, xor;
+    mask-composite: intersect, exclude;
+  }
+
+  /* Scroll entrances run from RevealObserver through the Web Animations API. */
+  [data-reveal="rule"] {
+    transform-origin: left;
+  }
+
+  /* Tile hover: a gold keyline draws round the inside of the photograph. */
+  .tile-line {
+    @apply trace;
+    background-size: 0 1px, 1px 0, 0 1px, 1px 0;
+  }
+  /* Subtle warm gilt sheen across a bottle photograph on hover. */
+  .tile-glint {
+    background: linear-gradient(
+      108deg,
+      transparent 38%,
+      theme(colors.gold.light / 22%) 50%,
+      transparent 62%
+    );
+    transform: translateX(-110%);
+    transition: transform 1100ms var(--ease-settle);
+  }
+  @media (hover: hover) {
+    .group:hover .tile-line {
+      animation: trace var(--dur-slow) linear both;
+    }
+    .group:hover .tile-glint {
+      transform: translateX(110%);
+    }
+  }
+  @media (hover: hover) {
+    .group:hover .link {
+      background-size: 100% 1px, 100% 1px;
+    }
+  }
+  .group:focus-within .tile-line {
+    animation: trace var(--dur-slow) linear both;
+  }
+
+  /* Slow editorial hairline pulse for the hero scroll cue. */
+  @keyframes cue-flow {
+    0% {
+      transform: scaleY(0);
+      transform-origin: top;
+      opacity: 0.35;
+    }
+    45% {
+      transform: scaleY(1);
+      transform-origin: top;
+      opacity: 1;
+    }
+    55% {
+      transform: scaleY(1);
+      transform-origin: bottom;
+      opacity: 1;
+    }
+    100% {
+      transform: scaleY(0);
+      transform-origin: bottom;
+      opacity: 0.35;
+    }
+  }
+  .animate-cue {
+    animation: cue-flow 2.8s var(--ease-settle) infinite;
+  }
+
+  /* Keeps the nav legible where the transparent header crosses the hero photograph.
+     Below lg it stays inside the header bar so it never dims the controls under it. */
+  .hero-scrim::before {
+    content: "";
+    position: absolute;
+    inset: 0 0 auto;
+    z-index: -1;
+    height: 4.5rem;
+    pointer-events: none;
+    background-color: theme(colors.brand.deep / 92%);
+  }
+  @media (min-width: 1024px) {
+    .hero-scrim::before {
+      height: 9rem;
+      background-color: transparent;
+      background-image: linear-gradient(
+        to bottom,
+        theme(colors.brand.deep / 92%) 0,
+        theme(colors.brand.deep / 84%) 4.5rem,
+        theme(colors.brand.deep / 0%) 9rem
+      );
+    }
+  }
+
+  .shadow-float {
+    box-shadow:
+      0 24px 56px -16px theme(colors.ink.DEFAULT / 45%),
+      0 6px 16px -8px theme(colors.ink.DEFAULT / 30%);
   }
 }
